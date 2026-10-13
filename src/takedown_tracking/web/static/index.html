@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Social Media Takedown Accountability Platform | Public Scoreboard</title>
+  <meta name="description" content="Independent open-source transparency platform tracking intermediary compliance with police takedown and data requests through verified response speed metrics and privacy-preserving aggregations.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="dark-theme">
+  <!-- Top Demonstration Warning Banner -->
+  <aside id="demo-banner" class="demo-banner" role="alert" aria-label="Demonstration Mode Notice">
+    <div class="banner-content">
+      <span class="banner-badge">DEMONSTRATION MODE</span>
+      <p id="banner-text">
+        Synthetic test records active. Figures are generated from simulated models and harmless test fixtures for accountability demonstration. 
+        <strong>They do NOT represent actual platform performance or real police cases.</strong>
+      </p>
+    </div>
+  </aside>
+
+  <!-- Main Navigation Bar -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <polyline points="9 12 11 14 15 10"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">Takedown Accountability</h1>
+          <span class="brand-subtitle">Platform Response & Speed Transparency</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <span id="privacy-badge" class="privacy-badge" title="k-anonymity privacy filter active">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          k-Anonymity (k=10) Protected
+        </span>
+        <button id="theme-toggle" class="btn-icon" aria-label="Toggle visual theme" title="Toggle theme">
+          <svg id="theme-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/>
+            <line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <!-- Meta Summary Bar -->
+    <section class="meta-card" aria-label="Measurement Metadata">
+      <div class="meta-item">
+        <span class="meta-label">Measurement Period</span>
+        <span id="meta-period" class="meta-value">Loading...</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Total Analyzed</span>
+        <span id="meta-total-requests" class="meta-value">--</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Excluded Incomplete Police Requests</span>
+        <span id="meta-incomplete-requests" class="meta-value">--</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Invalid/Quarantined Records</span>
+        <span id="meta-invalid-records" class="meta-value">--</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Standard Statutory SLA</span>
+        <span id="meta-default-deadline" class="meta-value">36h / 24h</span>
+      </div>
+    </section>
+
+    <!-- Key Performance Overview Cards -->
+    <section class="metrics-grid" aria-label="Core Performance Metrics">
+      <!-- Card 1: Median Removal Time -->
+      <article class="metric-card" id="card-median-removal">
+        <div class="card-header">
+          <span class="card-title">Median Content Removal Time</span>
+          <span class="info-pill" title="50th percentile response time for verified content removals">Takedown</span>
+        </div>
+        <div class="card-body">
+          <div class="metric-number-group">
+            <span id="metric-median-removal" class="metric-number">--</span>
+            <span class="metric-unit">hours</span>
+          </div>
+          <p class="metric-subtext">Time elapsed from police dispatch to claimed content takedown.</p>
+        </div>
+        <div class="card-footer">
+          <span class="footer-label">Benchmark: &le; 24h statutory</span>
+          <span id="median-benchmark-status" class="status-indicator">--</span>
+        </div>
+      </article>
+
+      <!-- Card 2: 90th Percentile Removal Time -->
+      <article class="metric-card" id="card-p90-removal">
+        <div class="card-header">
+          <span class="card-title">90th Percentile (p90) Removal</span>
+          <span class="info-pill" title="Time within which 90% of removals were executed">Tail Speed</span>
+        </div>
+        <div class="card-body">
+          <div class="metric-number-group">
+            <span id="metric-p90-removal" class="metric-number">--</span>
+            <span class="metric-unit">hours</span>
+          </div>
+          <p class="metric-subtext">Captures long-tail delays and complex reviews across platforms.</p>
+        </div>
+        <div class="card-footer">
+          <span class="footer-label">Excludes outliers beyond p90</span>
+          <span class="badge-neutral">Strict SLA</span>
+        </div>
+      </article>
+
+      <!-- Card 3: Deadline Compliance Rate -->
+      <article class="metric-card" id="card-deadline-compliance">
+        <div class="card-header">
+          <span class="card-title">Deadline Compliance Rate</span>
+          <span class="info-pill" title="Eligible takedown requests completed within configured legal deadlines">SLA Metric</span>
+        </div>
+        <div class="card-body">
+          <div class="metric-number-group">
+            <span id="metric-deadline-compliance" class="metric-number">--</span>
+            <span class="metric-unit">%</span>
+          </div>
+          <div class="progress-bar-container">
+            <div id="compliance-progress-bar" class="progress-bar-fill" style="width: 0%;"></div>
+          </div>
+          <p class="metric-subtext">Eligible requests removed within applicable priority deadlines.</p>
+        </div>
+        <div class="card-footer">
+          <span class="footer-label">Emergency: 2h | Priority: 24h | Standard: 36h</span>
+        </div>
+      </article>
+
+      <!-- Card 4: Still Available Rate -->
+      <article class="metric-card" id="card-still-available">
+        <div class="card-header">
+          <span class="card-title">Content Still Available</span>
+          <span class="info-pill warning" title="Pending, unaddressed, expired, or rejected content">Non-Removal</span>
+        </div>
+        <div class="card-body">
+          <div class="metric-number-group">
+            <span id="metric-still-available" class="metric-number highlight-warning">--</span>
+            <span class="metric-unit">%</span>
+          </div>
+          <p class="metric-subtext">Proportion of eligible requests where content has not been removed.</p>
+        </div>
+        <div class="card-footer">
+          <span class="footer-label">Platform acknowledgement &ne; Removal</span>
+        </div>
+      </article>
+
+      <!-- Card 5: Data Request SLA -->
+      <article class="metric-card" id="card-data-requests">
+        <div class="card-header">
+          <span class="card-title">Data Request Response Time</span>
+          <span class="info-pill" title="Turnaround for subscriber / IP disclosure requests">Subpoena/Data</span>
+        </div>
+        <div class="card-body">
+          <div class="metric-number-group">
+            <span id="metric-median-data" class="metric-number">--</span>
+            <span class="metric-unit">hours</span>
+          </div>
+          <p class="metric-subtext">Median response turnaround for lawful assistance data requests.</p>
+        </div>
+        <div class="card-footer">
+          <span class="footer-label">Legal statutory SLA: 72 hours</span>
+          <span id="data-sla-status" class="status-indicator">--</span>
+        </div>
+      </article>
+
+      <!-- Card 6: Police-side Deficiency Rate -->
+      <article class="metric-card" id="card-police-deficiency">
+        <div class="card-header">
+          <span class="card-title">Incomplete Police Requests</span>
+          <span class="info-pill" title="Requests excluded due to procedural defects">Police Quality</span>
+        </div>
+        <div class="card-body">
+          <div class="metric-number-group">
+            <span id="metric-incomplete-count" class="metric-number">--</span>
+            <span class="metric-unit">cases</span>
+          </div>
+          <p class="metric-subtext">Excluded from platform penalty: missing court orders or invalid URLs.</p>
+        </div>
+        <div class="card-footer">
+          <span class="footer-label">Ensures platforms aren't penalized for defective orders</span>
+        </div>
+      </article>
+    </section>
+
+    <!-- Platform Breakdown Section -->
+    <section class="data-table-section" aria-label="Platform Responsiveness Breakdown">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Platform Responsiveness Comparison</h2>
+          <p class="section-subtitle">Disaggregated response speeds and compliance rates by intermediary. Small groups (&lt; 10 cases) are suppressed for privacy.</p>
+        </div>
+        <div class="filter-controls">
+          <input type="text" id="platform-search" class="search-input" placeholder="Search platform..." aria-label="Search platform">
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table id="platforms-table" class="data-table">
+          <thead>
+            <tr>
+              <th scope="col">Intermediary Platform</th>
+              <th scope="col">Status</th>
+              <th scope="col">Sample Size</th>
+              <th scope="col">Median Removal (hrs)</th>
+              <th scope="col">p90 Removal (hrs)</th>
+              <th scope="col">Compliance Rate</th>
+              <th scope="col">Still Available</th>
+              <th scope="col">Data Req Turnaround</th>
+            </tr>
+          </thead>
+          <tbody id="platforms-table-body">
+            <tr>
+              <td colspan="8" class="text-center loading-cell">Loading platform metrics...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Harm Category Breakdown Section -->
+    <section class="data-table-section" aria-label="Category Response Breakdown">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Harm Category Responsiveness</h2>
+          <p class="section-subtitle">Performance variation across statutory categories (CSAM, Non-consensual imagery, Hate Speech, Terrorism, Financial Fraud).</p>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table id="categories-table" class="data-table">
+          <thead>
+            <tr>
+              <th scope="col">Harm Category</th>
+              <th scope="col">Privacy Status</th>
+              <th scope="col">Sample Size</th>
+              <th scope="col">Median Removal (hrs)</th>
+              <th scope="col">p90 Removal (hrs)</th>
+              <th scope="col">Deadline Compliance</th>
+            </tr>
+          </thead>
+          <tbody id="categories-table-body">
+            <tr>
+              <td colspan="6" class="text-center loading-cell">Loading category metrics...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Methodology & Legal SLA Explanations -->
+    <section class="methodology-card" aria-label="Metric Explanations & Methodology">
+      <h2 class="methodology-title">Auditing Methodology & Scientific Standards</h2>
+      <div class="methodology-grid">
+        <div class="method-item">
+          <h3>Eligibility & Denominators</h3>
+          <p>
+            Removal compliance denominators include all formally completed police takedown requests. 
+            Procedurally incomplete requests (missing court orders, invalid URLs, unspecified jurisdiction) 
+            are quarantined to ensure platforms are evaluated only on actionable, legally complete demands.
+          </p>
+        </div>
+        <div class="method-item">
+          <h3>No Acknowledgement as Removal</h3>
+          <p>
+            Intermediary confirmation of receipt is audited as acknowledgement speed, never as proof of content removal. 
+            Unresolved requests remain marked as still available and penalize the deadline compliance metric.
+          </p>
+        </div>
+        <div class="method-item">
+          <h3>k-Anonymity (k=10) Protection</h3>
+          <p>
+            To eliminate victim re-identification or targeted correlation attacks, any category or platform 
+            cohort containing fewer than 10 records is automatically suppressed from public dashboards and API outputs.
+          </p>
+        </div>
+        <div class="method-item">
+          <h3>Reproducible Calculations</h3>
+          <p>
+            All medians and 90th percentiles use standardized linear interpolation between closest ranks. 
+            Full metric formulas and mathematical proofs are published openly in <code>METHODOLOGY.md</code>.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <div class="footer-container">
+      <p>Social Media Takedown Accountability Platform &bull; Apache-2.0 Open Source License</p>
+      <p class="footer-note">Designed for authorized police-controlled evaluation environments. Potential Kerala Police testbed.</p>
+    </div>
+  </footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>
