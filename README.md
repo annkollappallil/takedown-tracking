@@ -100,7 +100,7 @@ Navigate to `http://127.0.0.1:8000/` in your browser to view the interactive das
 
 ## 5. Verification & Integrity (Half 2)
 
-Platforms report their own removal times. The verifier checks independently whether reported content is really gone, and the integrity metrics measure how far those claims can be trusted. Full definitions: [METHODOLOGY.md section 6](METHODOLOGY.md#6-independent-verification--integrity-metrics-half-2).
+Platforms report their own removal times. The verifier checks independently whether reported content is really gone, and the integrity metrics measure how far those claims can be trusted. How it works, as use cases: [METHODOLOGY.md section 6](METHODOLOGY.md#6-verification-and-accountability-half-2-use-cases).
 
 * **Verifier** ([`src/takedown_tracking/verifier/`](src/takedown_tracking/verifier/)): checks each takedown every 15 minutes, confirms removal with two DOWN results in a row, and scans for re-uploads for 7 days after removal. Checks go through pluggable `AvailabilityChecker` / `ReuploadDetector` interfaces. Only a simulator ships here; a real deployment implements the interfaces inside the police network. Checkers never download content, and URLs and hashes never leave them.
 * **Observation contract** ([`observation.schema.json`](schemas/observation.schema.json)): one record per monitored request with `first_checked_at`, `last_seen_up_at`, `verified_removed_at`, `reupload_detected_at`, `last_checked_at` and a fixed `check_error` code. No URLs, hashes or free text.

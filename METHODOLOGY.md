@@ -162,64 +162,114 @@ In the Platform A vs Platform B example:
 
 ---
 
-## 6. Independent Verification & Integrity Metrics (Half 2)
+## 6. Verification and Accountability (Half 2): Use Cases
 
-Platforms report their own removal times. The verifier checks independently whether reported content is actually gone, and the integrity metrics measure how far platform claims can be trusted.
+Platforms report their own removal times. This part of the system checks independently whether reported content is really gone, so the scoreboard does not rely on the platform's word. Each use case below describes a real situation, what the system does, and what the public ends up seeing.
 
-### 6.1. How the verifier checks
+The people involved:
+* **Victim**: the person the content harms.
+* **Police cyber cell**: sends takedown requests and runs this system on its own computers.
+* **Platform**: the social media company that receives the request.
+* **Public**: sees only the published scoreboard.
 
-* **Schedule**: each complete takedown request is checked every 15 minutes, starting 15 minutes after it is sent, until removal is confirmed, monitoring ends (30 days) or the `as_of` cutoff. No check happens after `as_of`.
-* **Confirmation**: removal needs two DOWN results in a row (inconclusive checks in between are ignored), so one glitchy 404 is not a removal. `verified_removed_at` is the first DOWN of that run. Removal times therefore have 15-minute resolution.
-* **Re-upload scan**: after verified removal, the re-upload detector scans every 6 hours for 7 days.
-* **Pluggable**: checks go through the `AvailabilityChecker` and `ReuploadDetector` interfaces (`src/takedown_tracking/verifier/checker.py`). This repository ships only a simulator. A real deployment implements the interfaces inside the police network, where request IDs are resolved to URLs; URLs, content and hashes never leave the checker.
-* **No downloading**: checkers report only up / down / unknown. They never download or store content.
+---
 
-### 6.2. Observation contract
+### Use case 1: Checking that reported content is really gone
 
-The verifier hands over one record per monitored request (`schemas/observation.schema.json`):
+**Example.** Police ask a platform to remove a morphed image at 10:00. The platform replies "removed at 11:05".
+
+**What happens.**
+1. From the moment the request is sent, the system checks the post every 15 minutes.
+2. A removal counts only when two checks in a row find the post gone, so one glitch doesn't count as removal.
+3. The checker only looks at whether the post is reachable. It never downloads or stores the image.
+4. For each request it records four times: first check, last time the post was seen online, time it was confirmed gone, and last check. No links, images or notes are recorded.
+
+**Result.** The scoreboard uses the time the checks confirmed (within 15 minutes of the real removal), not the platform's claim.
+
+---
+
+### Use case 2: The platform says "removed" but the content is still online
+
+**Example.** The platform reports removal at 11:00, but the checks keep finding the post online until 6:00 the next morning. It finally disappears at 6:15.
+
+**What happens.**
+1. Because the post was seen online after the platform said it was removed, the claim is counted as a **false removal claim**.
+2. The removal time used is 6:15 the next morning, so the platform is measured on what actually happened.
+3. A 15-minute allowance covers cached copies, so a post briefly visible right after a genuine removal is not counted against the platform.
+
+**What the public sees.** Each platform's false removal claim rate: the share of its removal claims that the checks contradicted.
+
+---
+
+### Use case 3: The platform removes content without telling the police
+
+**Example.** The platform never replies, but the checks find the post gone at 15:00.
+
+**What happens.** The post counts as removed at 15:00, even though the platform's status still says "pending". The platform is not penalised for content it actually removed.
+
+**What the public sees.** The number of silent removals per platform: content taken down without a report back.
+
+---
+
+### Use case 4: The content can't be checked
+
+**Example.** The post sits behind a login wall, or on a private account, or is blocked in the region where the checks run.
+
+**What happens.**
+1. The request is recorded as **could not check**, with a fixed reason code (for example "login wall").
+2. The system never assumes removal on its own. If the platform claims removal, that claim is used, but it is not marked as confirmed.
+
+**What the public sees.** The share of requests that could not be checked, so readers know how much of a platform's figures rest on its own word.
+
+---
+
+### Use case 5: The removed content comes back
+
+**Example.** A week after removal, a copy of the same image is posted again.
+
+**What happens.** After a confirmed removal, the system keeps watching for copies for 7 days. A copy found in that window counts as a re-upload.
+
+**What the public sees.** Each platform's re-upload rate. It only includes removals whose 7-day watch has finished, so recent removals don't make the rate look better than it is.
+
+---
+
+### What the public numbers mean
+
+| Number | In plain words |
+| :--- | :--- |
+| Verification coverage | Out of all requests, how many the system was able to watch |
+| Could not check | Out of watched requests, how many could not be seen (login walls, private accounts) |
+| False removal claim rate | Out of removal claims the system could test, how many were contradicted by the checks |
+| Silent removals | Removals the checks confirmed that the platform never reported |
+| Re-upload rate | Out of confirmed removals with a finished 7-day watch, how many came back |
+
+**Privacy rule.** A number is published only if at least 10 requests are behind it. A count and its percentage are always shown or hidden together, so a hidden number can't be worked out from the others.
+
+---
+
+### Limits to keep in mind
+
+* Removal times are accurate to about 15 minutes, because that is how often the checks run.
+* The demo runs entirely on made-up data for fictional platforms (Platform A to J). Its numbers say nothing about real companies.
+* Content removed and later restored at the same address is not tracked after the confirmed removal.
+* A re-upload is only counted if the system can see it, so the re-upload rate is a minimum, not an exact figure.
+
+<details>
+<summary>Technical reference: the record the checker hands over</summary>
+
+One record per watched request (`schemas/observation.schema.json`):
 
 | Field | Meaning |
 | :--- | :--- |
-| `observation_status` | `confirmed_removed`, `confirmed_available` (up at the last conclusive check), `uncertain` (platform reached but content not visible: login wall, private, geo-blocked) or `failed_check` (timeouts, errors) |
-| `first_checked_at` | First check |
-| `last_seen_up_at` | Last check that found the content up |
-| `verified_removed_at` | First check that found it gone (confirmed) |
-| `reupload_detected_at` | First matching copy found after removal |
-| `last_checked_at` | Most recent check |
-| `check_error` | Why checks were inconclusive (fixed codes, no free text) |
+| `observation_status` | `confirmed_removed`, `confirmed_available` (online at last check), `uncertain` (could not see the content) or `failed_check` (checks errored) |
+| `first_checked_at` / `last_checked_at` | First and most recent check |
+| `last_seen_up_at` | Last check that found the post online |
+| `verified_removed_at` | First of two checks in a row that found it gone |
+| `reupload_detected_at` | First copy found after removal |
+| `check_error` | Reason code when checks were inconclusive (no free text) |
 
-Records are validated on load: status and timestamps must be consistent (`first_checked_at <= last_seen_up_at < verified_removed_at <= last_checked_at`), and free-text fields are rejected so URLs cannot leak in.
-
-### 6.3. How verification changes the speed metrics
-
-Rules in `src/takedown_tracking/integrity/rules.py` are shared by the speed metrics and the integrity metrics:
-
-1. **Verified removal wins.** If the verifier confirmed removal, `verified_removed_at` is the removal time, even if the platform claimed an earlier time or never reported the removal.
-2. **Contradicted claims don't count.** If the verifier saw the content up after the platform's claim, the content counts as not removed until the verifier confirms removal.
-3. **Fallback.** With no conclusive observation (none, `uncertain`, `failed_check`), the platform's claim is used. Inconclusive checks are never treated as removal.
-
-### 6.4. Integrity metrics
-
-All cover complete takedown requests in the published categories (section 8) sent before `as_of`, overall and per platform.
-
-* **Verification coverage (%)** = requests with an observation ÷ eligible requests.
-* **Unverifiable (%)** = observations that are `uncertain` or `failed_check` ÷ observations. High values mean the other integrity figures cover less of the platform's activity.
-* **False removal claim rate (%)** = false claims ÷ claims checked.
-  * *Claims checked*: removal claims made before `as_of`, with a conclusive observation whose last check is at or after the claim.
-  * *False claim*: `last_seen_up_at` is more than **15 minutes** (cache and clock allowance) after `claimed_removal_at`. This catches both content that stayed up for hours before being removed and content never removed. Only evidence known by `as_of` is used.
-* **Silent removals** = verified removals of requests the platform never reported as removed (`pending`, `acknowledged`, `expired`).
-* **Re-upload rate (%)** = removals with a matching copy found within **7 days** ÷ verified removals whose 7-day window has fully passed by `as_of`. Removals with an open window are left out, so recent removals don't make the rate look better than it is.
-
-### 6.5. Publication rule
-
-Each integrity figure is published only when the group it describes has at least $k$ requests (default 10): coverage and claims checked use eligible requests, the false claim count and rate use claims checked, the re-upload count and rate use the re-upload cohort, and so on. A count and its rate are always shown or hidden together, so a hidden count can never be recovered from a published rate.
-
-### 6.6. Limitations
-
-* The simulator's behaviour profiles are invented for fictional platforms. Demo figures say nothing about real platforms.
-* Removal times have the resolution of the check interval (15 minutes).
-* Content that is removed and later restored at the same address is not modelled; the verifier stops checking after confirmed removal.
-* A re-upload is only found if the detector can see it. The re-upload rate is a lower bound.
+Rules, in `src/takedown_tracking/integrity/rules.py`: a confirmed removal time replaces the platform's claim; a claim is false if the post was seen online more than 15 minutes after it; with no usable check, the platform's claim is used. Checks go through the `AvailabilityChecker` and `ReuploadDetector` interfaces, so a real deployment can plug in its own checker inside the police network.
+</details>
 
 ---
 
