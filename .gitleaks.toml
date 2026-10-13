@@ -5,9 +5,11 @@ title = "Takedown Tracking Gitleaks Configuration"
 # Inherit base gitleaks rules (detects GitHub PAT, OAuth tokens, AWS keys, private keys, etc.)
 
 [allowlist]
-description = "Allowlist harmless synthetic demonstration fixtures and hashes"
+description = "Allowlist narrowly scoped harmless synthetic demonstration fixtures containing pseudorandom hex hashes"
+# Retained exceptions: Only committed demo JSON fixtures containing synthetic random hex strings.
+# The broad tests/.* exclusion has been completely removed to ensure all test code is strictly scanned for accidental secrets.
 paths = [
     '''^data/demo_synthetic_requests\.json$''',
     '''^data/demo_public_scoreboard\.json$''',
-    '''^tests/.*''',
+    '''^data/demo_observations\.json$''',
 ]

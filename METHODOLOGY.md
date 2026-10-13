@@ -1,9 +1,9 @@
 # Methodology & Metric Specifications
 
-This document outlines the scientific definitions, mathematical formulas, data filtering logic, privacy controls, and audit limitations governing **Half 1: Requests and Speed** within the Social Media Takedown Accountability Platform.
+This document outlines the scientific definitions, mathematical formulas, data filtering logic, privacy controls, and audit limitations governing **Half 1: Requests and Speed** and the shared observation integration with **Half 2: Verification and Integrity** within the Social Media Takedown Accountability Platform.
 
-> **Demonstration Disclaimer**:
-> This platform uses synthetic records and simulated models for public demonstrations, test validation, and reference calibration. Figures generated from synthetic data do not represent genuine intermediary compliance, actual platform responsiveness, or real police investigations.
+> **Demonstration Notice**:
+> In demonstration mode, this platform uses 100% synthetic records with **fictional platform identities** (`Platform A` through `Platform J`) and simulated profiles. Figures generated from synthetic data do not represent genuine intermediary compliance, actual platform responsiveness, or real police investigations. Real platform names (`Meta`, `YouTube`, etc.) are reserved strictly for authorized, isolated law enforcement deployment.
 
 ---
 
@@ -17,117 +17,183 @@ flowchart TD
         B -->|Defective Rows| D[Quarantine Log / Failure Audit]
     end
 
-    subgraph Processing["2. Filtering & SLA Application"]
-        C --> E[Eligibility Filter]
-        CFG[Configurable Deadlines JSON] --> E
-        E -->|Procedurally Defective Excluded| F[Incomplete Request Counter]
-        E -->|Actionable Records| G[Metrics Engine]
+    subgraph CutoffAndMaturity["2. Cutoff & Cohort Maturity (as_of)"]
+        C --> E{Measurement Cutoff as_of}
+        E -->|Mature Records| F[Mature Analysis Cohort]
+        E -->|Immature Pending Records| G[Excluded from SLA Denominators]
     end
 
-    subgraph StatisticalEngine["3. Statistical Metrics"]
-        G --> H[Median & p90 Removal Speed]
-        G --> I[Deadline Compliance Rate]
-        G --> J[Still Available Rate]
-        G --> K[Data Request Turnaround]
+    subgraph Processing["3. Strictest SLA Resolution"]
+        F --> H[DeadlineConfig: min Route, Priority, Category]
+        H --> I[Eligible Takedown Split]
+        H --> J[Data Request SLA: 72h]
     end
 
-    subgraph PrivacyLayer["4. Privacy & Disclosure Control"]
-        H & I & J & K --> L[PrivacyFilter: k-Anonymity Engine]
-        L -->|Cohort Size < k| M[Suppress Breakdown Groups]
-        L -->|Cohort Size >= k| N[Publish Breakdown Metrics]
-        L -->|Purge Microdata| O[Public Scoreboard JSON & Dashboard]
+    subgraph VerifierIntegration["4. Half 2 Observation Binding"]
+        OBS[ObservationRecord Contract] --> K{Status Verification}
+        K -->|Confirmed Removed| L[Verified Removal Duration]
+        K -->|Confirmed Available| M[False Removal Claim Detected]
+        K -->|Uncertain / Failed| N[Unverified Fallback]
+    end
+
+    subgraph StatisticalEngine["5. Statistical Metrics"]
+        L & M & N --> O[Survival Percentiles: Right-Censoring]
+        O --> P[Median & p90 Removal Speed]
+        O --> Q[Deadline Compliance Rate %]
+        O --> R[Still Available Rate %]
+        O --> S[Platform Rejection Rate %]
+    end
+
+    subgraph PrivacyLayer["6. Privacy & Disclosure Control"]
+        P & Q & R & S --> T[PrivacyFilter: Per-Metric k-Anonymity]
+        T -->|Cohort Denominator < k| U[Suppress Group / Metric]
+        T -->|Cohort Denominator >= k| V[Publish Metric]
+        T -->|Purge Microdata & Redact Small Counts| W[Public Scoreboard JSON & Web Dashboard]
     end
 ```
 
 ---
 
-## 2. Metric Specifications
+## 2. Statutory Deadlines & Strictest Resolution (2026 IT Rules)
 
-### 2.1. Median Content Removal Time
+### 2.1. Statutory Timelines
+Amended timelines under the Information Technology (Intermediary Guidelines and Digital Media Ethics Code) Rules, 2021 (amended effective 20 February 2026; Gazette notification 269993):
 
-* **Definition & Purpose**: The 50th percentile duration (in hours) between police dispatch of an actionable takedown request and the intermediary's recorded removal or disablement of the targeted content. Provides the central tendency of removal speed resilient to extreme outliers.
-* **Timestamps Used**: `sent_at` (dispatch timestamp) and `claimed_removal_at` (removal confirmation timestamp).
-* **Formula**:
-  $$\text{Duration}_i = \frac{\text{claimed\_removal\_at}_i - \text{sent\_at}_i}{3600}$$
-  $$\text{Median Removal Hours} = \text{Percentile}_{50}(\{\text{Duration}_i \mid i \in \text{CompletedTakedowns}\})$$
-* **Eligibility & Exclusions**:
-  - Eligible subset: Records where `request_type == 'takedown'` and `is_complete_request == true`.
-  - Completed subset: Eligible records where `status == 'claimed_removed'` and `claimed_removal_at` is non-null.
-  - Excluded: Procedurally incomplete requests (`is_complete_request == false`), requests pending action, rejected requests, and data requests.
-* **Missing & Unresolved Records**: Unresolved requests (content still available) do not have a `claimed_removal_at` timestamp and are excluded from the speed distribution calculation, but are penalised under the **Deadline Compliance Rate** and tracked in the **Still Available Rate**.
+1. **Rule 3(1)(d) (Specified Court Orders or Authorized Government Intimations)**:
+   - **Deadline**: **3.0 hours** from formal communication.
+   - **Applicable Route**: `court_order_or_govt_intimation`.
+2. **Rule 3(2)(b) (Grievance Complaints on Specified Harm Categories)**:
+   - **Deadline**: **2.0 hours** from receipt of complaint.
+   - **Qualifying Categories**: Child Sexual Abuse Material (`CSAM`), Non-Consensual Intimate Imagery and morphed content (`NonConsensualImagery`), and `Impersonation`.
+   - **Critical Rule**: The 2-hour deadline does **not** automatically apply to every request labeled NCII; the legal route must be `grievance_complaint_3_2_b`.
+3. **Operational Priorities**:
+   - `emergency_life_threat`: **2.0 hours** (imminent danger to human life).
+   - `urgent`: **3.0 hours** (priority operational escalation).
+   - `routine`: **36.0 hours** (standard operational default).
+4. **Data Assistance Requests**:
+   - **Deadline**: **72.0 hours** under statutory data-assistance provisions. Content-removal SLAs are **never** applied to data requests.
 
----
+### 2.2. Conflict Resolution Order
+When multiple deadlines are applicable (e.g., category default, legal route, and operational priority), the engine selects the **strictest applicable deadline**:
 
-### 2.2. 90th-Percentile Content Removal Time (p90)
+$$\text{Effective Deadline} = \min(\text{Applicable Candidates})$$
 
-* **Definition & Purpose**: The time threshold within which 90% of completed content removals are executed. Identifies tail latencies, operational bottlenecks, escalation friction, and prolonged content exposure.
-* **Calculation Method**: Linear interpolation between closest ranks over sorted completed removal durations:
-  $$\text{Rank} = \frac{90}{100} \times (n - 1)$$
-  $$\text{p90} = X_{\lfloor \text{Rank} \rfloor} + (\text{Rank} - \lfloor \text{Rank} \rfloor) \times \left(X_{\lceil \text{Rank} \rceil} - X_{\lfloor \text{Rank} \rfloor}\right)$$
-* **Eligibility & Exclusions**: Identical to Median Content Removal Time.
+*Example*: If Harm Category = `FinancialFraud` (36h default), Operational Priority = `urgent` (3h), and Legal Route = `court_order_or_govt_intimation` (3h):
+$$\text{Selected Deadline} = \min(36.0, 3.0, 3.0) = 3.0\text{ hours}$$
 
----
+An urgent priority is never silently ignored or relaxed by a category default.
 
-### 2.3. Deadline Compliance Rate (%)
-
-* **Definition & Purpose**: The percentage of legally complete, actionable police takedown requests that were resolved by the intermediary within the applicable statutory or priority deadline.
-* **Numerator**: Count of eligible takedown requests where `status == 'claimed_removed'` and $\text{Duration}_i \le \text{Deadline}_i$.
-* **Denominator**: Total count of all eligible takedown requests dispatched within the measurement window:
-  $$\text{Denominator} = |\{r \mid r \in \text{Takedowns} \land r.\text{is\_complete\_request} == \text{true}\}|$$
-* **Formula**:
-  $$\text{Compliance Rate (\%)} = \left(\frac{\text{Numerator}}{\text{Denominator}}\right) \times 100$$
-* **Critical Rule on Platform Acknowledgement**:
-  A platform's acknowledgement of receipt (`acknowledged_at`) is **never** counted as removal. A request that has been acknowledged but not removed remains in the denominator as non-compliant once the deadline elapses.
-* **Configurable Deadlines**:
-  - Emergency Life Threat (`priority == 'emergency_life_threat'`): **2.0 hours**
-  - Statutory Sexually Explicit / CSAM / NCII: **24.0 hours** (e.g. IT Rules 2021 Rule 3(2)(b))
-  - Statutory Court / Government Orders: **36.0 hours** (e.g. Rule 3(1)(d))
-  - Routine Default: **36.0 hours**
+### 2.3. Ambiguous or Missing Route Information
+If `legal_route` is absent or `other`, the engine relies strictly on applicable category and priority rules. It does not fabricate a statutory 2h or 3h compliance route without supporting evidence.
 
 ---
 
-### 2.4. Percentage of Content Still Available (%)
+## 3. Measurement Cutoff (`as_of`) and Cohort Maturity
 
-* **Definition & Purpose**: The proportion of actionable takedown requests for which targeted content has not been removed (including pending reviews, expired requests, and platform rejections).
-* **Numerator**: Count of eligible takedowns where `status` is not `claimed_removed` (e.g. `pending`, `acknowledged`, `rejected`, `expired`).
-* **Denominator**: Total count of eligible takedowns.
-* **Formula**:
-  $$\text{Still Available Rate (\%)} = \left(\frac{\text{Still Available Count}}{\text{Eligible Takedowns}}\right) \times 100$$
+To prevent temporal bias where pending requests submitted shortly before report generation are unfairly penalized:
 
----
-
-### 2.5. Data Request Response Turnaround
-
-* **Definition & Purpose**: Measures intermediary response speed when police seek subscriber metadata, IP logs, or registration details under statutory assistance provisions.
-* **Timestamps Used**: `sent_at` and `data_provided_at`.
-* **Metrics**: Median response hours, p90 response hours, and 72-hour statutory deadline compliance rate.
-* **Denominator**: All complete police data requests dispatched within the measurement period.
+1. **Explicit Reporting Cutoff (`as_of`)**:
+   Every calculation accepts an ISO 8601 UTC timestamp `as_of`. If not provided, it defaults to a single UTC timestamp captured at report generation start.
+2. **Cohort Maturity Rule**:
+   A request enters the eligible mature analysis cohort if and only if:
+   - It was completed before `as_of` ($\text{claimed\_removal\_at} \le \text{as\_of}$ or $\text{verified\_removed\_at} \le \text{as\_of}$); OR
+   - It was rejected before `as_of` ($\text{sent\_at} \le \text{as\_of}$); OR
+   - Its applicable deadline has elapsed by `as_of` ($\text{sent\_at} + \text{deadline\_hours} \le \text{as\_of}$).
+3. **Immature Pending Exclusions**:
+   A request whose deadline has not yet elapsed by `as_of` is **immature**. It is excluded from deadline-miss denominators and censored removal percentile calculations. A request sent 30 minutes before an export cannot be counted as a missed deadline.
 
 ---
 
-### 2.6. Incomplete Police Requests Count
+## 4. Removal-Time Percentiles & Right-Censoring
 
-* **Definition & Purpose**: Quantifies requests excluded from intermediary penalty due to police-side procedural defects (e.g., missing court orders, invalid URL formatting, unspecified jurisdiction, or missing signature/seal).
-* **Purpose**: Prevents intermediary performance from being distorted by legally defective demands, establishing mutual accountability.
+### 4.1. The Survivorship Bias Problem
+Calculating median and p90 removal times using only requests marked `claimed_removed` creates severe survivorship bias. For example, if Platform A removes 20 requests in 10 hours, while Platform B removes 10 in 1 hour and leaves 10 unresolved indefinitely, an un-censored calculation would report Platform B as 10x faster (1.0h vs 10.0h).
+
+### 4.2. Survival Analysis Formulation
+We calculate removal-time percentiles over the entire eligible, mature takedown cohort of size $N$:
+
+$$N = k + U$$
+where:
+- $k$: count of confirmed removals with finite observed durations $t_0 \le t_1 \le \dots \le t_{k-1}$.
+- $U$: count of mature unresolved requests (content still available past deadline), treated as right-censored outcomes with duration $> \text{deadline}$ (conceptually $+\infty$).
+
+For any target percentile $p \in [0, 100]$:
+$$\text{Rank} = \frac{p}{100} \times (N - 1)$$
+$$i_{\text{low}} = \lfloor \text{Rank} \rfloor, \quad i_{\text{high}} = \lceil \text{Rank} \rceil$$
+
+1. **Finite Rank ($i_{\text{high}} < k$)**:
+   Both bounds fall within the finite durations:
+   $$\text{Percentile} = t_{i_{\text{low}}} + (\text{Rank} - i_{\text{low}}) \times (t_{i_{\text{high}}} - t_{i_{\text{low}}})$$
+   Serialized as finite number `numeric_hours`, `is_censored = false`.
+2. **Right-Censored Rank ($i_{\text{high}} \ge k$)**:
+   The percentile rank touches or falls into the unremoved, censored outcomes.
+   Serialized safely as:
+   - `numeric_hours: null` (never `Infinity` or `NaN`)
+   - `is_censored: true`
+   - `display: "> measurement window"`
+
+In the Platform A vs Platform B example:
+- **Platform A**: $N=20, k=20$. Rank for median = 9.5 ($< 20$). Median = **10.0 hours**.
+- **Platform B**: $N=20, k=10$. Rank for median = 9.5. Upper index $10 \ge k (10)$. Median is **right-censored** (`> measurement window`), not 1.0 hour.
 
 ---
 
-## 3. Privacy & Disclosure Controls
+## 5. Separate Platform Rejection Reporting
 
-To guarantee that public scoreboards, APIs, and downloaded reports cannot be used to de-anonymize victims, track specific police operations, or correlate sensitive complaints:
-
-1. **Strict $k$-Anonymity Group Suppression ($k=10$)**:
-   - Any disaggregated breakdown group (by intermediary or harm category) containing fewer than 10 cases is suppressed.
-   - Suppressed entries report `is_suppressed: true`, nullified statistical values, and an explicit `suppression_reason`.
-2. **Permanent Redaction of Identifiers**:
-   - Internal request IDs, police station identifiers, victim names, complainant references, and content URLs are permanently excluded from all public scoreboard exports and API payloads.
-3. **URL Cryptographic Hashing**:
-   - If URL tracking is necessary for re-upload correlation (Half 2 integration), only SHA-256 hashes of normalized synthetic URLs are processed. Raw URLs are never committed or exposed.
+1. **Rejection Outcome Isolation**:
+   Platform refusals (`status == 'rejected'`) are audited in separate metrics (`rejections_count` and `rejection_rate_pct`).
+2. **Non-Equivalence Rules**:
+   - A rejection is **not** counted as content removal.
+   - A rejection is **not** automatically counted as confirmed content availability (unless verified by an independent observation).
+   - Rejections do not distort the removal-time speed distribution.
+3. **Privacy Protection**:
+   Small rejection counts ($< k$) are redacted from public output to prevent disclosure.
 
 ---
 
-## 4. Measurement Limitations & Potential Bias
+## 6. Shared Verification Observation Contract (Half 1 / Half 2)
 
-* **Claimed vs Observed Removals**: Half 1 measures intermediary *claimed* removal timestamps (`claimed_removal_at`). Independent observation and detection of false claims is delegated to Half 2 (Verification and Integrity).
-* **Working Hours vs 24/7 Clock**: Statutory deadlines (e.g., 24h, 36h) operate on an absolute elapsed clock rather than business hours.
-* **Platform Categorization Nuance**: Intermediaries often apply internal Community Standards classifications that differ from statutory police categories.
+Independent external checks performed by Half 2 (Verifier Simulator) interface through `schemas/observation.schema.json` and `ObservationRecord`:
+
+1. **Verified Removal Time**:
+   If `observation_status == 'confirmed_removed'` and `verified_removed_at` is present, the metrics engine uses `verified_removed_at` rather than the platform's self-reported claim.
+2. **False Removal Claims**:
+   If a platform claims `claimed_removed`, but an independent observation confirms `confirmed_available`:
+   - Flagged as a **False Removal Claim**;
+   - Increments `false_removal_claims_count`;
+   - Treated as non-compliant still-available content.
+3. **Uncertain and Failed Checks**:
+   Checks with status `uncertain` or `failed_check` are never equated with successful removal.
+4. **Per-Platform Integrity Breakdown**:
+   Public scoreboards report per-platform false removal claims, observed re-uploads, and verified takedowns, subject to $k$-anonymity suppression.
+
+---
+
+## 7. URL Cryptographic Pseudonymization (HMAC-SHA-256)
+
+1. **Vulnerability of Plain SHA-256**:
+   Plain SHA-256 hashes of known candidate URLs are vulnerable to dictionary pre-computation and re-identification attacks.
+2. **HMAC-SHA-256 Standard**:
+   All URL identifiers use HMAC-SHA-256 keyed with a deployment secret (`TAKEDOWN_HMAC_SECRET`):
+   $$\text{content\_url\_hmac} = \text{HMAC-SHA-256}(\text{SecretKey}, \text{CanonicalURL})$$
+3. **Fail-Closed Protection**:
+   In non-synthetic production execution, if `TAKEDOWN_HMAC_SECRET` is unset, the validator immediately fails closed.
+4. **Boundary Distinction**:
+   HMAC URL identifiers enable privacy-preserving record correlation across workstreams. PDQ perceptual image matching remains strictly inside Half 2's isolated verifier environment.
+
+---
+
+## 8. Strengthened Privacy Controls ($k$-Anonymity)
+
+1. **Generic Suppression Reasons**:
+   Public suppression reasons never include exact cohort sizes. The standardized explanation is:
+   `"Suppressed because the group is below the publication threshold."`
+2. **Independent Per-Metric Denominators**:
+   The $k$-anonymity threshold ($k=10$) is enforced independently for each published metric:
+   - Takedown removal speed & compliance: requires $\text{mature\_takedowns} \ge k$.
+   - Data request turnaround: requires $\text{total\_data\_requests} \ge k$.
+   - Integrity breakdowns: requires $\text{integrity\_cohort} \ge k$.
+3. **Small-Count Redaction**:
+   Small counts of incomplete police requests ($< k$) and platform rejections ($< k$) are redacted (`null`) to eliminate indirect re-identification through subtraction.
+4. **Narrow Default Reporting Scope**:
+   Default public reports are restricted to high-impact victim-protection categories (`CSAM`, `NonConsensualImagery`, `Impersonation`, `FinancialFraud`).

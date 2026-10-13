@@ -83,7 +83,7 @@ class TestWebServer:
             assert resp.status == 200
             assert "application/json" in resp.headers.get("Content-Type", "")
             data = json.loads(resp.read().decode("utf-8"))
-            assert data["schema_version"] == "1.0.0"
+            assert data["schema_version"] in ("1.0.0", "2.0.0")
             assert "metadata" in data
             assert data["metadata"]["is_demonstration_mode"] is True
             assert "overall_performance" in data

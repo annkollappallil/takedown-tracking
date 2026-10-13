@@ -159,8 +159,10 @@ class TestMetricsEngine:
         assert metrics.deadline_compliance_rate_pct == 25.0
         # 2 out of 4 still available -> 50.0%
         assert metrics.still_available_rate_pct == 50.0
-        # Median of [10.0, 30.0] -> 20.0
-        assert metrics.median_removal_hours == 20.0
+        # Right-censored median: 2 completed + 2 unremoved means median rank touches unremoved cases
+        assert metrics.median_removal_censored is True
+        assert metrics.median_removal_hours is None
+        assert "> measurement window" in metrics.median_removal_display
 
     def test_incomplete_police_request_exclusion(self, base_time: datetime) -> None:
         """Incomplete requests must not be in eligible takedown denominator."""

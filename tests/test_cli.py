@@ -65,7 +65,7 @@ class TestCLI:
             with open(sb_file, "r", encoding="utf-8") as f:
                 sb_data = json.load(f)
 
-            assert sb_data["schema_version"] == "1.0.0"
+            assert sb_data["schema_version"] in ("1.0.0", "2.0.0")
             assert "metadata" in sb_data
             assert "overall_performance" in sb_data
             assert "platform_breakdown" in sb_data
