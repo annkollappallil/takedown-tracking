@@ -9,6 +9,7 @@ from takedown_tracking.models.metrics import ValidationFailure
 from takedown_tracking.models.request import (
     Category,
     IncompletionReason,
+    LegalRoute,
     Platform,
     Priority,
     RequestRecord,
@@ -157,6 +158,22 @@ class RequestValidator:
                 )
             )
             priority = Priority.ROUTINE
+
+        # legal_route (optional)
+        raw_route = row.get("legal_route")
+        legal_route: Optional[LegalRoute] = None
+        if raw_route:
+            try:
+                legal_route = LegalRoute(str(raw_route).strip())
+            except ValueError:
+                failures.append(
+                    ValidationFailure(
+                        row_index=row_index,
+                        field="legal_route",
+                        error_code="INVALID_ENUM_VALUE",
+                        message=f"Invalid legal_route. Allowed: {[e.value for e in LegalRoute]}.",
+                    )
+                )
 
         # status
         status_str = str(row["status"]).strip()
@@ -307,17 +324,17 @@ class RequestValidator:
                 )
             )
 
-        # 5. Content URL hash check (must be sha256 or null)
-        url_hash = row.get("content_url_hash")
-        if url_hash:
-            url_hash = str(url_hash).strip()
-            if not HEX64_REGEX.match(url_hash):
+        # 5. Content URL HMAC / hash check (must be 64-character hex or null)
+        url_identifier = row.get("content_url_hmac") or row.get("content_url_hash")
+        if url_identifier:
+            url_identifier = str(url_identifier).strip()
+            if not HEX64_REGEX.match(url_identifier):
                 failures.append(
                     ValidationFailure(
                         row_index=row_index,
-                        field="content_url_hash",
+                        field="content_url_hmac",
                         error_code="INVALID_HASH_FORMAT",
-                        message="content_url_hash must be a 64-character hex SHA-256 string.",
+                        message="content_url_hmac must be a 64-character hex HMAC-SHA-256 string.",
                     )
                 )
 
@@ -325,7 +342,7 @@ class RequestValidator:
             return None, failures
 
         # Construct and return validated record
-        assert sent_at is not None  # Guaranteed by checks above
+        assert sent_at is not None
         record = RequestRecord(
             request_id=req_id,
             is_synthetic=is_synth,
@@ -333,6 +350,7 @@ class RequestValidator:
             platform=platform,
             category=category,
             priority=priority,
+            legal_route=legal_route,
             sent_at=sent_at,
             acknowledged_at=ack_at,
             claimed_removal_at=removal_at,
@@ -342,6 +360,7 @@ class RequestValidator:
             incompletion_reason=inc_reason,
             status=status,
             rejection_reason=row.get("rejection_reason"),
-            content_url_hash=url_hash,
+            content_url_hmac=url_identifier,
+            content_url_hash=url_identifier,
         )
         return record, []

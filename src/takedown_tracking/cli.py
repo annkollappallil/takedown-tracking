@@ -6,14 +6,30 @@ import argparse
 import json
 from pathlib import Path
 import sys
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from takedown_tracking.generator.synthetic_generator import SyntheticDataGenerator
 from takedown_tracking.ingest.importer import RequestImporter
 from takedown_tracking.metrics.deadline import DeadlineConfig
 from takedown_tracking.metrics.engine import MetricsEngine
+from takedown_tracking.models.observation import ObservationRecord
+from takedown_tracking.models.request import parse_iso_datetime
 from takedown_tracking.privacy.filter import PrivacyFilter
 from takedown_tracking.web.app import run_server
+
+
+def load_observations_file(path: Optional[str]) -> Optional[Dict[str, ObservationRecord]]:
+    """Load observation records from a JSON file into a request_id map."""
+    if not path:
+        return None
+    p = Path(path)
+    if not p.exists():
+        raise FileNotFoundError(f"Observations file not found: {p}")
+    with open(p, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    if not isinstance(data, list):
+        raise ValueError("Observations JSON must be an array of observation records.")
+    return {item["request_id"]: ObservationRecord.from_dict(item) for item in data}
 
 
 def cmd_generate(args: argparse.Namespace) -> int:
@@ -28,6 +44,16 @@ def cmd_generate(args: argparse.Namespace) -> int:
         SyntheticDataGenerator.export_json(records, out_path)
 
     print(f"[OK] Generated {len(records)} synthetic records (seed={args.seed}) -> {out_path}")
+
+    # Generate companion observations if requested
+    if getattr(args, "observations_output", None):
+        obs_records = generator.generate_observations(records)
+        obs_path = Path(args.observations_output)
+        obs_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(obs_path, "w", encoding="utf-8") as f:
+            json.dump([o.to_dict() for o in obs_records], f, indent=2)
+        print(f"[OK] Generated {len(obs_records)} companion verification observations -> {obs_path}")
+
     return 0
 
 
@@ -71,9 +97,15 @@ def cmd_metrics(args: argparse.Namespace) -> int:
     deadline_cfg = (
         DeadlineConfig.load_from_file(args.deadlines) if args.deadlines else DeadlineConfig()
     )
+    as_of = parse_iso_datetime(args.as_of) if args.as_of else None
+    observations = load_observations_file(args.observations)
+
     engine = MetricsEngine(deadline_cfg)
     metrics = engine.compute_performance_metrics(
-        result.valid_records, invalid_records_count=result.invalid_count
+        result.valid_records,
+        invalid_records_count=result.invalid_count,
+        as_of=as_of,
+        observations=observations,
     )
 
     print(json.dumps(metrics.to_dict(), indent=2))
@@ -91,6 +123,9 @@ def cmd_export_scoreboard(args: argparse.Namespace) -> int:
     deadline_cfg = (
         DeadlineConfig.load_from_file(args.deadlines) if args.deadlines else DeadlineConfig()
     )
+    as_of = parse_iso_datetime(args.as_of) if args.as_of else None
+    observations = load_observations_file(args.observations)
+
     privacy_filter = PrivacyFilter(
         k_threshold=args.k_threshold,
         is_demonstration_mode=not args.production_mode,
@@ -98,7 +133,10 @@ def cmd_export_scoreboard(args: argparse.Namespace) -> int:
     )
 
     scoreboard = privacy_filter.filter_and_publish(
-        result.valid_records, invalid_records_count=result.invalid_count
+        result.valid_records,
+        invalid_records_count=result.invalid_count,
+        as_of=as_of,
+        observations=observations,
     )
 
     out_path = Path(args.output)
@@ -108,6 +146,8 @@ def cmd_export_scoreboard(args: argparse.Namespace) -> int:
 
     print(f"[OK] Exported privacy-filtered scoreboard to {out_path}")
     print(f"  Analyzed: {len(result.valid_records)} records, k-threshold: {args.k_threshold}")
+    if as_of:
+        print(f"  Cutoff (as_of): {as_of.isoformat()}")
     return 0
 
 
@@ -140,6 +180,12 @@ def build_parser() -> argparse.ArgumentParser:
         default="data/synthetic_requests.json",
         help="Target output file path (.json or .csv)",
     )
+    gen_parser.add_argument(
+        "--observations-output",
+        type=str,
+        default=None,
+        help="Optional companion observations output path (.json)",
+    )
     gen_parser.set_defaults(func=cmd_generate)
 
     # import
@@ -158,6 +204,18 @@ def build_parser() -> argparse.ArgumentParser:
     met_parser.add_argument("--input", type=str, required=True, help="Input CSV or JSON path")
     met_parser.add_argument(
         "--deadlines", type=str, default=None, help="Custom deadline config JSON"
+    )
+    met_parser.add_argument(
+        "--as-of",
+        type=str,
+        default=None,
+        help="ISO 8601 UTC timestamp measurement cutoff (e.g. '2026-10-01T00:00:00Z')",
+    )
+    met_parser.add_argument(
+        "--observations",
+        type=str,
+        default=None,
+        help="Optional path to verification observations JSON file",
     )
     met_parser.set_defaults(func=cmd_metrics)
 
@@ -180,6 +238,18 @@ def build_parser() -> argparse.ArgumentParser:
     )
     sb_parser.add_argument(
         "--deadlines", type=str, default=None, help="Custom deadline config JSON"
+    )
+    sb_parser.add_argument(
+        "--as-of",
+        type=str,
+        default=None,
+        help="ISO 8601 UTC timestamp measurement cutoff (e.g. '2026-10-01T00:00:00Z')",
+    )
+    sb_parser.add_argument(
+        "--observations",
+        type=str,
+        default=None,
+        help="Optional path to verification observations JSON file",
     )
     sb_parser.add_argument(
         "--production-mode",

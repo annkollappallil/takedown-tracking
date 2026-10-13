@@ -1,12 +1,14 @@
-"""Comprehensive metric calculation engine for takedown and data requests."""
+"""Comprehensive metric calculation engine with right-censoring, as_of cutoff, and observation verification."""
 
 from __future__ import annotations
 
+from datetime import datetime, timedelta, timezone
 import math
 from typing import Dict, List, Optional
 
 from takedown_tracking.metrics.deadline import DeadlineConfig
-from takedown_tracking.models.metrics import PerformanceMetrics
+from takedown_tracking.models.metrics import PerformanceMetrics, PercentileResult
+from takedown_tracking.models.observation import ObservationRecord, ObservationStatus
 from takedown_tracking.models.request import (
     Category,
     Platform,
@@ -17,11 +19,7 @@ from takedown_tracking.models.request import (
 
 
 def calculate_percentile(values: List[float], percentile: float) -> Optional[float]:
-    """Calculate percentile using linear interpolation between closest ranks.
-
-    Compatible with standard NIST / numpy percentile method.
-    Percentile must be between 0.0 and 100.0.
-    """
+    """Calculate percentile using linear interpolation between closest ranks (NIST/numpy method)."""
     if not values:
         return None
     if len(values) == 1:
@@ -45,6 +43,59 @@ def calculate_percentile(values: List[float], percentile: float) -> Optional[flo
     return round(interpolated, 2)
 
 
+def calculate_censored_percentile(
+    finite_durations: List[float],
+    total_cohort_size: int,
+    percentile: float,
+) -> PercentileResult:
+    """Calculate survival percentile accounting for right-censored unresolved outcomes.
+
+    Eliminates survivorship bias. In a mature cohort of size N:
+    - k requests have finite observed removal durations.
+    - N - k requests remain unresolved past deadline and are right-censored (+infinity).
+    If the percentile rank touches or exceeds k, the outcome is censored (> measurement window).
+    Never serializes Infinity or NaN into output.
+    """
+    if total_cohort_size <= 0:
+        return PercentileResult(numeric_hours=None, is_censored=False, display="N/A")
+
+    if percentile < 0.0 or percentile > 100.0:
+        raise ValueError("Percentile must be between 0.0 and 100.0")
+
+    sorted_vals = sorted(finite_durations)
+    k = len(sorted_vals)
+
+    if total_cohort_size == 1:
+        if k == 1:
+            val = round(sorted_vals[0], 2)
+            return PercentileResult(numeric_hours=val, is_censored=False, display=f"{val:.1f}h")
+        else:
+            return PercentileResult(
+                numeric_hours=None, is_censored=True, display="> measurement window"
+            )
+
+    rank = (percentile / 100.0) * (total_cohort_size - 1)
+    lower_idx = int(math.floor(rank))
+    upper_idx = int(math.ceil(rank))
+
+    # If the percentile rank touches or falls within the censored cohort
+    if upper_idx >= k:
+        return PercentileResult(
+            numeric_hours=None, is_censored=True, display="> measurement window"
+        )
+
+    fraction = rank - lower_idx
+    if lower_idx == upper_idx:
+        val = round(sorted_vals[lower_idx], 2)
+        return PercentileResult(numeric_hours=val, is_censored=False, display=f"{val:.1f}h")
+
+    interpolated = sorted_vals[lower_idx] + fraction * (
+        sorted_vals[upper_idx] - sorted_vals[lower_idx]
+    )
+    res_val = round(interpolated, 2)
+    return PercentileResult(numeric_hours=res_val, is_censored=False, display=f"{res_val:.1f}h")
+
+
 class MetricsEngine:
     """Calculates scientifically rigorous, reproducible platform performance metrics."""
 
@@ -55,69 +106,155 @@ class MetricsEngine:
         self,
         records: List[RequestRecord],
         invalid_records_count: int = 0,
+        as_of: Optional[datetime] = None,
+        observations: Optional[Dict[str, ObservationRecord]] = None,
     ) -> PerformanceMetrics:
-        """Compute performance metrics for a collection of records."""
+        """Compute performance metrics for a collection of records.
+
+        Parameters
+        ----------
+        records : List[RequestRecord]
+            Request log records to evaluate.
+        invalid_records_count : int
+            Count of malformed or quarantined records.
+        as_of : Optional[datetime]
+            Measurement cutoff. Immature requests whose deadline has not passed are excluded.
+        observations : Optional[Dict[str, ObservationRecord]]
+            External verification observations keyed by request_id (Half 2 shared contract).
+        """
+        now_utc = datetime.now(timezone.utc)
+        cutoff = as_of or now_utc
+        if cutoff.tzinfo is None:
+            cutoff = cutoff.replace(tzinfo=timezone.utc)
+
+        obs_map = observations or {}
+
         total_requests = len(records)
         takedowns = [r for r in records if r.request_type == RequestType.TAKEDOWN]
         data_requests = [r for r in records if r.request_type == RequestType.DATA_REQUEST]
 
-        # 1. Procedural Completeness & Exclusions
+        # 1. Procedural completeness
         incomplete_police_count = sum(1 for r in records if not r.is_complete_request)
 
-        # 2. Takedown Eligibility
-        # Eligible takedowns exclude procedurally deficient requests to avoid penalizing
-        # intermediaries for police documentation errors.
+        # 2. Takedown Eligibility and Cohort Maturity
         eligible_takedowns = [t for t in takedowns if t.is_complete_request]
         num_eligible_takedowns = len(eligible_takedowns)
+
+        # Apply measurement cutoff and maturity rule:
+        # A request enters the mature cohort if:
+        # - It was completed before cutoff, OR
+        # - It was rejected before cutoff, OR
+        # - Its applicable deadline has elapsed by cutoff.
+        mature_takedowns: List[RequestRecord] = []
+        for r in eligible_takedowns:
+            deadline_h = self.deadline_config.get_deadline_hours(r)
+            deadline_dt = r.sent_at + timedelta(hours=deadline_h)
+
+            is_early_completed = (
+                r.status == RequestStatus.CLAIMED_REMOVED
+                and r.claimed_removal_at is not None
+                and r.claimed_removal_at <= cutoff
+            )
+            is_rejected = r.status == RequestStatus.REJECTED and r.sent_at <= cutoff
+            is_deadline_passed = deadline_dt <= cutoff
+
+            if is_early_completed or is_rejected or is_deadline_passed:
+                mature_takedowns.append(r)
+
+        num_mature_takedowns = len(mature_takedowns)
 
         completed_takedowns: List[RequestRecord] = []
         removal_durations_hours: List[float] = []
         on_time_takedowns_count = 0
         still_available_takedowns_count = 0
+        rejections_count = 0
 
-        for r in eligible_takedowns:
+        # Integrity tracking
+        false_removal_claims_count = 0
+        observed_reuploads_count = 0
+        verified_takedowns_count = 0
+
+        for r in mature_takedowns:
+            obs = obs_map.get(r.request_id)
+            if obs and obs.reupload_detected_at is not None:
+                observed_reuploads_count += 1
+
+            if r.status == RequestStatus.REJECTED:
+                # Platform rejections reported separately; not equated with removal or availability
+                rejections_count += 1
+                continue
+
             is_claimed_removed = (
                 r.status == RequestStatus.CLAIMED_REMOVED and r.claimed_removal_at is not None
             )
 
+            # Check for false removal claim via external observation
+            if is_claimed_removed and obs and obs.observation_status == ObservationStatus.CONFIRMED_AVAILABLE:
+                # Platform claimed removed, but independent verification proved content remained available
+                false_removal_claims_count += 1
+                still_available_takedowns_count += 1
+                continue
+
             if is_claimed_removed:
+                # Use verified removal timestamp if available, else platform claim
+                if obs and obs.observation_status == ObservationStatus.CONFIRMED_REMOVED and obs.verified_removed_at:
+                    verified_takedowns_count += 1
+                    dur_dt = obs.verified_removed_at
+                else:
+                    dur_dt = r.claimed_removal_at
+
                 completed_takedowns.append(r)
-                assert r.claimed_removal_at is not None
-                dur_hours = (r.claimed_removal_at - r.sent_at).total_seconds() / 3600.0
-                dur_hours = max(0.0, dur_hours)
+                assert dur_dt is not None
+                dur_hours = max(0.0, (dur_dt - r.sent_at).total_seconds() / 3600.0)
                 removal_durations_hours.append(dur_hours)
 
-                # Check deadline compliance
                 deadline = self.deadline_config.get_deadline_hours(r)
                 if dur_hours <= deadline:
                     on_time_takedowns_count += 1
             else:
-                # Content not removed: PENDING, ACKNOWLEDGED, REJECTED, EXPIRED
+                # Unresolved content: PENDING, ACKNOWLEDGED, EXPIRED
                 # Platform acknowledgement is explicitly NOT considered removal.
                 still_available_takedowns_count += 1
 
-        median_removal = (
-            calculate_percentile(removal_durations_hours, 50.0)
-            if removal_durations_hours
-            else None
-        )
-        p90_removal = (
-            calculate_percentile(removal_durations_hours, 90.0)
-            if removal_durations_hours
-            else None
-        )
+        # Censored percentiles over the mature removal cohort (completed removals + still available unremoved)
+        speed_cohort_size = len(removal_durations_hours) + still_available_takedowns_count
+        median_res = calculate_censored_percentile(removal_durations_hours, speed_cohort_size, 50.0)
+        p90_res = calculate_censored_percentile(removal_durations_hours, speed_cohort_size, 90.0)
 
+        # Deadline compliance rate: evaluated over mature actionable takedowns (excluding rejections)
+        actionable_mature = num_mature_takedowns - rejections_count
         deadline_compliance_pct: Optional[float] = None
-        if num_eligible_takedowns > 0:
+        if actionable_mature > 0:
             deadline_compliance_pct = round(
-                (on_time_takedowns_count / num_eligible_takedowns) * 100.0, 2
+                (on_time_takedowns_count / actionable_mature) * 100.0, 2
             )
 
         still_available_pct = (
-            round((still_available_takedowns_count / num_eligible_takedowns) * 100.0, 2)
-            if num_eligible_takedowns > 0
+            round((still_available_takedowns_count / actionable_mature) * 100.0, 2)
+            if actionable_mature > 0
             else 0.0
         )
+
+        rejection_rate_pct = (
+            round((rejections_count / num_mature_takedowns) * 100.0, 2)
+            if num_mature_takedowns > 0
+            else 0.0
+        )
+
+        # Integrity rates
+        claimed_count = len(completed_takedowns) + false_removal_claims_count
+        false_claim_rate_pct: Optional[float] = None
+        if claimed_count > 0:
+            false_claim_rate_pct = round(
+                (false_removal_claims_count / claimed_count) * 100.0, 2
+            )
+
+        verification_coverage_pct: Optional[float] = None
+        if len(mature_takedowns) > 0:
+            verified_checks = sum(1 for r in mature_takedowns if r.request_id in obs_map)
+            verification_coverage_pct = round(
+                (verified_checks / len(mature_takedowns)) * 100.0, 2
+            )
 
         # 3. Data Requests Performance
         eligible_data_requests = [d for d in data_requests if d.is_complete_request]
@@ -126,8 +263,7 @@ class MetricsEngine:
 
         for d in eligible_data_requests:
             if d.status == RequestStatus.DATA_PROVIDED and d.data_provided_at is not None:
-                dur_hours = (d.data_provided_at - d.sent_at).total_seconds() / 3600.0
-                dur_hours = max(0.0, dur_hours)
+                dur_hours = max(0.0, (d.data_provided_at - d.sent_at).total_seconds() / 3600.0)
                 data_response_durations_hours.append(dur_hours)
                 deadline = self.deadline_config.get_deadline_hours(d)
                 if dur_hours <= deadline:
@@ -153,10 +289,17 @@ class MetricsEngine:
         return PerformanceMetrics(
             total_requests=total_requests,
             eligible_takedowns=num_eligible_takedowns,
+            mature_takedowns=num_mature_takedowns,
             completed_takedowns=len(completed_takedowns),
             still_available_takedowns=still_available_takedowns_count,
-            median_removal_hours=median_removal,
-            p90_removal_hours=p90_removal,
+            rejections_count=rejections_count,
+            rejection_rate_pct=rejection_rate_pct,
+            median_removal_hours=median_res.numeric_hours,
+            median_removal_censored=median_res.is_censored,
+            median_removal_display=median_res.display,
+            p90_removal_hours=p90_res.numeric_hours,
+            p90_removal_censored=p90_res.is_censored,
+            p90_removal_display=p90_res.display,
             deadline_compliance_rate_pct=deadline_compliance_pct,
             still_available_rate_pct=still_available_pct,
             total_data_requests=len(data_requests),
@@ -166,10 +309,18 @@ class MetricsEngine:
             data_deadline_compliance_rate_pct=data_deadline_compliance_pct,
             incomplete_police_requests_count=incomplete_police_count,
             invalid_records_count=invalid_records_count,
+            false_removal_claims_count=false_removal_claims_count,
+            false_removal_claim_rate_pct=false_claim_rate_pct,
+            observed_reuploads_count=observed_reuploads_count,
+            verified_takedowns_count=verified_takedowns_count,
+            verification_coverage_pct=verification_coverage_pct,
         )
 
     def compute_by_platform(
-        self, records: List[RequestRecord]
+        self,
+        records: List[RequestRecord],
+        as_of: Optional[datetime] = None,
+        observations: Optional[Dict[str, ObservationRecord]] = None,
     ) -> Dict[Platform, PerformanceMetrics]:
         """Compute metrics disaggregated by social media platform."""
         groups: Dict[Platform, List[RequestRecord]] = {p: [] for p in Platform}
@@ -177,12 +328,17 @@ class MetricsEngine:
             groups[r.platform].append(r)
 
         return {
-            platform: self.compute_performance_metrics(group_records)
+            platform: self.compute_performance_metrics(
+                group_records, as_of=as_of, observations=observations
+            )
             for platform, group_records in groups.items()
         }
 
     def compute_by_category(
-        self, records: List[RequestRecord]
+        self,
+        records: List[RequestRecord],
+        as_of: Optional[datetime] = None,
+        observations: Optional[Dict[str, ObservationRecord]] = None,
     ) -> Dict[Category, PerformanceMetrics]:
         """Compute metrics disaggregated by incident category."""
         groups: Dict[Category, List[RequestRecord]] = {c: [] for c in Category}
@@ -190,6 +346,8 @@ class MetricsEngine:
             groups[r.category].append(r)
 
         return {
-            category: self.compute_performance_metrics(group_records)
+            category: self.compute_performance_metrics(
+                group_records, as_of=as_of, observations=observations
+            )
             for category, group_records in groups.items()
         }
