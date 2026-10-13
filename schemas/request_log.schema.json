@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/iamnih4l/takedown-tracking/schemas/request_log.schema.json",
+  "title": "PoliceTakedownRequestLogRecord",
+  "description": "Standard schema for individual police content takedown and data requests dispatched to social media platforms.",
+  "type": "object",
+  "required": [
+    "request_id",
+    "is_synthetic",
+    "request_type",
+    "platform",
+    "category",
+    "priority",
+    "sent_at",
+    "police_unit_id",
+    "is_complete_request",
+    "status"
+  ],
+  "properties": {
+    "request_id": {
+      "type": "string",
+      "description": "Unique identifier for the request (e.g. SYN-REQ-2026-0001 or police ref).",
+      "pattern": "^[A-Za-z0-9_-]{4,64}$"
+    },
+    "is_synthetic": {
+      "type": "boolean",
+      "description": "Indicates whether this record is synthetic demonstration data. MUST be true for public demos and tests."
+    },
+    "request_type": {
+      "type": "string",
+      "enum": ["takedown", "data_request"],
+      "description": "Type of request dispatched: content removal vs user/IP data request."
+    },
+    "platform": {
+      "type": "string",
+      "description": "Name of the target intermediary/platform.",
+      "enum": [
+        "Meta",
+        "Instagram",
+        "X_Twitter",
+        "YouTube",
+        "Telegram",
+        "WhatsApp",
+        "Snapchat",
+        "Reddit",
+        "TikTok",
+        "Other"
+      ]
+    },
+    "category": {
+      "type": "string",
+      "description": "Legal or harm classification of the incident.",
+      "enum": [
+        "CSAM",
+        "NonConsensualImagery",
+        "HateSpeech",
+        "Terrorism",
+        "FinancialFraud",
+        "Defamation",
+        "Impersonation",
+        "ViolenceIncitement",
+        "Other"
+      ]
+    },
+    "priority": {
+      "type": "string",
+      "enum": ["routine", "urgent", "emergency_life_threat"],
+      "description": "Request urgency level dictating expected response SLA."
+    },
+    "sent_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 UTC timestamp when request was formally transmitted to the platform."
+    },
+    "acknowledged_at": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "ISO 8601 UTC timestamp when platform confirmed receipt of the request."
+    },
+    "claimed_removal_at": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "ISO 8601 UTC timestamp when platform claimed the content was removed or access disabled."
+    },
+    "data_provided_at": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "ISO 8601 UTC timestamp when platform fulfilled user/metadata data request."
+    },
+    "police_unit_id": {
+      "type": "string",
+      "description": "Anonymized or official police division/station code (e.g., UNIT-KL-CYBER-01).",
+      "pattern": "^[A-Za-z0-9_-]{3,32}$"
+    },
+    "is_complete_request": {
+      "type": "boolean",
+      "description": "True if request satisfied all formal legal/procedural prerequisites (e.g. valid order, explicit URL, jurisdiction)."
+    },
+    "incompletion_reason": {
+      "type": ["string", "null"],
+      "description": "Reason documented if the request was incomplete or procedurally deficient.",
+      "enum": [
+        null,
+        "MissingCourtOrder",
+        "InvalidURLFormat",
+        "UnspecifiedJurisdiction",
+        "MissingSignatureOrSeal",
+        "InsufficientTargetIdentification",
+        "OtherDeficiency"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "acknowledged",
+        "claimed_removed",
+        "data_provided",
+        "rejected",
+        "expired"
+      ],
+      "description": "Current lifecycle status of the request."
+    },
+    "rejection_reason": {
+      "type": ["string", "null"],
+      "description": "Platform-provided justification if the request was rejected (e.g. Overbroad, OutsideJurisdiction)."
+    },
+    "content_url_hash": {
+      "type": ["string", "null"],
+      "description": "SHA-256 hash of the content URL. REAL URLS MUST NEVER BE STORED OR COMMITTED.",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  },
+  "additionalProperties": false
+}

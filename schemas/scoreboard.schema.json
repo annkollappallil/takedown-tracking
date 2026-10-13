@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/iamnih4l/takedown-tracking/schemas/scoreboard.schema.json",
+  "title": "PublicTakedownScoreboard",
+  "description": "Public privacy-preserving aggregate scoreboard reporting social media platform response metrics.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "metadata",
+    "overall_performance",
+    "platform_breakdown",
+    "category_breakdown",
+    "configured_deadlines"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "enum": ["1.0.0"]
+    },
+    "metadata": {
+      "type": "object",
+      "required": [
+        "generated_at",
+        "measurement_period_start",
+        "measurement_period_end",
+        "is_demonstration_mode",
+        "disclaimer",
+        "k_anonymity_threshold",
+        "total_requests_analyzed"
+      ],
+      "properties": {
+        "generated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "measurement_period_start": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "measurement_period_end": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "is_demonstration_mode": {
+          "type": "boolean"
+        },
+        "disclaimer": {
+          "type": "string"
+        },
+        "k_anonymity_threshold": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "total_requests_analyzed": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "overall_performance": {
+      "type": "object",
+      "required": [
+        "total_takedown_requests",
+        "eligible_takedown_requests",
+        "median_removal_hours",
+        "p90_removal_hours",
+        "deadline_compliance_rate_pct",
+        "still_available_rate_pct",
+        "total_data_requests",
+        "median_data_response_hours",
+        "incomplete_police_requests_count",
+        "invalid_records_count"
+      ],
+      "properties": {
+        "total_takedown_requests": { "type": "integer", "minimum": 0 },
+        "eligible_takedown_requests": { "type": "integer", "minimum": 0 },
+        "median_removal_hours": { "type": ["number", "null"] },
+        "p90_removal_hours": { "type": ["number", "null"] },
+        "deadline_compliance_rate_pct": { "type": ["number", "null"] },
+        "still_available_rate_pct": { "type": "number", "minimum": 0, "maximum": 100 },
+        "total_data_requests": { "type": "integer", "minimum": 0 },
+        "median_data_response_hours": { "type": ["number", "null"] },
+        "p90_data_response_hours": { "type": ["number", "null"] },
+        "incomplete_police_requests_count": { "type": "integer", "minimum": 0 },
+        "invalid_records_count": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "platform_breakdown": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["platform", "is_suppressed"],
+        "properties": {
+          "platform": { "type": "string" },
+          "is_suppressed": { "type": "boolean" },
+          "sample_size": { "type": ["integer", "null"] },
+          "median_removal_hours": { "type": ["number", "null"] },
+          "p90_removal_hours": { "type": ["number", "null"] },
+          "deadline_compliance_rate_pct": { "type": ["number", "null"] },
+          "still_available_rate_pct": { "type": ["number", "null"] },
+          "median_data_response_hours": { "type": ["number", "null"] },
+          "incomplete_requests_count": { "type": ["integer", "null"] },
+          "suppression_reason": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "category_breakdown": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["category", "is_suppressed"],
+        "properties": {
+          "category": { "type": "string" },
+          "is_suppressed": { "type": "boolean" },
+          "sample_size": { "type": ["integer", "null"] },
+          "median_removal_hours": { "type": ["number", "null"] },
+          "p90_removal_hours": { "type": ["number", "null"] },
+          "deadline_compliance_rate_pct": { "type": ["number", "null"] },
+          "suppression_reason": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "configured_deadlines": {
+      "type": "object",
+      "description": "Configured hours for statutory and priority SLA deadlines.",
+      "additionalProperties": { "type": "number" }
+    },
+    "integrity_summary": {
+      "type": "object",
+      "description": "Integration slot for Half 2 (Verification and Integrity).",
+      "properties": {
+        "false_removal_claim_rate_pct": { "type": ["number", "null"] },
+        "observed_reupload_rate_pct": { "type": ["number", "null"] },
+        "disputes_active": { "type": "integer" },
+        "disputes_resolved": { "type": "integer" },
+        "verification_coverage_pct": { "type": ["number", "null"] }
+      }
+    }
+  },
+  "additionalProperties": false
+}

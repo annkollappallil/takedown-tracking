@@ -1,0 +1,22 @@
+{
+  "version": "1.0.0",
+  "description": "Configurable SLA deadlines (in hours) for evaluating intermediary compliance.",
+  "deadlines_by_priority_hours": {
+    "emergency_life_threat": 2.0,
+    "urgent": 24.0,
+    "routine": 36.0
+  },
+  "deadlines_by_category_hours": {
+    "CSAM": 24.0,
+    "NonConsensualImagery": 24.0,
+    "Terrorism": 24.0,
+    "ViolenceIncitement": 24.0,
+    "HateSpeech": 36.0,
+    "FinancialFraud": 36.0,
+    "Defamation": 36.0,
+    "Impersonation": 36.0,
+    "Other": 36.0
+  },
+  "data_request_deadline_hours": 72.0,
+  "default_takedown_deadline_hours": 36.0
+}
