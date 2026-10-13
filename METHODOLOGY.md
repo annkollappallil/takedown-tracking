@@ -102,7 +102,7 @@ To prevent temporal bias where pending requests submitted shortly before report 
 2. **Takedown Cohort Maturity Rule**:
    A takedown enters the mature analysis cohort if and only if:
    - It was verified removed before `as_of` ($\text{verified\_removed\_at} \le \text{as\_of}$); OR
-   - It was claimed removed before `as_of` ($\text{claimed\_removal\_at} \le \text{as\_of}$); OR
+   - It was claimed removed before `as_of` ($\text{claimed\_removal\_at} \le \text{as\_of}$) and the verifier has not contradicted the claim (section 6.3); OR
    - It was rejected before `as_of` ($\text{sent\_at} \le \text{as\_of}$); OR
    - Its applicable deadline has elapsed by `as_of` ($\text{sent\_at} + \text{deadline\_hours} \le \text{as\_of}$).
 3. **Data Request Cohort Maturity Rule**:
@@ -162,21 +162,64 @@ In the Platform A vs Platform B example:
 
 ---
 
-## 6. Shared Verification Observation Contract (Half 1 / Half 2)
+## 6. Independent Verification & Integrity Metrics (Half 2)
 
-Independent external checks performed by Half 2 (Verifier Simulator) interface through `schemas/observation.schema.json` and `ObservationRecord`:
+Platforms report their own removal times. The verifier checks independently whether reported content is actually gone, and the integrity metrics measure how far platform claims can be trusted.
 
-1. **Verifier Priority Over Platform Status**:
-   If `observation_status == 'confirmed_removed'` and `verified_removed_at` is present, the verifier observation strictly overrides platform status. Even if the platform status is still `pending` or `acknowledged`, the content is marked as verified removed with duration calculated from `verified_removed_at`.
-2. **False Removal Claims**:
-   If a platform claims `claimed_removed`, but an independent observation confirms `confirmed_available`:
-   - Flagged as a **False Removal Claim**;
-   - Increments `false_removal_claims_count`;
-   - Treated as non-compliant still-available content.
-3. **Uncertain and Failed Checks**:
-   Checks with status `uncertain` or `failed_check` are never equated with successful removal.
-4. **Per-Platform Integrity Breakdown**:
-   Public scoreboards report per-platform false removal claims, observed re-uploads, and verified takedowns, subject to $k$-anonymity suppression.
+### 6.1. How the verifier checks
+
+* **Schedule**: each complete takedown request is checked every 15 minutes, starting 15 minutes after it is sent, until removal is confirmed, monitoring ends (30 days) or the `as_of` cutoff. No check happens after `as_of`.
+* **Confirmation**: removal needs two DOWN results in a row (inconclusive checks in between are ignored), so one glitchy 404 is not a removal. `verified_removed_at` is the first DOWN of that run. Removal times therefore have 15-minute resolution.
+* **Re-upload scan**: after verified removal, the re-upload detector scans every 6 hours for 7 days.
+* **Pluggable**: checks go through the `AvailabilityChecker` and `ReuploadDetector` interfaces (`src/takedown_tracking/verifier/checker.py`). This repository ships only a simulator. A real deployment implements the interfaces inside the police network, where request IDs are resolved to URLs; URLs, content and hashes never leave the checker.
+* **No downloading**: checkers report only up / down / unknown. They never download or store content.
+
+### 6.2. Observation contract
+
+The verifier hands over one record per monitored request (`schemas/observation.schema.json`):
+
+| Field | Meaning |
+| :--- | :--- |
+| `observation_status` | `confirmed_removed`, `confirmed_available` (up at the last conclusive check), `uncertain` (platform reached but content not visible: login wall, private, geo-blocked) or `failed_check` (timeouts, errors) |
+| `first_checked_at` | First check |
+| `last_seen_up_at` | Last check that found the content up |
+| `verified_removed_at` | First check that found it gone (confirmed) |
+| `reupload_detected_at` | First matching copy found after removal |
+| `last_checked_at` | Most recent check |
+| `check_error` | Why checks were inconclusive (fixed codes, no free text) |
+
+Records are validated on load: status and timestamps must be consistent (`first_checked_at <= last_seen_up_at < verified_removed_at <= last_checked_at`), and free-text fields are rejected so URLs cannot leak in.
+
+### 6.3. How verification changes the speed metrics
+
+Rules in `src/takedown_tracking/integrity/rules.py` are shared by the speed metrics and the integrity metrics:
+
+1. **Verified removal wins.** If the verifier confirmed removal, `verified_removed_at` is the removal time, even if the platform claimed an earlier time or never reported the removal.
+2. **Contradicted claims don't count.** If the verifier saw the content up after the platform's claim, the content counts as not removed until the verifier confirms removal.
+3. **Fallback.** With no conclusive observation (none, `uncertain`, `failed_check`), the platform's claim is used. Inconclusive checks are never treated as removal.
+
+### 6.4. Integrity metrics
+
+All cover complete takedown requests in the published categories (section 8) sent before `as_of`, overall and per platform.
+
+* **Verification coverage (%)** = requests with an observation ÷ eligible requests.
+* **Unverifiable (%)** = observations that are `uncertain` or `failed_check` ÷ observations. High values mean the other integrity figures cover less of the platform's activity.
+* **False removal claim rate (%)** = false claims ÷ claims checked.
+  * *Claims checked*: removal claims made before `as_of`, with a conclusive observation whose last check is at or after the claim.
+  * *False claim*: `last_seen_up_at` is more than **15 minutes** (cache and clock allowance) after `claimed_removal_at`. This catches both content that stayed up for hours before being removed and content never removed. Only evidence known by `as_of` is used.
+* **Silent removals** = verified removals of requests the platform never reported as removed (`pending`, `acknowledged`, `expired`).
+* **Re-upload rate (%)** = removals with a matching copy found within **7 days** ÷ verified removals whose 7-day window has fully passed by `as_of`. Removals with an open window are left out, so recent removals don't make the rate look better than it is.
+
+### 6.5. Publication rule
+
+Each integrity figure is published only when the group it describes has at least $k$ requests (default 10): coverage and claims checked use eligible requests, the false claim count and rate use claims checked, the re-upload count and rate use the re-upload cohort, and so on. A count and its rate are always shown or hidden together, so a hidden count can never be recovered from a published rate.
+
+### 6.6. Limitations
+
+* The simulator's behaviour profiles are invented for fictional platforms. Demo figures say nothing about real platforms.
+* Removal times have the resolution of the check interval (15 minutes).
+* Content that is removed and later restored at the same address is not modelled; the verifier stops checking after confirmed removal.
+* A re-upload is only found if the detector can see it. The re-upload rate is a lower bound.
 
 ---
 

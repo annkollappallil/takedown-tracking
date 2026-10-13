@@ -201,8 +201,10 @@ def cmd_export_scoreboard(args: argparse.Namespace) -> int:
         observations=observations,
     )
     if observations is not None:
+        # Same category scope as the rest of the scoreboard
+        scoped = [r for r in result.valid_records if r.category in privacy_filter.published_categories]
         scoreboard.integrity_summary = build_integrity_summary(
-            result.valid_records,
+            scoped,
             observations,
             as_of or scoreboard.metadata.as_of,
             k=args.k_threshold,

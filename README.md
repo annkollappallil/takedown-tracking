@@ -75,19 +75,22 @@ $env:PYTHONPATH="src"
 ### 4.3. Command-Line Interface (CLI)
 
 ```bash
-# 1. Generate 300 reproducible synthetic records with fictional platforms and companion observations
-python -m takedown_tracking.cli generate --count 300 --seed 42 --output data/demo_synthetic_requests.json --observations-output data/demo_observations.json
+# 1. Generate 300 reproducible synthetic records with fictional platforms
+python -m takedown_tracking.cli generate --count 300 --seed 42 --output data/demo_synthetic_requests.json
 
 # 2. Validate and import request records
 python -m takedown_tracking.cli import --input data/demo_synthetic_requests.json --quarantine data/quarantined_errors.json
 
-# 3. Calculate raw performance metrics with measurement cutoff (as_of) and observations
+# 3. Run the simulated verifier (synthetic data only). Use the same --as-of in every later step.
+python -m takedown_tracking.cli verify --input data/demo_synthetic_requests.json --output data/demo_observations.json --as-of "2026-10-01T00:00:00Z"
+
+# 4. Calculate raw performance metrics with measurement cutoff (as_of) and observations
 python -m takedown_tracking.cli metrics --input data/demo_synthetic_requests.json --as-of "2026-10-01T00:00:00Z" --observations data/demo_observations.json
 
-# 4. Export privacy-filtered public scoreboard (k=10 suppression)
+# 5. Export privacy-filtered public scoreboard (k=10 suppression), including the integrity summary
 python -m takedown_tracking.cli export-scoreboard --input data/demo_synthetic_requests.json --output data/demo_public_scoreboard.json --k-threshold 10 --as-of "2026-10-01T00:00:00Z" --observations data/demo_observations.json
 
-# 5. Launch public dashboard and local API server
+# 6. Launch public dashboard and local API server
 python -m takedown_tracking.cli serve --host 127.0.0.1 --port 8000 --data data/demo_synthetic_requests.json
 ```
 
@@ -95,15 +98,16 @@ Navigate to `http://127.0.0.1:8000/` in your browser to view the interactive das
 
 ---
 
-## 5. Teammate Integration Checklist (Half 2)
+## 5. Verification & Integrity (Half 2)
 
-This implementation provides shared hooks and models ready for **Half 2: Verification and Integrity**:
+Platforms report their own removal times. The verifier checks independently whether reported content is really gone, and the integrity metrics measure how far those claims can be trusted. Full definitions: [METHODOLOGY.md section 6](METHODOLOGY.md#6-independent-verification--integrity-metrics-half-2).
 
-* [x] **Shared Request Model**: [`RequestRecord`](src/takedown_tracking/models/request.py) includes `content_url_hmac` for privacy-preserving record correlation (while PDQ perceptual image matching remains inside the verifier's isolated environment).
-* [x] **Shared Observation Contract**: [`ObservationRecord`](src/takedown_tracking/models/observation.py) and [`observation.schema.json`](schemas/observation.schema.json) define the standard contract for independent checks.
-* [x] **Verified Outcome Integration**: Metrics engine incorporates `verified_removed_at` when available, detects false removal claims when content remains available, and calculates per-platform integrity breakdowns.
-* [x] **Right-Censored Survival Metrics**: Unresolved requests past deadline are right-censored, preventing survivorship bias without serializing non-standard `Infinity` or `NaN` values.
-* [x] **Victim Privacy Guardrails**: Privacy filter applies $k$-anonymity independently per metric denominator, ensuring internal identifiers, exact hidden counts, and sensitive URLs are never exposed.
+* **Verifier** ([`src/takedown_tracking/verifier/`](src/takedown_tracking/verifier/)): checks each takedown every 15 minutes, confirms removal with two DOWN results in a row, and scans for re-uploads for 7 days after removal. Checks go through pluggable `AvailabilityChecker` / `ReuploadDetector` interfaces. Only a simulator ships here; a real deployment implements the interfaces inside the police network. Checkers never download content, and URLs and hashes never leave them.
+* **Observation contract** ([`observation.schema.json`](schemas/observation.schema.json)): one record per monitored request with `first_checked_at`, `last_seen_up_at`, `verified_removed_at`, `reupload_detected_at`, `last_checked_at` and a fixed `check_error` code. No URLs, hashes or free text.
+* **Integrity metrics** ([`src/takedown_tracking/integrity/`](src/takedown_tracking/integrity/)): verification coverage, unverifiable share, false removal claim rate, silent removals and re-upload rate, overall and per platform, published in the scoreboard's `integrity_summary`.
+* **Effect on speed metrics**: verified removal times replace platform claims; claims contradicted by the verifier count as not removed.
+
+Planned next: PDQ-based re-upload detection on harmless test images, the platform dispute flow, and the victim status page.
 
 ---
 
@@ -122,7 +126,8 @@ Tests validate:
 * Measurement cutoff (`as_of`) maturity rules and determinism.
 * Independent per-metric $k$-anonymity threshold suppression and zero-PII leak guarantees.
 * HMAC-SHA-256 URL hashing with fail-closed production safety.
-* Shared verification observation integration and false removal claim detection.
+* Verifier scheduling, removal confirmation and simulator accuracy against hidden ground truth.
+* Integrity metrics (false claims, silent removals, re-upload window) and their publication rule.
 * Web server static delivery and API endpoints.
 
 ---
