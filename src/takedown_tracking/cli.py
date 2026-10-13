@@ -7,9 +7,21 @@ import json
 from pathlib import Path
 import sys
 from collections import Counter
-from datetime import timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict, List, Optional
 
+from takedown_tracking.disputes import (
+    DisputableMetric,
+    DisputeError,
+    DisputeReason,
+    ReportCycle,
+    apply_resolutions,
+    check_request_ids,
+    load_cycle,
+    platform_statement,
+    public_dispute_summary,
+    save_cycle,
+)
 from takedown_tracking.generator.synthetic_generator import SyntheticDataGenerator
 from takedown_tracking.ingest.importer import RequestImporter
 from takedown_tracking.metrics.deadline import DeadlineConfig
@@ -219,31 +231,170 @@ def cmd_export_scoreboard(args: argparse.Namespace) -> int:
         deadline_config=deadline_cfg,
     )
 
+    records = result.valid_records
+    period_start = period_end = None
+    cycle = adjustments = None
+    now = _now(args)
+    if args.cycle:
+        cycle = load_cycle(args.cycle)
+        if as_of is not None and as_of != cycle.as_of:
+            print("[!] --as-of differs from the report cycle's as_of; leave it out when using --cycle.")
+            return 2
+        if not args.draft:
+            blockers = cycle.publish_blockers(now)
+            if blockers:
+                print("[!] Cannot publish yet: " + "; ".join(blockers))
+                print("    Use --draft to produce the draft for platforms instead.")
+                return 3
+        records, observations, adjustments = apply_resolutions(cycle, records, observations)
+        as_of, period_start, period_end = cycle.as_of, cycle.period_start, cycle.period_end
+    elif args.draft:
+        print("[!] --draft needs --cycle.")
+        return 2
+
     scoreboard = privacy_filter.filter_and_publish(
-        result.valid_records,
+        records,
         invalid_records_count=result.invalid_count,
+        period_start=period_start,
+        period_end=period_end,
         as_of=as_of,
         observations=observations,
     )
     if observations is not None:
         # Same category scope as the rest of the scoreboard
-        scoped = [r for r in result.valid_records if r.category in privacy_filter.published_categories]
+        scoped = [r for r in records if r.category in privacy_filter.published_categories]
         scoreboard.integrity_summary = build_integrity_summary(
             scoped,
             observations,
             as_of or scoreboard.metadata.as_of,
             k=args.k_threshold,
         )
+    if cycle is not None:
+        summary = scoreboard.integrity_summary or {}
+        disputes = public_dispute_summary(cycle, adjustments, draft=args.draft)
+        summary["disputes"] = disputes
+        summary["disputes_active"] = sum(p["open"] for p in disputes["by_platform"])
+        summary["disputes_resolved"] = sum(p["accepted"] + p["rejected"] for p in disputes["by_platform"])
+        scoreboard.integrity_summary = summary
+        if not args.draft:
+            cycle.mark_published(now)
+            save_cycle(cycle, args.cycle)
 
     out_path = Path(args.output)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(scoreboard.to_dict(), f, indent=2)
 
-    print(f"[OK] Exported privacy-filtered scoreboard to {out_path}")
-    print(f"  Analyzed: {len(result.valid_records)} records, k-threshold: {args.k_threshold}")
+    label = "DRAFT scoreboard (for platform review)" if args.draft else "privacy-filtered scoreboard"
+    print(f"[OK] Exported {label} to {out_path}")
+    print(f"  Analyzed: {len(records)} records, k-threshold: {args.k_threshold}")
+    if cycle is not None and not args.draft:
+        print(f"  Report cycle {cycle.cycle_id} marked published.")
     if as_of:
         print(f"  Cutoff (as_of): {as_of.isoformat()}")
+    return 0
+
+
+def _now(args: argparse.Namespace) -> datetime:
+    at = getattr(args, "at", None)
+    return parse_iso_datetime(at) if at else datetime.now(timezone.utc)
+
+
+def _dispute_errors(func):
+    def wrapper(args: argparse.Namespace) -> int:
+        try:
+            return func(args)
+        except DisputeError as exc:
+            print(f"[!] {exc}")
+            return 2
+    return wrapper
+
+
+@_dispute_errors
+def cmd_dispute_open(args: argparse.Namespace) -> int:
+    cycle = ReportCycle(
+        cycle_id=args.id,
+        period_start=parse_iso_datetime(args.period_start),
+        period_end=parse_iso_datetime(args.period_end),
+        as_of=parse_iso_datetime(args.as_of),
+        draft_shared_at=_now(args),
+        dispute_window_days=args.window_days,
+    )
+    if Path(args.cycle).exists():
+        print(f"[!] {args.cycle} already exists; refusing to overwrite a report cycle.")
+        return 2
+    save_cycle(cycle, args.cycle)
+    print(f"[OK] Opened report cycle {cycle.cycle_id}; disputes accepted until {cycle.window_closes_at.isoformat()}")
+    return 0
+
+
+@_dispute_errors
+def cmd_dispute_statement(args: argparse.Namespace) -> int:
+    cycle = load_cycle(args.cycle)
+    records = load_requests(args.input).valid_records
+    statement = platform_statement(cycle, records, load_observations_file(args.observations), args.platform)
+    out = Path(args.output)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(statement, indent=2), encoding="utf-8")
+    print(f"[OK] Statement for {args.platform}: {len(statement['requests'])} takedown requests -> {out}")
+    return 0
+
+
+@_dispute_errors
+def cmd_dispute_raise(args: argparse.Namespace) -> int:
+    cycle = load_cycle(args.cycle)
+    request_ids = tuple(x.strip() for x in (args.request_ids or "").split(",") if x.strip())
+    if request_ids:
+        check_request_ids(cycle, load_requests(args.input).valid_records, args.platform, request_ids)
+    dispute = cycle.raise_dispute(
+        platform=args.platform,
+        metric=DisputableMetric(args.metric),
+        reason=DisputeReason(args.reason),
+        statement=args.statement,
+        now=_now(args),
+        request_ids=request_ids,
+    )
+    save_cycle(cycle, args.cycle)
+    print(f"[OK] Raised {dispute.dispute_id} ({dispute.reason.value}, {len(dispute.request_ids)} request(s))")
+    return 0
+
+
+@_dispute_errors
+def cmd_dispute_resolve(args: argparse.Namespace) -> int:
+    cycle = load_cycle(args.cycle)
+    corrections = {}
+    for item in args.correct or []:
+        rid, _, ts = item.partition("=")
+        parsed = parse_iso_datetime(ts) if ts else None
+        if not rid or parsed is None:
+            print("[!] --correct takes REQUEST_ID=ISO_TIMESTAMP")
+            return 2
+        corrections[rid.strip()] = parsed
+    dispute = cycle.resolve(args.id, accept=args.decision == "accept", note=args.note, now=_now(args),
+                            corrections=corrections or None)
+    save_cycle(cycle, args.cycle)
+    print(f"[OK] {dispute.dispute_id} {dispute.status.value}")
+    return 0
+
+
+@_dispute_errors
+def cmd_dispute_withdraw(args: argparse.Namespace) -> int:
+    cycle = load_cycle(args.cycle)
+    dispute = cycle.withdraw(args.id, now=_now(args))
+    save_cycle(cycle, args.cycle)
+    print(f"[OK] {dispute.dispute_id} withdrawn")
+    return 0
+
+
+def cmd_dispute_list(args: argparse.Namespace) -> int:
+    cycle = load_cycle(args.cycle)
+    now = _now(args)
+    state = "published" if cycle.published_at else ("window open" if cycle.window_open(now) else "window closed")
+    print(f"Report cycle {cycle.cycle_id} ({state}; window closes {cycle.window_closes_at.isoformat()})")
+    for d in cycle.disputes:
+        print(f"  {d.dispute_id}  {d.status.value:9s}  {d.platform:12s}  {d.reason.value:20s}  {d.metric.value}  ({len(d.request_ids)} request(s))")
+    blockers = cycle.publish_blockers(now)
+    print("Ready to publish." if not blockers else "Not ready to publish: " + "; ".join(blockers))
     return 0
 
 
@@ -385,11 +536,75 @@ def build_parser() -> argparse.ArgumentParser:
         help="Optional path to verification observations JSON file",
     )
     sb_parser.add_argument(
+        "--cycle",
+        type=str,
+        default=None,
+        help="Report cycle file: applies accepted disputes and blocks publishing until all are resolved",
+    )
+    sb_parser.add_argument(
+        "--draft",
+        action="store_true",
+        help="With --cycle: export the draft for platform review instead of publishing",
+    )
+    sb_parser.add_argument("--at", type=str, default=None, help="Current time for cycle checks (default now)")
+    sb_parser.add_argument(
         "--production-mode",
         action="store_true",
         help="Flag as authorized production deployment rather than demonstration mode",
     )
     sb_parser.set_defaults(func=cmd_export_scoreboard)
+
+    # dispute
+    dsp_parser = subparsers.add_parser("dispute", help="Report cycles and platform disputes")
+    dsp_sub = dsp_parser.add_subparsers(dest="dispute_command", required=True)
+
+    def add_common(p, at_help="Time of the action (ISO 8601 UTC); default now"):
+        p.add_argument("--cycle", type=str, required=True, help="Report cycle file (police-held, JSON)")
+        p.add_argument("--at", type=str, default=None, help=at_help)
+
+    d_open = dsp_sub.add_parser("open-cycle", help="Share the draft and open the dispute window")
+    add_common(d_open, "When the draft is shared; default now")
+    d_open.add_argument("--id", type=str, required=True, help="Cycle ID, e.g. 2026-09")
+    d_open.add_argument("--period-start", type=str, required=True)
+    d_open.add_argument("--period-end", type=str, required=True)
+    d_open.add_argument("--as-of", type=str, required=True)
+    d_open.add_argument("--window-days", type=float, default=7.0)
+    d_open.set_defaults(func=cmd_dispute_open)
+
+    d_stmt = dsp_sub.add_parser("statement", help="Write one platform's statement of its requests")
+    add_common(d_stmt)
+    d_stmt.add_argument("--input", type=str, required=True, help="Request log")
+    d_stmt.add_argument("--observations", type=str, default=None)
+    d_stmt.add_argument("--platform", type=str, required=True)
+    d_stmt.add_argument("--output", type=str, required=True)
+    d_stmt.set_defaults(func=cmd_dispute_statement)
+
+    d_raise = dsp_sub.add_parser("raise", help="Record a platform's dispute")
+    add_common(d_raise)
+    d_raise.add_argument("--input", type=str, required=True, help="Request log (to check request IDs)")
+    d_raise.add_argument("--platform", type=str, required=True)
+    d_raise.add_argument("--metric", choices=[m.value for m in DisputableMetric], required=True)
+    d_raise.add_argument("--reason", choices=[r.value for r in DisputeReason], required=True)
+    d_raise.add_argument("--statement", type=str, required=True, help="Short explanation, no links")
+    d_raise.add_argument("--request-ids", type=str, default="", help="Comma-separated request IDs")
+    d_raise.set_defaults(func=cmd_dispute_raise)
+
+    d_res = dsp_sub.add_parser("resolve", help="Accept or reject a dispute")
+    add_common(d_res)
+    d_res.add_argument("--id", type=str, required=True)
+    d_res.add_argument("decision", choices=["accept", "reject"])
+    d_res.add_argument("--note", type=str, required=True, help="Reason for the decision, no links")
+    d_res.add_argument("--correct", action="append", help="REQUEST_ID=ISO time (accepted wrong_timestamp only)")
+    d_res.set_defaults(func=cmd_dispute_resolve)
+
+    d_wd = dsp_sub.add_parser("withdraw", help="Withdraw a dispute on the platform's request")
+    add_common(d_wd)
+    d_wd.add_argument("--id", type=str, required=True)
+    d_wd.set_defaults(func=cmd_dispute_withdraw)
+
+    d_list = dsp_sub.add_parser("list", help="Show disputes and whether the report can be published")
+    add_common(d_list)
+    d_list.set_defaults(func=cmd_dispute_list)
 
     # serve
     srv_parser = subparsers.add_parser("serve", help="Launch public web dashboard and API")

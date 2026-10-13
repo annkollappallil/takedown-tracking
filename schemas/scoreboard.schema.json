@@ -15,7 +15,10 @@
   "properties": {
     "schema_version": {
       "type": "string",
-      "enum": ["1.0.0", "2.0.0"]
+      "enum": [
+        "1.0.0",
+        "2.0.0"
+      ]
     },
     "metadata": {
       "type": "object",
@@ -78,58 +81,235 @@
         "invalid_records_count"
       ],
       "properties": {
-        "total_takedown_requests": { "type": "integer", "minimum": 0 },
-        "eligible_takedown_requests": { "type": "integer", "minimum": 0 },
-        "mature_takedown_requests": { "type": "integer", "minimum": 0 },
-        "completed_takedowns": { "type": "integer", "minimum": 0 },
-        "rejections_count": { "type": "integer", "minimum": 0 },
-        "rejection_rate_pct": { "type": "number", "minimum": 0, "maximum": 100 },
-        "median_removal_hours": { "type": ["number", "null"] },
-        "median_removal_censored": { "type": "boolean" },
-        "median_removal_display": { "type": "string" },
-        "p90_removal_hours": { "type": ["number", "null"] },
-        "p90_removal_censored": { "type": "boolean" },
-        "p90_removal_display": { "type": "string" },
-        "deadline_compliance_rate_pct": { "type": ["number", "null"] },
-        "still_available_rate_pct": { "type": "number", "minimum": 0, "maximum": 100 },
-        "total_data_requests": { "type": "integer", "minimum": 0 },
-        "mature_data_requests": { "type": "integer", "minimum": 0 },
-        "completed_data_requests": { "type": "integer", "minimum": 0 },
-        "median_data_response_hours": { "type": ["number", "null"] },
-        "p90_data_response_hours": { "type": ["number", "null"] },
-        "data_deadline_compliance_rate_pct": { "type": ["number", "null"] },
-        "incomplete_police_requests_count": { "type": "integer", "minimum": 0 },
-        "invalid_records_count": { "type": "integer", "minimum": 0 },
-        "false_removal_claims_count": { "type": "integer", "minimum": 0 },
-        "observed_reuploads_count": { "type": "integer", "minimum": 0 },
-        "verified_takedowns_count": { "type": "integer", "minimum": 0 }
+        "total_takedown_requests": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "eligible_takedown_requests": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "mature_takedown_requests": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "completed_takedowns": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rejections_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rejection_rate_pct": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "median_removal_hours": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "median_removal_censored": {
+          "type": "boolean"
+        },
+        "median_removal_display": {
+          "type": "string"
+        },
+        "p90_removal_hours": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "p90_removal_censored": {
+          "type": "boolean"
+        },
+        "p90_removal_display": {
+          "type": "string"
+        },
+        "deadline_compliance_rate_pct": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "still_available_rate_pct": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "total_data_requests": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "mature_data_requests": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "completed_data_requests": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "median_data_response_hours": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "p90_data_response_hours": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "data_deadline_compliance_rate_pct": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "incomplete_police_requests_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "invalid_records_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "false_removal_claims_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "observed_reuploads_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "verified_takedowns_count": {
+          "type": "integer",
+          "minimum": 0
+        }
       }
     },
     "platform_breakdown": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["platform", "is_suppressed"],
+        "required": [
+          "platform",
+          "is_suppressed"
+        ],
         "properties": {
-          "platform": { "type": "string" },
-          "is_suppressed": { "type": "boolean" },
-          "sample_size": { "type": ["integer", "null"] },
-          "median_removal_hours": { "type": ["number", "null"] },
-          "median_removal_censored": { "type": ["boolean", "null"] },
-          "median_removal_display": { "type": ["string", "null"] },
-          "p90_removal_hours": { "type": ["number", "null"] },
-          "p90_removal_censored": { "type": ["boolean", "null"] },
-          "p90_removal_display": { "type": ["string", "null"] },
-          "deadline_compliance_rate_pct": { "type": ["number", "null"] },
-          "still_available_rate_pct": { "type": ["number", "null"] },
-          "rejections_count": { "type": ["integer", "null"] },
-          "rejection_rate_pct": { "type": ["number", "null"] },
-          "median_data_response_hours": { "type": ["number", "null"] },
-          "incomplete_requests_count": { "type": ["integer", "null"] },
-          "suppression_reason": { "type": ["string", "null"] },
-          "false_removal_claims_count": { "type": ["integer", "null"] },
-          "observed_reuploads_count": { "type": ["integer", "null"] },
-          "verified_takedowns_count": { "type": ["integer", "null"] }
+          "platform": {
+            "type": "string"
+          },
+          "is_suppressed": {
+            "type": "boolean"
+          },
+          "sample_size": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "median_removal_hours": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "median_removal_censored": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "median_removal_display": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "p90_removal_hours": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "p90_removal_censored": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "p90_removal_display": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "deadline_compliance_rate_pct": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "still_available_rate_pct": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "rejections_count": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "rejection_rate_pct": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "median_data_response_hours": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "incomplete_requests_count": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "suppression_reason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "false_removal_claims_count": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "observed_reuploads_count": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "verified_takedowns_count": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
         }
       }
     },
@@ -137,55 +317,224 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["category", "is_suppressed"],
+        "required": [
+          "category",
+          "is_suppressed"
+        ],
         "properties": {
-          "category": { "type": "string" },
-          "is_suppressed": { "type": "boolean" },
-          "sample_size": { "type": ["integer", "null"] },
-          "median_removal_hours": { "type": ["number", "null"] },
-          "median_removal_censored": { "type": ["boolean", "null"] },
-          "median_removal_display": { "type": ["string", "null"] },
-          "p90_removal_hours": { "type": ["number", "null"] },
-          "p90_removal_censored": { "type": ["boolean", "null"] },
-          "p90_removal_display": { "type": ["string", "null"] },
-          "deadline_compliance_rate_pct": { "type": ["number", "null"] },
-          "suppression_reason": { "type": ["string", "null"] }
+          "category": {
+            "type": "string"
+          },
+          "is_suppressed": {
+            "type": "boolean"
+          },
+          "sample_size": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "median_removal_hours": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "median_removal_censored": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "median_removal_display": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "p90_removal_hours": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "p90_removal_censored": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "p90_removal_display": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "deadline_compliance_rate_pct": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "suppression_reason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
         }
       }
     },
     "configured_deadlines": {
       "type": "object",
       "description": "Configured hours for statutory and priority SLA deadlines.",
-      "additionalProperties": { "type": "number" }
+      "additionalProperties": {
+        "type": "number"
+      }
     },
     "integrity_summary": {
       "type": "object",
       "description": "Verification integrity summary from Half 2 observations (see METHODOLOGY section 6). Null values are withheld because the group behind them has fewer than k requests.",
       "properties": {
-        "false_removal_claims_count": { "type": ["integer", "null"] },
-        "false_removal_claim_rate_pct": { "type": ["number", "null"] },
-        "observed_reuploads_count": { "type": ["integer", "null"] },
-        "verified_takedowns_count": { "type": ["integer", "null"] },
-        "verification_coverage_pct": { "type": ["number", "null"] },
-        "disputes_active": { "type": ["integer", "null"] },
-        "disputes_resolved": { "type": ["integer", "null"] },
+        "false_removal_claims_count": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "false_removal_claim_rate_pct": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "observed_reuploads_count": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "verified_takedowns_count": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "verification_coverage_pct": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "disputes_active": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "disputes_resolved": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
         "method": {
           "type": "object",
           "properties": {
-            "false_claim_grace_minutes": { "type": "number" },
-            "reupload_window_days": { "type": "number" },
-            "k_threshold": { "type": "integer" },
-            "as_of": { "type": "string", "format": "date-time" }
+            "false_claim_grace_minutes": {
+              "type": "number"
+            },
+            "reupload_window_days": {
+              "type": "number"
+            },
+            "k_threshold": {
+              "type": "integer"
+            },
+            "as_of": {
+              "type": "string",
+              "format": "date-time"
+            }
           }
         },
-        "overall": { "$ref": "#/$defs/integrity_figures" },
+        "overall": {
+          "$ref": "#/$defs/integrity_figures"
+        },
         "by_platform": {
           "type": "array",
           "items": {
             "allOf": [
-              { "$ref": "#/$defs/integrity_figures" },
-              { "type": "object", "required": ["platform"], "properties": { "platform": { "type": "string" } } }
+              {
+                "$ref": "#/$defs/integrity_figures"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "platform"
+                ],
+                "properties": {
+                  "platform": {
+                    "type": "string"
+                  }
+                }
+              }
             ]
+          }
+        },
+        "disputes": {
+          "type": "object",
+          "description": "Dispute outcome for the report cycle. Counts only: no statements, notes or request IDs.",
+          "properties": {
+            "report_status": {
+              "enum": [
+                "draft",
+                "published"
+              ]
+            },
+            "cycle_id": {
+              "type": "string"
+            },
+            "dispute_window_closes_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "by_platform": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "platform": {
+                    "type": "string"
+                  },
+                  "raised": {
+                    "type": "integer"
+                  },
+                  "accepted": {
+                    "type": "integer"
+                  },
+                  "rejected": {
+                    "type": "integer"
+                  },
+                  "withdrawn": {
+                    "type": "integer"
+                  },
+                  "open": {
+                    "type": "integer"
+                  },
+                  "metrics_disputed": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "adjustments": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "integer"
+              }
+            }
           }
         }
       }
@@ -195,18 +544,78 @@
     "integrity_figures": {
       "type": "object",
       "properties": {
-        "eligible_takedowns": { "type": ["integer", "null"] },
-        "monitored_takedowns": { "type": ["integer", "null"] },
-        "verification_coverage_pct": { "type": ["number", "null"] },
-        "unverifiable_pct": { "type": ["number", "null"] },
-        "claims_checked": { "type": ["integer", "null"] },
-        "false_claims_count": { "type": ["integer", "null"] },
-        "false_claim_rate_pct": { "type": ["number", "null"] },
-        "verified_removals": { "type": ["integer", "null"] },
-        "silent_removals_count": { "type": ["integer", "null"] },
-        "reupload_cohort": { "type": ["integer", "null"] },
-        "reuploads_within_window": { "type": ["integer", "null"] },
-        "reupload_rate_pct": { "type": ["number", "null"] }
+        "eligible_takedowns": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "monitored_takedowns": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "verification_coverage_pct": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "unverifiable_pct": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "claims_checked": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "false_claims_count": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "false_claim_rate_pct": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "verified_removals": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "silent_removals_count": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "reupload_cohort": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "reuploads_within_window": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "reupload_rate_pct": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
       }
     }
   },

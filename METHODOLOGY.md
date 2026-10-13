@@ -239,6 +239,29 @@ Our PDQ code gives exactly the same fingerprints as Meta's official version, whi
 
 ---
 
+### Use case 6: A platform disagrees with the monthly report
+
+**Example.** Platform E says two requests counted against it were the same image reported twice.
+
+**What happens.**
+1. After the month closes, police share a draft report. Each platform also gets the list of its own requests as the report counted them, to compare with its records. The list has no links or images.
+2. The platform has 7 days to raise a dispute. It picks a reason from a fixed list and adds a short explanation. Explanations containing links are refused.
+3. Police accept or reject each dispute with a note. Accepting has a fixed effect:
+
+| Reason | What happens if accepted |
+| :--- | :--- |
+| Wrong platform, duplicate, or wrong month | The request is left out of the report |
+| The police request was incomplete | The request is not counted against the platform |
+| Wrong removal time | The platform's time is corrected (a confirmed check still takes priority) |
+| Our check was wrong | That check is set aside and the platform's claim is used |
+| Other | Recorded, no automatic change |
+
+4. The report can't be published while the 7 days are running or while any dispute is unanswered.
+
+**What the public sees.** For each platform: how many disputes it raised, how many were accepted or rejected, and which numbers were disputed. Explanations, police notes and request numbers are never published.
+
+---
+
 ### What the public numbers mean
 
 | Number | In plain words |
@@ -277,6 +300,8 @@ One record per watched request (`schemas/observation.schema.json`):
 Rules, in `src/takedown_tracking/integrity/rules.py`: a confirmed removal time replaces the platform's claim; a claim is false if the post was seen online more than 15 minutes after it; with no usable check, the platform's claim is used. Checks go through the `AvailabilityChecker` and `ReuploadDetector` interfaces, so a real deployment can plug in its own checker inside the police network.
 
 Re-upload matching (`src/takedown_tracking/hashing/pdq.py`, `verifier/pdq_detector.py`): a copy matches when its PDQ fingerprint differs from the registered one in at most 31 of 256 bits, in any of the 8 rotations or mirror images, and both fingerprints have a quality score of at least 50.
+
+Disputes (`src/takedown_tracking/disputes/`): each reporting month is a report cycle file held by the police (`schemas/report_cycle.schema.json`) with every dispute, its reason, request numbers, explanation and decision. Only counts reach the public scoreboard.
 </details>
 
 ---

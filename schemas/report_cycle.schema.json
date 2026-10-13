@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/iamnih4l/takedown-tracking/schemas/report_cycle.schema.json",
+  "title": "ReportCycle",
+  "description": "Police-held record of one reporting period: when the draft was shared, the dispute window, every platform dispute and its resolution. Contains request IDs and free-text statements, so it is never published; only counts reach the public scoreboard.",
+  "type": "object",
+  "required": ["cycle_id", "period_start", "period_end", "as_of", "draft_shared_at", "dispute_window_days", "disputes"],
+  "properties": {
+    "cycle_id": { "type": "string" },
+    "period_start": { "type": "string", "format": "date-time" },
+    "period_end": { "type": "string", "format": "date-time" },
+    "as_of": { "type": "string", "format": "date-time" },
+    "draft_shared_at": { "type": "string", "format": "date-time" },
+    "dispute_window_days": { "type": "number", "exclusiveMinimum": 0 },
+    "published_at": { "type": ["string", "null"], "format": "date-time" },
+    "disputes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["dispute_id", "platform", "metric", "reason", "statement", "raised_at", "request_ids", "status"],
+        "properties": {
+          "dispute_id": { "type": "string" },
+          "platform": { "type": "string" },
+          "metric": {
+            "enum": ["median_removal_hours", "p90_removal_hours", "deadline_compliance_rate_pct", "still_available_rate_pct",
+                     "median_data_response_hours", "false_claim_rate_pct", "reupload_rate_pct", "silent_removals_count", "other"]
+          },
+          "reason": {
+            "enum": ["not_our_platform", "duplicate_request", "outside_period", "request_incomplete",
+                     "wrong_timestamp", "verification_error", "other"],
+            "description": "Accepting: not_our_platform/duplicate_request/outside_period exclude the requests; request_incomplete marks them incomplete; wrong_timestamp replaces the claimed removal time; verification_error sets aside the verifier observation; other has no automatic effect."
+          },
+          "statement": { "type": "string", "maxLength": 1000, "description": "Platform's explanation. Plain text, no links." },
+          "raised_at": { "type": "string", "format": "date-time" },
+          "request_ids": { "type": "array", "items": { "type": "string" } },
+          "status": { "enum": ["open", "accepted", "rejected", "withdrawn"] },
+          "resolved_at": { "type": ["string", "null"], "format": "date-time" },
+          "resolution_note": { "type": ["string", "null"], "maxLength": 1000 },
+          "corrections": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["request_id", "claimed_removal_at"],
+              "properties": {
+                "request_id": { "type": "string" },
+                "claimed_removal_at": { "type": "string", "format": "date-time" }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

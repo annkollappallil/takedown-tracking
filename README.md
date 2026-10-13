@@ -117,7 +117,20 @@ python -m takedown_tracking.cli verify --input data/demo_synthetic_requests.json
 python -m takedown_tracking.cli pdq image_a.png image_b.png
 ```
 
-Planned next: the platform dispute flow and the victim status page.
+* **Platform disputes** ([`src/takedown_tracking/disputes/`](src/takedown_tracking/disputes/)): each report cycle shares a draft, gives platforms 7 days to dispute it, and blocks publication until every dispute is accepted or rejected. Accepted disputes change the data in fixed, documented ways; the public scoreboard shows dispute counts only.
+
+```bash
+python -m takedown_tracking.cli dispute open-cycle --cycle cycle_2026-09.json --id 2026-09 --period-start 2026-09-01T00:00:00Z --period-end 2026-10-01T00:00:00Z --as-of 2026-10-01T00:00:00Z
+python -m takedown_tracking.cli export-scoreboard --input data/demo_synthetic_requests.json --observations data/demo_observations.json --cycle cycle_2026-09.json --draft --output draft.json
+python -m takedown_tracking.cli dispute statement --cycle cycle_2026-09.json --input data/demo_synthetic_requests.json --observations data/demo_observations.json --platform "Platform E" --output statement_E.json
+python -m takedown_tracking.cli dispute raise --cycle cycle_2026-09.json --input data/demo_synthetic_requests.json --platform "Platform E" --metric median_removal_hours --reason duplicate_request --statement "Reported twice." --request-ids SYN-REQ-2026-00024
+python -m takedown_tracking.cli dispute resolve --cycle cycle_2026-09.json --id DSP-2026-09-001 accept --note "Confirmed duplicate."
+python -m takedown_tracking.cli dispute list --cycle cycle_2026-09.json
+# After the 7-day window, with nothing open:
+python -m takedown_tracking.cli export-scoreboard --input data/demo_synthetic_requests.json --observations data/demo_observations.json --cycle cycle_2026-09.json --output data/public_scoreboard.json
+```
+
+Planned next: the victim status page.
 
 ---
 

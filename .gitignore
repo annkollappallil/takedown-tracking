@@ -88,3 +88,7 @@ data/exports/
 local_*.json
 local_*.csv
 scratch/
+
+# Dispute cycle files and platform statements hold request IDs and statements: police-held, never committed
+cycle_*.json
+statement_*.json
