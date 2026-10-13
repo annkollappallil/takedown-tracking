@@ -130,7 +130,14 @@ python -m takedown_tracking.cli dispute list --cycle cycle_2026-09.json
 python -m takedown_tracking.cli export-scoreboard --input data/demo_synthetic_requests.json --observations data/demo_observations.json --cycle cycle_2026-09.json --output data/public_scoreboard.json
 ```
 
-Planned next: the victim status page.
+* **Victim status page** ([`src/takedown_tracking/victim_status/`](src/takedown_tracking/victim_status/), `/status`): a victim enters their complaint reference and private access code to see the deadline, time taken, the platform's claim, the independent check and any copies found. Codes are stored only as salted hashes, failed lookups are rate-limited and look identical, and no category, platform or link is ever shown.
+
+```bash
+# Issue codes (hashes go to victim_access.json; plain codes are written once to a gitignored CSV to hand out)
+python -m takedown_tracking.cli victim-access issue --input data/demo_synthetic_requests.json
+# Serve the dashboard plus the status page at http://127.0.0.1:8000/status
+python -m takedown_tracking.cli serve --data data/demo_synthetic_requests.json --observations data/demo_observations.json --victim-access victim_access.json
+```
 
 ---
 

@@ -31,6 +31,13 @@ from takedown_tracking.models.observation import ObservationRecord, ObservationV
 from takedown_tracking.models.request import parse_iso_datetime
 from takedown_tracking.privacy.filter import PrivacyFilter
 from takedown_tracking.verifier import REUPLOAD_DETECTORS, RunnerConfig, simulate_observations
+from takedown_tracking.victim_status import (
+    NOT_FOUND_MESSAGE,
+    AccessStore,
+    LookupResult,
+    StatusService,
+    issue_codes,
+)
 from takedown_tracking.web.app import run_server
 
 
@@ -400,11 +407,58 @@ def cmd_dispute_list(args: argparse.Namespace) -> int:
 
 def cmd_serve(args: argparse.Namespace) -> int:
     """Run local dashboard and public API server."""
+    status_service = None
+    if args.victim_access:
+        if not args.data:
+            print("[!] --victim-access needs --data (the request log the codes were issued for).")
+            return 2
+        records = load_requests(args.data).valid_records
+        status_service = StatusService(
+            AccessStore.load(args.victim_access),
+            {r.request_id: r for r in records},
+            load_observations_file(args.observations),
+        )
     run_server(
         host=args.host,
         port=args.port,
         data_file=args.data,
+        status_service=status_service,
     )
+    return 0
+
+
+def cmd_access_issue(args: argparse.Namespace) -> int:
+    """Issue private access codes for takedown requests. Writes hashes to the access file only."""
+    records = [r for r in load_requests(args.input).valid_records if r.request_type.value == "takedown"]
+    path = Path(args.access)
+    store = AccessStore.load(path) if path.exists() else AccessStore(iterations=args.iterations)
+    issued = issue_codes(store, [r.request_id for r in records], replace=args.replace)
+    store.save(path)
+    codes_out = Path(args.codes_out)
+    codes_out.parent.mkdir(parents=True, exist_ok=True)
+    with open(codes_out, "w", encoding="utf-8", newline="") as f:
+        f.write("reference,access_code\n")
+        for ref, code in issued:
+            f.write(f"{ref},{code}\n")
+    print(f"[OK] Issued {len(issued)} access code(s); hashes saved to {path} ({len(store)} total)")
+    print(f"[!] Plain codes written to {codes_out}. Hand each code to its victim privately, then delete this file.")
+    return 0
+
+
+def cmd_access_check(args: argparse.Namespace) -> int:
+    """Helpdesk check: show what the victim would see (needs the reference and their code)."""
+    records = load_requests(args.input).valid_records
+    service = StatusService(
+        AccessStore.load(args.access),
+        {r.request_id: r for r in records},
+        load_observations_file(args.observations),
+        clock=(lambda: parse_iso_datetime(args.at)) if args.at else (lambda: datetime.now(timezone.utc)),
+    )
+    outcome, status = service.lookup(args.reference, args.code, client="cli")
+    if outcome != LookupResult.OK:
+        print(NOT_FOUND_MESSAGE)
+        return 1
+    print(json.dumps(status, indent=2))
     return 0
 
 
@@ -613,7 +667,33 @@ def build_parser() -> argparse.ArgumentParser:
     srv_parser.add_argument(
         "--data", type=str, default=None, help="Optional dataset file to load on start"
     )
+    srv_parser.add_argument(
+        "--observations", type=str, default=None, help="Verification observations for the victim status page"
+    )
+    srv_parser.add_argument(
+        "--victim-access", type=str, default=None, help="Access file from 'victim-access issue'; enables /status"
+    )
     srv_parser.set_defaults(func=cmd_serve)
+
+    # victim-access
+    acc_parser = subparsers.add_parser("victim-access", help="Private access codes for the victim status page")
+    acc_sub = acc_parser.add_subparsers(dest="access_command", required=True)
+    a_issue = acc_sub.add_parser("issue", help="Issue codes for takedown requests that don't have one")
+    a_issue.add_argument("--input", type=str, required=True, help="Request log")
+    a_issue.add_argument("--access", type=str, default="victim_access.json", help="Access file (hashes only)")
+    a_issue.add_argument("--codes-out", type=str, default="local_victim_codes.csv",
+                         help="Where to write the plain codes once (gitignored name by default)")
+    a_issue.add_argument("--replace", action="store_true", help="Re-issue codes for every request")
+    a_issue.add_argument("--iterations", type=int, default=100_000, help="PBKDF2 iterations for new files")
+    a_issue.set_defaults(func=cmd_access_issue)
+    a_check = acc_sub.add_parser("check", help="See what a victim would see")
+    a_check.add_argument("--input", type=str, required=True)
+    a_check.add_argument("--access", type=str, default="victim_access.json")
+    a_check.add_argument("--observations", type=str, default=None)
+    a_check.add_argument("--reference", type=str, required=True)
+    a_check.add_argument("--code", type=str, required=True)
+    a_check.add_argument("--at", type=str, default=None, help="Pretend the current time is this (ISO 8601)")
+    a_check.set_defaults(func=cmd_access_check)
 
     return parser
 

@@ -92,3 +92,5 @@ scratch/
 # Dispute cycle files and platform statements hold request IDs and statements: police-held, never committed
 cycle_*.json
 statement_*.json
+# Victim access files hold code hashes: police-held, never committed
+victim_access*.json

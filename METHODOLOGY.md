@@ -262,6 +262,19 @@ Our PDQ code gives exactly the same fingerprints as Meta's official version, whi
 
 ---
 
+### Use case 7: A victim wants to know what is happening
+
+**Example.** Someone whose morphed photo was posted online wants to know whether it has been taken down, without calling the police station every day.
+
+**What happens.**
+1. When the complaint is registered, police give the victim the reference number and a private 12-character access code.
+2. On the status page they enter both and see: when the request was sent, the legal deadline and whether it was met, how long it has taken so far, what the platform says, what the independent check found, and whether a copy turned up later.
+3. They never see the content category, the platform, links or police details, so even a leaked code reveals very little.
+4. A wrong code and an unknown reference get exactly the same message. After 5 wrong tries the page makes them wait 15 minutes, which stops anyone guessing codes.
+5. Codes are stored only in scrambled (hashed) form, and the page loads nothing from other websites.
+
+---
+
 ### What the public numbers mean
 
 | Number | In plain words |
@@ -302,6 +315,8 @@ Rules, in `src/takedown_tracking/integrity/rules.py`: a confirmed removal time r
 Re-upload matching (`src/takedown_tracking/hashing/pdq.py`, `verifier/pdq_detector.py`): a copy matches when its PDQ fingerprint differs from the registered one in at most 31 of 256 bits, in any of the 8 rotations or mirror images, and both fingerprints have a quality score of at least 50.
 
 Disputes (`src/takedown_tracking/disputes/`): each reporting month is a report cycle file held by the police (`schemas/report_cycle.schema.json`) with every dispute, its reason, request numbers, explanation and decision. Only counts reach the public scoreboard.
+
+Victim status (`src/takedown_tracking/victim_status/`, page at `/status`): codes are 60-bit random values stored as salted PBKDF2-SHA256 hashes; lookups go through `POST /api/status`, which is never cached and limited to 5 failures per visitor and 10 per reference every 15 minutes.
 </details>
 
 ---

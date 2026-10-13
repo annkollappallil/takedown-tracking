@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Check your takedown request</title>
+  <style>
+    :root {
+      --bg: #f6f7fb; --card: #ffffff; --text: #111827; --muted: #4b5563; --line: #e5e7eb;
+      --accent: #4f46e5; --good: #047857; --good-bg: #ecfdf5; --warn: #b45309; --warn-bg: #fffbeb;
+      --bad: #b91c1c; --bad-bg: #fef2f2; --info-bg: #eef2ff;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b1020; --card: #121a2f; --text: #f3f4f6; --muted: #a3acc2; --line: #24304d;
+        --accent: #818cf8; --good: #34d399; --good-bg: #0f2a22; --warn: #fbbf24; --warn-bg: #2b230f;
+        --bad: #f87171; --bad-bg: #2d1416; --info-bg: #1a2142;
+      }
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text);
+           font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+    main { max-width: 560px; margin: 0 auto; padding: 32px 16px 48px; }
+    h1 { font-size: 1.45rem; margin: 0 0 6px; }
+    p.lead { color: var(--muted); margin: 0 0 24px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 20px; }
+    label { display: block; font-weight: 600; margin: 0 0 6px; }
+    .hint { color: var(--muted); font-size: 0.875rem; margin: -2px 0 8px; }
+    input { width: 100%; padding: 12px 14px; font-size: 1rem; border: 1px solid var(--line); border-radius: 10px;
+            background: var(--bg); color: var(--text); margin-bottom: 16px; letter-spacing: 0.04em; }
+    input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+    button { width: 100%; padding: 12px; font-size: 1rem; font-weight: 600; border: 0; border-radius: 10px;
+             background: var(--accent); color: #fff; cursor: pointer; }
+    button:disabled { opacity: 0.6; cursor: wait; }
+    .error { margin-top: 16px; padding: 12px 14px; border-radius: 10px; background: var(--bad-bg); color: var(--bad); }
+    #result { margin-top: 20px; }
+    .status { padding: 14px 16px; border-radius: 10px; margin-bottom: 16px; font-weight: 600; }
+    .status.good { background: var(--good-bg); color: var(--good); }
+    .status.warn { background: var(--warn-bg); color: var(--warn); }
+    .status.bad { background: var(--bad-bg); color: var(--bad); }
+    .status.info { background: var(--info-bg); color: var(--text); }
+    dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 10px 16px; }
+    dt { color: var(--muted); }
+    dd { margin: 0; font-weight: 500; }
+    .foot { color: var(--muted); font-size: 0.85rem; margin-top: 24px; }
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Check your takedown request</h1>
+  <p class="lead">Enter the reference number and private access code the police gave you. You will see how long the removal is taking. No details of the content are shown here.</p>
+
+  <form id="lookup" class="card" autocomplete="off" novalidate>
+    <label for="reference">Reference number</label>
+    <input id="reference" name="reference" required maxlength="64" spellcheck="false" autocapitalize="characters">
+    <label for="code">Access code</label>
+    <p class="hint">12 letters and numbers, for example ABCD-EFGH-JKMN</p>
+    <input id="code" name="code" required maxlength="20" spellcheck="false" autocapitalize="characters" type="password">
+    <button type="submit" id="submit">Check status</button>
+    <div id="error" class="error" role="alert" hidden></div>
+  </form>
+
+  <section id="result" class="card" aria-live="polite" hidden>
+    <div id="status" class="status"></div>
+    <dl>
+      <dt>Reference</dt><dd id="r-ref"></dd>
+      <dt>Sent to platform</dt><dd id="r-sent"></dd>
+      <dt>Legal deadline</dt><dd id="r-deadline"></dd>
+      <dt id="r-time-label">Time so far</dt><dd id="r-time"></dd>
+      <dt>Independent check</dt><dd id="r-check"></dd>
+      <dt>Copies found</dt><dd id="r-copy"></dd>
+    </dl>
+  </section>
+
+  <p class="foot">If the content comes back online, or you need help, contact the police station that registered your complaint. This page does not store what you type.</p>
+</main>
+<script src="/status.js"></script>
+</body>
+</html>
