@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/iamnih4l/takedown-tracking/schemas/observation.schema.json",
+  "title": "VerificationObservationRecord",
+  "description": "Standard schema for independent external availability checks and re-upload observations performed by the verifier (Half 2).",
+  "type": "object",
+  "required": [
+    "request_id",
+    "observation_status",
+    "last_checked_at",
+    "verifier_agent_id"
+  ],
+  "properties": {
+    "request_id": {
+      "type": "string",
+      "description": "Target request identifier matching the police takedown request log.",
+      "pattern": "^[A-Za-z0-9_-]{4,64}$"
+    },
+    "observation_status": {
+      "type": "string",
+      "enum": [
+        "confirmed_removed",
+        "confirmed_available",
+        "uncertain",
+        "failed_check"
+      ],
+      "description": "Independently observed state of the targeted content at last_checked_at."
+    },
+    "last_checked_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 UTC timestamp when the verifier polled or analyzed the target."
+    },
+    "verifier_agent_id": {
+      "type": "string",
+      "description": "Identifier of the verifier module, simulator, or auditor agent.",
+      "pattern": "^[A-Za-z0-9_-]{3,64}$"
+    },
+    "verified_removed_at": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "Empirically verified ISO 8601 timestamp when content was confirmed inaccessible."
+    },
+    "reupload_detected_at": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when an identical or perceptual match was detected re-uploaded."
+    },
+    "notes": {
+      "type": ["string", "null"],
+      "description": "Sanitized technical observation remarks (HTTP status, error codes, etc.)."
+    }
+  },
+  "additionalProperties": false
+}

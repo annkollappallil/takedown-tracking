@@ -15,12 +15,13 @@
   "properties": {
     "schema_version": {
       "type": "string",
-      "enum": ["1.0.0"]
+      "enum": ["1.0.0", "2.0.0"]
     },
     "metadata": {
       "type": "object",
       "required": [
         "generated_at",
+        "as_of",
         "measurement_period_start",
         "measurement_period_end",
         "is_demonstration_mode",
@@ -32,6 +33,11 @@
         "generated_at": {
           "type": "string",
           "format": "date-time"
+        },
+        "as_of": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Measurement cutoff timestamp ensuring mature cohort evaluation."
         },
         "measurement_period_start": {
           "type": "string",
@@ -74,15 +80,26 @@
       "properties": {
         "total_takedown_requests": { "type": "integer", "minimum": 0 },
         "eligible_takedown_requests": { "type": "integer", "minimum": 0 },
+        "mature_takedown_requests": { "type": "integer", "minimum": 0 },
+        "completed_takedowns": { "type": "integer", "minimum": 0 },
+        "rejections_count": { "type": "integer", "minimum": 0 },
+        "rejection_rate_pct": { "type": "number", "minimum": 0, "maximum": 100 },
         "median_removal_hours": { "type": ["number", "null"] },
+        "median_removal_censored": { "type": "boolean" },
+        "median_removal_display": { "type": "string" },
         "p90_removal_hours": { "type": ["number", "null"] },
+        "p90_removal_censored": { "type": "boolean" },
+        "p90_removal_display": { "type": "string" },
         "deadline_compliance_rate_pct": { "type": ["number", "null"] },
         "still_available_rate_pct": { "type": "number", "minimum": 0, "maximum": 100 },
         "total_data_requests": { "type": "integer", "minimum": 0 },
         "median_data_response_hours": { "type": ["number", "null"] },
         "p90_data_response_hours": { "type": ["number", "null"] },
         "incomplete_police_requests_count": { "type": "integer", "minimum": 0 },
-        "invalid_records_count": { "type": "integer", "minimum": 0 }
+        "invalid_records_count": { "type": "integer", "minimum": 0 },
+        "false_removal_claims_count": { "type": "integer", "minimum": 0 },
+        "observed_reuploads_count": { "type": "integer", "minimum": 0 },
+        "verified_takedowns_count": { "type": "integer", "minimum": 0 }
       }
     },
     "platform_breakdown": {
@@ -95,12 +112,21 @@
           "is_suppressed": { "type": "boolean" },
           "sample_size": { "type": ["integer", "null"] },
           "median_removal_hours": { "type": ["number", "null"] },
+          "median_removal_censored": { "type": ["boolean", "null"] },
+          "median_removal_display": { "type": ["string", "null"] },
           "p90_removal_hours": { "type": ["number", "null"] },
+          "p90_removal_censored": { "type": ["boolean", "null"] },
+          "p90_removal_display": { "type": ["string", "null"] },
           "deadline_compliance_rate_pct": { "type": ["number", "null"] },
           "still_available_rate_pct": { "type": ["number", "null"] },
+          "rejections_count": { "type": ["integer", "null"] },
+          "rejection_rate_pct": { "type": ["number", "null"] },
           "median_data_response_hours": { "type": ["number", "null"] },
           "incomplete_requests_count": { "type": ["integer", "null"] },
-          "suppression_reason": { "type": ["string", "null"] }
+          "suppression_reason": { "type": ["string", "null"] },
+          "false_removal_claims_count": { "type": ["integer", "null"] },
+          "observed_reuploads_count": { "type": ["integer", "null"] },
+          "verified_takedowns_count": { "type": ["integer", "null"] }
         }
       }
     },
@@ -114,7 +140,11 @@
           "is_suppressed": { "type": "boolean" },
           "sample_size": { "type": ["integer", "null"] },
           "median_removal_hours": { "type": ["number", "null"] },
+          "median_removal_censored": { "type": ["boolean", "null"] },
+          "median_removal_display": { "type": ["string", "null"] },
           "p90_removal_hours": { "type": ["number", "null"] },
+          "p90_removal_censored": { "type": ["boolean", "null"] },
+          "p90_removal_display": { "type": ["string", "null"] },
           "deadline_compliance_rate_pct": { "type": ["number", "null"] },
           "suppression_reason": { "type": ["string", "null"] }
         }
@@ -127,13 +157,15 @@
     },
     "integrity_summary": {
       "type": "object",
-      "description": "Integration slot for Half 2 (Verification and Integrity).",
+      "description": "Aggregate verification integrity summary from Half 2 observations.",
       "properties": {
+        "false_removal_claims_count": { "type": ["integer", "null"] },
         "false_removal_claim_rate_pct": { "type": ["number", "null"] },
-        "observed_reupload_rate_pct": { "type": ["number", "null"] },
-        "disputes_active": { "type": "integer" },
-        "disputes_resolved": { "type": "integer" },
-        "verification_coverage_pct": { "type": ["number", "null"] }
+        "observed_reuploads_count": { "type": ["integer", "null"] },
+        "verified_takedowns_count": { "type": ["integer", "null"] },
+        "verification_coverage_pct": { "type": ["number", "null"] },
+        "disputes_active": { "type": ["integer", "null"] },
+        "disputes_resolved": { "type": ["integer", "null"] }
       }
     }
   },

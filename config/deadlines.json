@@ -1,20 +1,46 @@
 {
-  "version": "1.0.0",
-  "description": "Configurable SLA deadlines (in hours) for evaluating intermediary compliance.",
+  "version": "2.0.0",
+  "description": "Configurable SLA deadlines (in hours) under amended IT Rules (2026) and operational protocols.",
+  "legal_references": {
+    "rule_3_1_d": {
+      "citation": "Information Technology (Intermediary Guidelines and Digital Media Ethics Code) Rules, 2021 as amended on 20 February 2026, Rule 3(1)(d)",
+      "scope": "Specified court orders or authorized government intimations",
+      "statutory_hours": 3.0,
+      "source_url": "https://egazette.gov.in/WriteReadData/2026/269993.pdf"
+    },
+    "rule_3_2_b": {
+      "citation": "Information Technology Rules, Rule 3(2)(b) as amended on 20 February 2026",
+      "scope": "Complaints involving child sexual abuse material (CSAM), non-consensual intimate imagery (NCII), nudity, sexual acts, impersonation, or morphed imagery",
+      "statutory_hours": 2.0,
+      "source_url": "https://www.meity.gov.in/static/uploads/2025/10/065b6deb585441b5ccdf8be42502a49c.pdf"
+    },
+    "rule_3_1_j": {
+      "citation": "Information Technology Rules, Rule 3(1)(j)",
+      "scope": "Assistance for lawful interception, monitoring or decrypting information/metadata",
+      "statutory_hours": 72.0
+    }
+  },
+  "deadlines_by_legal_route_hours": {
+    "court_order_or_govt_intimation": 3.0,
+    "grievance_complaint_3_2_b": 2.0,
+    "data_assistance_order": 72.0,
+    "routine_police_inquiry": 36.0,
+    "other": 36.0
+  },
   "deadlines_by_priority_hours": {
     "emergency_life_threat": 2.0,
-    "urgent": 24.0,
+    "urgent": 3.0,
     "routine": 36.0
   },
   "deadlines_by_category_hours": {
     "CSAM": 24.0,
     "NonConsensualImagery": 24.0,
+    "Impersonation": 24.0,
     "Terrorism": 24.0,
     "ViolenceIncitement": 24.0,
     "HateSpeech": 36.0,
     "FinancialFraud": 36.0,
     "Defamation": 36.0,
-    "Impersonation": 36.0,
     "Other": 36.0
   },
   "data_request_deadline_hours": 72.0,

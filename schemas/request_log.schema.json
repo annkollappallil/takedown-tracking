@@ -33,8 +33,18 @@
     },
     "platform": {
       "type": "string",
-      "description": "Name of the target intermediary/platform.",
+      "description": "Name of the target intermediary/platform. Fictional identities (Platform A..J) MUST be used for synthetic data.",
       "enum": [
+        "Platform A",
+        "Platform B",
+        "Platform C",
+        "Platform D",
+        "Platform E",
+        "Platform F",
+        "Platform G",
+        "Platform H",
+        "Platform I",
+        "Platform J",
         "Meta",
         "Instagram",
         "X_Twitter",
@@ -66,6 +76,18 @@
       "type": "string",
       "enum": ["routine", "urgent", "emergency_life_threat"],
       "description": "Request urgency level dictating expected response SLA."
+    },
+    "legal_route": {
+      "type": ["string", "null"],
+      "enum": [
+        null,
+        "court_order_or_govt_intimation",
+        "grievance_complaint_3_2_b",
+        "data_assistance_order",
+        "routine_police_inquiry",
+        "other"
+      ],
+      "description": "Statutory or procedural route governing the request (e.g. Rule 3(1)(d), Rule 3(2)(b))."
     },
     "sent_at": {
       "type": "string",
@@ -125,9 +147,14 @@
       "type": ["string", "null"],
       "description": "Platform-provided justification if the request was rejected (e.g. Overbroad, OutsideJurisdiction)."
     },
+    "content_url_hmac": {
+      "type": ["string", "null"],
+      "description": "HMAC-SHA-256 identifier of the content URL computed with authorized secret key. RAW URLS MUST NEVER BE STORED.",
+      "pattern": "^[a-f0-9]{64}$"
+    },
     "content_url_hash": {
       "type": ["string", "null"],
-      "description": "SHA-256 hash of the content URL. REAL URLS MUST NEVER BE STORED OR COMMITTED.",
+      "description": "Backward-compatibility alias for URL hash identifier.",
       "pattern": "^[a-f0-9]{64}$"
     }
   },
