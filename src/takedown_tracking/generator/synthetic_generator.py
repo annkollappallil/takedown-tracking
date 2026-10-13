@@ -264,69 +264,22 @@ class SyntheticDataGenerator:
         return records
 
     def generate_observations(
-        self, records: List[RequestRecord]
+        self,
+        records: List[RequestRecord],
+        as_of: Optional[datetime] = None,
     ) -> List[ObservationRecord]:
-        """Generate simulated independent verification observations for Half 2 integration."""
-        observations: List[ObservationRecord] = []
-        for r in records:
-            if r.request_type != RequestType.TAKEDOWN or not r.is_complete_request:
-                continue
+        """Generate simulated verification observations by running the Half 2 verifier.
 
-            last_checked = r.sent_at + timedelta(hours=self.rng.uniform(1.0, 72.0))
-            if r.claimed_removal_at and r.claimed_removal_at > last_checked:
-                last_checked = r.claimed_removal_at + timedelta(hours=2.0)
+        Uses the scheduled verifier with its simulated checker, so demo observations
+        follow the same rules as real ones. `as_of` defaults to 7 days after the
+        latest request, matching the measurement lag used for the demo scoreboard.
+        """
+        from takedown_tracking.verifier import simulate_observations
 
-            # Simulated verifier check
-            roll = self.rng.random()
-            if r.status == RequestStatus.CLAIMED_REMOVED:
-                if roll < 0.92:
-                    # Verified removed
-                    obs = ObservationRecord(
-                        request_id=r.request_id,
-                        observation_status=ObservationStatus.CONFIRMED_REMOVED,
-                        last_checked_at=last_checked,
-                        verifier_agent_id="verifier-simulator-v1",
-                        verified_removed_at=r.claimed_removal_at,
-                        reupload_detected_at=None,
-                        notes="HTTP 404/410 content disabled confirmed.",
-                    )
-                elif roll < 0.97:
-                    # False removal claim! Platform claimed removed, but content still available
-                    obs = ObservationRecord(
-                        request_id=r.request_id,
-                        observation_status=ObservationStatus.CONFIRMED_AVAILABLE,
-                        last_checked_at=last_checked,
-                        verifier_agent_id="verifier-simulator-v1",
-                        verified_removed_at=None,
-                        reupload_detected_at=None,
-                        notes="Contradictory observation: HTTP 200 payload still accessible.",
-                    )
-                else:
-                    # Uncertain check
-                    obs = ObservationRecord(
-                        request_id=r.request_id,
-                        observation_status=ObservationStatus.UNCERTAIN,
-                        last_checked_at=last_checked,
-                        verifier_agent_id="verifier-simulator-v1",
-                        verified_removed_at=None,
-                        reupload_detected_at=None,
-                        notes="Transient CDN gateway timeout; check unverified.",
-                    )
-            elif r.status in (RequestStatus.PENDING, RequestStatus.ACKNOWLEDGED, RequestStatus.EXPIRED):
-                obs = ObservationRecord(
-                    request_id=r.request_id,
-                    observation_status=ObservationStatus.CONFIRMED_AVAILABLE,
-                    last_checked_at=last_checked,
-                    verifier_agent_id="verifier-simulator-v1",
-                    verified_removed_at=None,
-                    reupload_detected_at=None,
-                    notes="Content verified active.",
-                )
-            else:
-                continue
-
-            observations.append(obs)
-        return observations
+        if not records:
+            return []
+        cutoff = as_of or (max(r.sent_at for r in records) + timedelta(days=7))
+        return simulate_observations(records, cutoff, seed=self.seed if self.seed is not None else 42)
 
     @staticmethod
     def export_json(records: List[RequestRecord], target_path: Union[str, Path]) -> None:

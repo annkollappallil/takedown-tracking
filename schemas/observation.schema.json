@@ -2,54 +2,72 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/iamnih4l/takedown-tracking/schemas/observation.schema.json",
   "title": "VerificationObservationRecord",
-  "description": "Standard schema for independent external availability checks and re-upload observations performed by the verifier (Half 2).",
+  "description": "Summary of independent verification for one takedown request, written by the verifier (Half 2) and read by the metrics engine (Half 1). One record per monitored takedown. Contains only IDs, timestamps, a status and an error code: never URLs, content hashes or free text. Timeline invariant: first_checked_at <= last_seen_up_at < verified_removed_at <= last_checked_at.",
   "type": "object",
   "required": [
     "request_id",
     "observation_status",
+    "first_checked_at",
     "last_checked_at",
     "verifier_agent_id"
   ],
   "properties": {
     "request_id": {
       "type": "string",
-      "description": "Target request identifier matching the police takedown request log.",
+      "description": "Request identifier matching the police takedown request log.",
       "pattern": "^[A-Za-z0-9_-]{4,64}$"
     },
     "observation_status": {
       "type": "string",
-      "enum": [
-        "confirmed_removed",
-        "confirmed_available",
-        "uncertain",
-        "failed_check"
-      ],
-      "description": "Independently observed state of the targeted content at last_checked_at."
+      "enum": ["confirmed_removed", "confirmed_available", "uncertain", "failed_check"],
+      "description": "confirmed_removed: checks confirmed it is gone. confirmed_available: still up at the last conclusive check. uncertain: checks reached the platform but could not see the content (login wall, private, geo-blocked). failed_check: the checks themselves failed (timeouts, errors)."
     },
-    "last_checked_at": {
+    "first_checked_at": {
       "type": "string",
       "format": "date-time",
-      "description": "ISO 8601 UTC timestamp when the verifier polled or analyzed the target."
+      "description": "When monitoring of this request started (first check)."
     },
-    "verifier_agent_id": {
-      "type": "string",
-      "description": "Identifier of the verifier module, simulator, or auditor agent.",
-      "pattern": "^[A-Za-z0-9_-]{3,64}$"
+    "last_seen_up_at": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "Last check that still found the content up. Used to detect removal claims made while content was still available."
     },
     "verified_removed_at": {
       "type": ["string", "null"],
       "format": "date-time",
-      "description": "Empirically verified ISO 8601 timestamp when content was confirmed inaccessible."
+      "description": "First check that found the content gone (confirmed by a following check). Required when observation_status is confirmed_removed, null otherwise."
     },
     "reupload_detected_at": {
       "type": ["string", "null"],
       "format": "date-time",
-      "description": "ISO 8601 timestamp when an identical or perceptual match was detected re-uploaded."
+      "description": "First time a matching copy was found after verified removal."
     },
-    "notes": {
+    "last_checked_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Most recent check of this request."
+    },
+    "check_error": {
       "type": ["string", "null"],
-      "description": "Sanitized technical observation remarks (HTTP status, error codes, etc.)."
+      "enum": ["timeout", "server_error", "rate_limited", "login_wall", "private_or_restricted", "geo_blocked", "other", null],
+      "description": "Why checks were inconclusive. Required when observation_status is uncertain or failed_check."
+    },
+    "verifier_agent_id": {
+      "type": "string",
+      "description": "Identifier of the verifier implementation that produced this record.",
+      "pattern": "^[A-Za-z0-9_.-]{3,64}$"
     }
   },
+  "allOf": [
+    {
+      "if": { "properties": { "observation_status": { "const": "confirmed_removed" } } },
+      "then": { "required": ["verified_removed_at"], "properties": { "verified_removed_at": { "type": "string" } } },
+      "else": { "properties": { "verified_removed_at": { "type": "null" } } }
+    },
+    {
+      "if": { "properties": { "observation_status": { "enum": ["uncertain", "failed_check"] } } },
+      "then": { "required": ["check_error"], "properties": { "check_error": { "type": "string" } } }
+    }
+  ],
   "additionalProperties": false
 }

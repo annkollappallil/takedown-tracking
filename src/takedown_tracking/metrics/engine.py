@@ -6,9 +6,16 @@ from datetime import datetime, timedelta, timezone
 import math
 from typing import Dict, List, Optional
 
+from takedown_tracking.integrity.rules import (
+    effective_removal_time,
+    has_claim,
+    is_false_claim,
+    is_reupload_within_window,
+    is_verified_removal,
+)
 from takedown_tracking.metrics.deadline import DeadlineConfig
 from takedown_tracking.models.metrics import PerformanceMetrics, PercentileResult
-from takedown_tracking.models.observation import ObservationRecord, ObservationStatus
+from takedown_tracking.models.observation import ObservationRecord
 from takedown_tracking.models.request import (
     Category,
     Platform,
@@ -143,7 +150,7 @@ class MetricsEngine:
         # Apply measurement cutoff and maturity rule:
         # A request enters the mature cohort if:
         # - It was verified removed before cutoff, OR
-        # - It was claimed removed before cutoff, OR
+        # - It was claimed removed before cutoff (and not contradicted by the verifier), OR
         # - It was rejected before cutoff, OR
         # - Its applicable deadline has elapsed by cutoff.
         mature_takedowns: List[RequestRecord] = []
@@ -151,19 +158,10 @@ class MetricsEngine:
             deadline_h = self.deadline_config.get_deadline_hours(r)
             deadline_dt = r.sent_at + timedelta(hours=deadline_h)
 
-            obs = obs_map.get(r.request_id)
-            is_verified_early = (
-                obs is not None
-                and obs.observation_status == ObservationStatus.CONFIRMED_REMOVED
-                and obs.verified_removed_at is not None
-                and obs.verified_removed_at <= cutoff
+            # Removed before cutoff (verified removal, or an uncontradicted platform claim)
+            is_early_completed = (
+                effective_removal_time(r, obs_map.get(r.request_id), cutoff) is not None
             )
-            is_claimed_early = (
-                r.status == RequestStatus.CLAIMED_REMOVED
-                and r.claimed_removal_at is not None
-                and r.claimed_removal_at <= cutoff
-            )
-            is_early_completed = is_verified_early or is_claimed_early
             is_rejected = r.status == RequestStatus.REJECTED and r.sent_at <= cutoff
             is_deadline_passed = deadline_dt <= cutoff
 
@@ -183,53 +181,42 @@ class MetricsEngine:
         observed_reuploads_count = 0
         verified_takedowns_count = 0
 
+        claimed_count = 0
         for r in mature_takedowns:
             obs = obs_map.get(r.request_id)
-            if obs and obs.reupload_detected_at is not None:
-                observed_reuploads_count += 1
 
             if r.status == RequestStatus.REJECTED:
                 # Platform rejections reported separately; not equated with removal or availability
                 rejections_count += 1
                 continue
 
-            is_verified_removed = (
-                obs is not None
-                and obs.observation_status == ObservationStatus.CONFIRMED_REMOVED
-                and obs.verified_removed_at is not None
-                and obs.verified_removed_at <= cutoff
-            )
-            is_claimed_removed = (
-                r.status == RequestStatus.CLAIMED_REMOVED and r.claimed_removal_at is not None
-            )
+            # Verification rules live in takedown_tracking.integrity.rules (Half 2).
+            if has_claim(r):
+                claimed_count += 1
+                if is_false_claim(r, obs, as_of=cutoff):
+                    # Platform claimed removal while the verifier still saw the content up
+                    false_removal_claims_count += 1
 
-            # Check for false removal claim via external observation
-            if is_claimed_removed and obs and obs.observation_status == ObservationStatus.CONFIRMED_AVAILABLE:
-                # Platform claimed removed, but independent verification proved content remained available
-                false_removal_claims_count += 1
+            if is_reupload_within_window(obs, cutoff):
+                observed_reuploads_count += 1
+
+            # Verified removal beats the platform's claim; a contradicted claim counts as not removed.
+            # Platform acknowledgement is explicitly NOT considered removal.
+            removal_at = effective_removal_time(r, obs, cutoff)
+            if removal_at is None:
                 still_available_takedowns_count += 1
                 continue
 
-            if is_verified_removed or is_claimed_removed:
-                # Independent verification takes precedence over platform status
-                if is_verified_removed:
-                    verified_takedowns_count += 1
-                    dur_dt = obs.verified_removed_at
-                else:
-                    dur_dt = r.claimed_removal_at
+            if is_verified_removal(obs, cutoff):
+                verified_takedowns_count += 1
 
-                completed_takedowns.append(r)
-                assert dur_dt is not None
-                dur_hours = max(0.0, (dur_dt - r.sent_at).total_seconds() / 3600.0)
-                removal_durations_hours.append(dur_hours)
+            completed_takedowns.append(r)
+            dur_hours = max(0.0, (removal_at - r.sent_at).total_seconds() / 3600.0)
+            removal_durations_hours.append(dur_hours)
 
-                deadline = self.deadline_config.get_deadline_hours(r)
-                if dur_hours <= deadline:
-                    on_time_takedowns_count += 1
-            else:
-                # Unresolved content: PENDING, ACKNOWLEDGED, EXPIRED
-                # Platform acknowledgement is explicitly NOT considered removal.
-                still_available_takedowns_count += 1
+            deadline = self.deadline_config.get_deadline_hours(r)
+            if dur_hours <= deadline:
+                on_time_takedowns_count += 1
 
         # Censored percentiles over the mature removal cohort (completed removals + still available unremoved)
         speed_cohort_size = len(removal_durations_hours) + still_available_takedowns_count
@@ -256,8 +243,7 @@ class MetricsEngine:
             else 0.0
         )
 
-        # Integrity rates
-        claimed_count = len(completed_takedowns) + false_removal_claims_count
+        # Integrity rates (claimed_count counted in the loop above)
         false_claim_rate_pct: Optional[float] = None
         if claimed_count > 0:
             false_claim_rate_pct = round(

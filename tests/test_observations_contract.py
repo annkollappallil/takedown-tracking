@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, timezone
 import pytest
 
 from takedown_tracking.metrics.engine import MetricsEngine
-from takedown_tracking.models.observation import ObservationRecord, ObservationStatus
+from takedown_tracking.models.observation import CheckError, ObservationRecord, ObservationStatus
 from takedown_tracking.models.request import (
     Category,
     Platform,
@@ -28,10 +28,11 @@ class TestObservationsContract:
         obs = ObservationRecord(
             request_id="REQ-TEST-001",
             observation_status=ObservationStatus.CONFIRMED_REMOVED,
-            last_checked_at=base_time,
-            verifier_agent_id="verifier-unit-01",
+            first_checked_at=base_time,
+            last_seen_up_at=base_time + timedelta(hours=1.75),
             verified_removed_at=base_time + timedelta(hours=2.0),
-            notes="HTTP 404 response confirmed",
+            last_checked_at=base_time + timedelta(hours=2.25),
+            verifier_agent_id="verifier-unit-01",
         )
         d = obs.to_dict()
         assert d["request_id"] == "REQ-TEST-001"
@@ -95,7 +96,6 @@ class TestObservationsContract:
             observation_status=ObservationStatus.CONFIRMED_AVAILABLE,
             last_checked_at=base_time + timedelta(hours=6.0),
             verifier_agent_id="verifier-agent-01",
-            notes="HTTP 200 payload still live",
         )
 
         engine = MetricsEngine()
@@ -127,7 +127,7 @@ class TestObservationsContract:
             observation_status=ObservationStatus.UNCERTAIN,
             last_checked_at=base_time + timedelta(hours=5.0),
             verifier_agent_id="verifier-agent-01",
-            notes="Gateway timeout",
+            check_error=CheckError.LOGIN_WALL,
         )
 
         engine = MetricsEngine()

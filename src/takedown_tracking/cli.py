@@ -6,15 +6,19 @@ import argparse
 import json
 from pathlib import Path
 import sys
+from collections import Counter
+from datetime import timedelta
 from typing import Dict, List, Optional
 
 from takedown_tracking.generator.synthetic_generator import SyntheticDataGenerator
 from takedown_tracking.ingest.importer import RequestImporter
 from takedown_tracking.metrics.deadline import DeadlineConfig
 from takedown_tracking.metrics.engine import MetricsEngine
-from takedown_tracking.models.observation import ObservationRecord
+from takedown_tracking.integrity.metrics import build_integrity_summary
+from takedown_tracking.models.observation import ObservationRecord, ObservationValidationError
 from takedown_tracking.models.request import parse_iso_datetime
 from takedown_tracking.privacy.filter import PrivacyFilter
+from takedown_tracking.verifier import RunnerConfig, simulate_observations
 from takedown_tracking.web.app import run_server
 
 
@@ -29,7 +33,65 @@ def load_observations_file(path: Optional[str]) -> Optional[Dict[str, Observatio
         data = json.load(f)
     if not isinstance(data, list):
         raise ValueError("Observations JSON must be an array of observation records.")
-    return {item["request_id"]: ObservationRecord.from_dict(item) for item in data}
+    observations: Dict[str, ObservationRecord] = {}
+    for index, item in enumerate(data):
+        try:
+            obs = ObservationRecord.from_dict(item)
+        except ObservationValidationError as exc:
+            # These messages name the rule broken, never the row's contents.
+            raise ValueError(f"Invalid observation at index {index}: {exc}") from None
+        except KeyError as exc:
+            raise ValueError(f"Invalid observation at index {index}: missing field {exc}") from None
+        except (TypeError, ValueError):
+            # Enum/date parse errors can echo raw values, so report only the position.
+            raise ValueError(f"Invalid observation at index {index}: malformed value") from None
+        if obs.request_id in observations:
+            raise ValueError(f"Duplicate observation for one request at index {index}")
+        observations[obs.request_id] = obs
+    return observations
+
+
+def load_requests(path: str):
+    in_path = Path(path)
+    if in_path.suffix.lower() == ".csv":
+        return RequestImporter.from_csv_file(in_path)
+    return RequestImporter.from_json_file(in_path)
+
+
+def cmd_verify(args: argparse.Namespace) -> int:
+    """Run the simulated verifier over synthetic requests and write observations."""
+    result = load_requests(args.input)
+    records = result.valid_records
+    if not records:
+        print("[!] No valid request records to verify.")
+        return 1
+    if not all(r.is_synthetic for r in records):
+        print(
+            "[!] The simulated verifier only runs on synthetic records. "
+            "Real deployments must plug in their own AvailabilityChecker."
+        )
+        return 2
+
+    as_of = parse_iso_datetime(args.as_of) if args.as_of else None
+    if as_of is None:
+        as_of = max(r.sent_at for r in records) + timedelta(days=7)
+
+    config = RunnerConfig(
+        check_interval_minutes=args.check_interval,
+        reupload_window_days=args.reupload_window_days,
+    )
+    observations = simulate_observations(records, as_of, seed=args.seed, config=config)
+
+    out_path = Path(args.output)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(out_path, "w", encoding="utf-8") as f:
+        json.dump([o.to_dict() for o in observations], f, indent=2)
+
+    by_status = Counter(o.observation_status.value for o in observations)
+    print(f"[OK] Verified {len(observations)} takedown requests (as of {as_of.isoformat()}) -> {out_path}")
+    for status, count in sorted(by_status.items()):
+        print(f"  - {status}: {count}")
+    return 0
 
 
 def cmd_generate(args: argparse.Namespace) -> int:
@@ -138,6 +200,13 @@ def cmd_export_scoreboard(args: argparse.Namespace) -> int:
         as_of=as_of,
         observations=observations,
     )
+    if observations is not None:
+        scoreboard.integrity_summary = build_integrity_summary(
+            result.valid_records,
+            observations,
+            as_of or scoreboard.metadata.as_of,
+            k=args.k_threshold,
+        )
 
     out_path = Path(args.output)
     out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -218,6 +287,28 @@ def build_parser() -> argparse.ArgumentParser:
         help="Optional path to verification observations JSON file",
     )
     met_parser.set_defaults(func=cmd_metrics)
+
+    # verify
+    ver_parser = subparsers.add_parser(
+        "verify", help="Run the simulated verifier and write observations (synthetic data only)"
+    )
+    ver_parser.add_argument("--input", type=str, required=True, help="Synthetic request log (.json or .csv)")
+    ver_parser.add_argument(
+        "--output", type=str, default="data/observations.json", help="Observations output path (.json)"
+    )
+    ver_parser.add_argument(
+        "--as-of",
+        type=str,
+        default=None,
+        help="Cutoff; no checks after this time. Use the same value for export-scoreboard. "
+        "Default: 7 days after the latest request.",
+    )
+    ver_parser.add_argument("--seed", type=int, default=42, help="Simulator seed")
+    ver_parser.add_argument("--check-interval", type=float, default=15.0, help="Minutes between checks")
+    ver_parser.add_argument(
+        "--reupload-window-days", type=float, default=7.0, help="Days after removal to scan for re-uploads"
+    )
+    ver_parser.set_defaults(func=cmd_verify)
 
     # export-scoreboard
     sb_parser = subparsers.add_parser(

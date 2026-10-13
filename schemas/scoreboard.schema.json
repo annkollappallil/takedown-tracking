@@ -160,7 +160,7 @@
     },
     "integrity_summary": {
       "type": "object",
-      "description": "Aggregate verification integrity summary from Half 2 observations.",
+      "description": "Verification integrity summary from Half 2 observations (see METHODOLOGY section 6). Null values are withheld because the group behind them has fewer than k requests.",
       "properties": {
         "false_removal_claims_count": { "type": ["integer", "null"] },
         "false_removal_claim_rate_pct": { "type": ["number", "null"] },
@@ -168,7 +168,45 @@
         "verified_takedowns_count": { "type": ["integer", "null"] },
         "verification_coverage_pct": { "type": ["number", "null"] },
         "disputes_active": { "type": ["integer", "null"] },
-        "disputes_resolved": { "type": ["integer", "null"] }
+        "disputes_resolved": { "type": ["integer", "null"] },
+        "method": {
+          "type": "object",
+          "properties": {
+            "false_claim_grace_minutes": { "type": "number" },
+            "reupload_window_days": { "type": "number" },
+            "k_threshold": { "type": "integer" },
+            "as_of": { "type": "string", "format": "date-time" }
+          }
+        },
+        "overall": { "$ref": "#/$defs/integrity_figures" },
+        "by_platform": {
+          "type": "array",
+          "items": {
+            "allOf": [
+              { "$ref": "#/$defs/integrity_figures" },
+              { "type": "object", "required": ["platform"], "properties": { "platform": { "type": "string" } } }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "integrity_figures": {
+      "type": "object",
+      "properties": {
+        "eligible_takedowns": { "type": ["integer", "null"] },
+        "monitored_takedowns": { "type": ["integer", "null"] },
+        "verification_coverage_pct": { "type": ["number", "null"] },
+        "unverifiable_pct": { "type": ["number", "null"] },
+        "claims_checked": { "type": ["integer", "null"] },
+        "false_claims_count": { "type": ["integer", "null"] },
+        "false_claim_rate_pct": { "type": ["number", "null"] },
+        "verified_removals": { "type": ["integer", "null"] },
+        "silent_removals_count": { "type": ["integer", "null"] },
+        "reupload_cohort": { "type": ["integer", "null"] },
+        "reuploads_within_window": { "type": ["integer", "null"] },
+        "reupload_rate_pct": { "type": ["number", "null"] }
       }
     }
   },
