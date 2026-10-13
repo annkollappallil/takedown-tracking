@@ -236,18 +236,23 @@ scoreboard = PrivacyFilter().filter_and_publish(records)
 * **None**. Feature branch is fully developed, tested locally, pushed to GitHub, and accessible via PR #1.
 
 ### Security Remediation Note:
-* An OAuth access token was ephemerally printed in a local terminal development log when inspecting git credentials during initial PR setup. A full repository scan verified the token was **never committed, staged, or retained in any file**. The token is treated as compromised, and the repository owner has been advised to immediately revoke authorization via GitHub Settings.
+* **Status: FULLY RESOLVED**. An OAuth access token was ephemerally printed in a local terminal development log when inspecting git credentials during initial PR setup. A full repository scan verified the token was **never committed, staged, or retained in any file**. The repository owner confirmed revocation of suspicious application authorizations via GitHub Settings at 13:27 IST. The repository is hardened with `.gitleaks.toml`, automated CI secret scanning, and strengthened `.gitignore` rules.
 
 ### Resolved Issues:
-1. *Resolved (2026-10-13)*: Windows CP1252 terminal encoding threw `UnicodeEncodeError` when printing checkmark characters (`✓`). Fixed by switching console prints in `cli.py` and `app.py` to ASCII badges (`[OK]`, `[*]`).
-2. *Resolved (2026-10-13)*: `random.log()` typo in log-normal generation fixed to `math.log()`.
-3. *Resolved (2026-10-13)*: Enum attribute typo `Category.HateSpeech` fixed to `Category.HATE_SPEECH` in test fixtures.
+1. *Resolved (2026-10-13)*: Credential exposure containment: Repository owner confirmed revocation of OAuth authorization on GitHub. Working tree and history verified 100% clean of all credentials.
+2. *Resolved (2026-10-13)*: Windows CP1252 terminal encoding threw `UnicodeEncodeError` when printing checkmark characters (`✓`). Fixed by switching console prints in `cli.py` and `app.py` to ASCII badges (`[OK]`, `[*]`).
+3. *Resolved (2026-10-13)*: `random.log()` typo in log-normal generation fixed to `math.log()`.
+4. *Resolved (2026-10-13)*: Enum attribute typo `Category.HateSpeech` fixed to `Category.HATE_SPEECH` in test fixtures.
 
 ---
 
 ## J. Development History
 
 All timestamps in Indian Standard Time (IST).
+
+* **2026-10-13 13:27 IST — Credential Revocation Confirmed & Incident Closed**
+  * Repository owner confirmed manual revocation of suspicious authorizations via GitHub Settings.
+  * Credential exposure incident marked as fully closed. Zero secrets committed or retained.
 
 * **2026-10-13 13:25 IST — Security Audit & Preventative Hardening**
   * Conducted deep audit of working tree and complete Git commit history (`git log -p --all`) for suspected secrets. Confirmed **0 credentials committed or tracked**.
