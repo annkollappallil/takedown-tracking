@@ -83,8 +83,13 @@ $$\text{Selected Deadline} = \min(36.0, 3.0, 3.0) = 3.0\text{ hours}$$
 
 An urgent priority is never silently ignored or relaxed by a category default.
 
-### 2.3. Ambiguous or Missing Route Information
-If `legal_route` is absent or `other`, the engine relies strictly on applicable category and priority rules. It does not fabricate a statutory 2h or 3h compliance route without supporting evidence.
+### 2.3. Statutory Police Intimations vs. Operational Assumptions
+1. **Rule 3(1)(d) Police Intimations (3.0 Hours)**:
+   Formal police takedown notices issued under Section 79(3)(b) by an authorized law enforcement officer or agency constitute authorized government intimations under Rule 3(1)(d). Under the 2026 amendments (Gazette No. 269993), these carry a mandatory **3.0-hour** compliance deadline.
+2. **Operational Fallback Assumptions**:
+   Non-statutory communications or informal inquiries (`routine_police_inquiry`) fall back to operational defaults (36.0 hours).
+3. **Ambiguous or Missing Route Information**:
+   If `legal_route` is absent or `other`, the engine relies strictly on applicable category and priority rules. It does not fabricate a statutory 2h or 3h compliance route without supporting evidence. Law enforcement logs must record `court_order_or_govt_intimation` or `grievance_complaint_3_2_b` to trigger statutory SLA tracking.
 
 ---
 
@@ -94,13 +99,19 @@ To prevent temporal bias where pending requests submitted shortly before report 
 
 1. **Explicit Reporting Cutoff (`as_of`)**:
    Every calculation accepts an ISO 8601 UTC timestamp `as_of`. If not provided, it defaults to a single UTC timestamp captured at report generation start.
-2. **Cohort Maturity Rule**:
-   A request enters the eligible mature analysis cohort if and only if:
-   - It was completed before `as_of` ($\text{claimed\_removal\_at} \le \text{as\_of}$ or $\text{verified\_removed\_at} \le \text{as\_of}$); OR
+2. **Takedown Cohort Maturity Rule**:
+   A takedown enters the mature analysis cohort if and only if:
+   - It was verified removed before `as_of` ($\text{verified\_removed\_at} \le \text{as\_of}$); OR
+   - It was claimed removed before `as_of` ($\text{claimed\_removal\_at} \le \text{as\_of}$); OR
    - It was rejected before `as_of` ($\text{sent\_at} \le \text{as\_of}$); OR
    - Its applicable deadline has elapsed by `as_of` ($\text{sent\_at} + \text{deadline\_hours} \le \text{as\_of}$).
-3. **Immature Pending Exclusions**:
-   A request whose deadline has not yet elapsed by `as_of` is **immature**. It is excluded from deadline-miss denominators and censored removal percentile calculations. A request sent 30 minutes before an export cannot be counted as a missed deadline.
+3. **Data Request Cohort Maturity Rule**:
+   A data assistance request enters the mature data cohort if and only if:
+   - Data was provided before `as_of` ($\text{data\_provided\_at} \le \text{as\_of}$); OR
+   - It was rejected before `as_of` ($\text{sent\_at} \le \text{as\_of}$); OR
+   - Its statutory 72-hour deadline has elapsed by `as_of` ($\text{sent\_at} + 72.0\text{h} \le \text{as\_of}$).
+4. **Immature Pending Exclusions**:
+   Requests whose deadlines have not yet elapsed by `as_of` are **immature**. They are strictly excluded from compliance denominators and speed percentiles. A data request sent 30 minutes before export cannot drop compliance from 100% to 95%.
 
 ---
 
@@ -155,8 +166,8 @@ In the Platform A vs Platform B example:
 
 Independent external checks performed by Half 2 (Verifier Simulator) interface through `schemas/observation.schema.json` and `ObservationRecord`:
 
-1. **Verified Removal Time**:
-   If `observation_status == 'confirmed_removed'` and `verified_removed_at` is present, the metrics engine uses `verified_removed_at` rather than the platform's self-reported claim.
+1. **Verifier Priority Over Platform Status**:
+   If `observation_status == 'confirmed_removed'` and `verified_removed_at` is present, the verifier observation strictly overrides platform status. Even if the platform status is still `pending` or `acknowledged`, the content is marked as verified removed with duration calculated from `verified_removed_at`.
 2. **False Removal Claims**:
    If a platform claims `claimed_removed`, but an independent observation confirms `confirmed_available`:
    - Flagged as a **False Removal Claim**;
@@ -190,10 +201,12 @@ Independent external checks performed by Half 2 (Verifier Simulator) interface t
    `"Suppressed because the group is below the publication threshold."`
 2. **Independent Per-Metric Denominators**:
    The $k$-anonymity threshold ($k=10$) is enforced independently for each published metric:
-   - Takedown removal speed & compliance: requires $\text{mature\_takedowns} \ge k$.
-   - Data request turnaround: requires $\text{total\_data\_requests} \ge k$.
+   - Takedown removal speed: requires speed cohort size $\ge k$ ($(\text{completed\_takedowns} + \text{still\_available\_takedowns}) \ge k$, excluding rejections).
+   - Takedown compliance & availability rates: requires mature actionable takedowns $\ge k$.
+   - Data request turnaround (median/p90): requires completed responses $\ge k$ ($\text{completed\_data\_requests} \ge k$).
+   - Data request compliance rate: requires $\text{mature\_data\_requests} \ge k$.
    - Integrity breakdowns: requires $\text{integrity\_cohort} \ge k$.
 3. **Small-Count Redaction**:
    Small counts of incomplete police requests ($< k$) and platform rejections ($< k$) are redacted (`null`) to eliminate indirect re-identification through subtraction.
-4. **Narrow Default Reporting Scope**:
-   Default public reports are restricted to high-impact victim-protection categories (`CSAM`, `NonConsensualImagery`, `Impersonation`, `FinancialFraud`).
+4. **Scope Filtering by Default Reporting Scope**:
+   Default public reports are restricted to high-impact victim-protection categories (`CSAM`, `NonConsensualImagery`, `Impersonation`, `FinancialFraud`). The privacy filter scopes input records to `published_categories` before computing overall performance, platform breakdowns, and category rows, guaranteeing mutual consistency and eliminating out-of-scope counts.

@@ -1,26 +1,35 @@
 [
   {
     "request_id": "SYN-REQ-2026-00002",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-04T03:17:37.384102+00:00",
+    "observation_status": "confirmed_available",
+    "last_checked_at": "2026-09-09T21:10:09.752688+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-01T11:48:45.595469+00:00",
+    "verified_removed_at": null,
     "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
+    "notes": "Content verified active."
   },
   {
     "request_id": "SYN-REQ-2026-00003",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-03T21:02:59.812494+00:00",
+    "observation_status": "confirmed_available",
+    "last_checked_at": "2026-09-15T01:22:18.446133+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-03T19:02:59.812494+00:00",
+    "verified_removed_at": null,
     "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
+    "notes": "Content verified active."
+  },
+  {
+    "request_id": "SYN-REQ-2026-00004",
+    "observation_status": "confirmed_available",
+    "last_checked_at": "2026-09-05T06:45:09.166529+00:00",
+    "verifier_agent_id": "verifier-simulator-v1",
+    "verified_removed_at": null,
+    "reupload_detected_at": null,
+    "notes": "Content verified active."
   },
   {
     "request_id": "SYN-REQ-2026-00006",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-29T01:26:42.449969+00:00",
+    "last_checked_at": "2026-09-29T12:35:49.890505+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-28T16:44:41.788764+00:00",
     "reupload_detected_at": null,
@@ -29,7 +38,7 @@
   {
     "request_id": "SYN-REQ-2026-00007",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-24T21:34:04.760771+00:00",
+    "last_checked_at": "2026-09-26T03:47:53.008688+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-24T19:34:04.760771+00:00",
     "reupload_detected_at": null,
@@ -38,7 +47,7 @@
   {
     "request_id": "SYN-REQ-2026-00008",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-04T23:31:06.322879+00:00",
+    "last_checked_at": "2026-09-04T23:02:20.898987+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-04T09:26:58.447209+00:00",
     "reupload_detected_at": null,
@@ -47,7 +56,7 @@
   {
     "request_id": "SYN-REQ-2026-00009",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-29T12:34:56.784530+00:00",
+    "last_checked_at": "2026-09-29T14:05:20.303678+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-29T10:34:56.784530+00:00",
     "reupload_detected_at": null,
@@ -56,7 +65,7 @@
   {
     "request_id": "SYN-REQ-2026-00010",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-26T20:01:13.133492+00:00",
+    "last_checked_at": "2026-09-28T03:27:42.423466+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-26T14:45:29.102696+00:00",
     "reupload_detected_at": null,
@@ -65,7 +74,7 @@
   {
     "request_id": "SYN-REQ-2026-00011",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-17T06:01:28.198854+00:00",
+    "last_checked_at": "2026-09-16T23:51:58.508405+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-16T21:51:58.508405+00:00",
     "reupload_detected_at": null,
@@ -74,7 +83,7 @@
   {
     "request_id": "SYN-REQ-2026-00012",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-28T15:35:19.155983+00:00",
+    "last_checked_at": "2026-09-29T04:24:20.731075+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-27T08:42:17.829666+00:00",
     "reupload_detected_at": null,
@@ -83,7 +92,7 @@
   {
     "request_id": "SYN-REQ-2026-00013",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-08T19:31:15.654001+00:00",
+    "last_checked_at": "2026-09-07T13:11:47.830917+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-07T00:19:07.380629+00:00",
     "reupload_detected_at": null,
@@ -92,25 +101,34 @@
   {
     "request_id": "SYN-REQ-2026-00014",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-14T19:58:06.528515+00:00",
+    "last_checked_at": "2026-09-13T08:38:30.949776+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-13T06:38:30.949776+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00020",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-10-01T10:47:24.447221+00:00",
+    "request_id": "SYN-REQ-2026-00019",
+    "observation_status": "confirmed_available",
+    "last_checked_at": "2026-09-06T06:26:33.722278+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-30T00:15:46.514991+00:00",
+    "verified_removed_at": null,
     "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
+    "notes": "Content verified active."
+  },
+  {
+    "request_id": "SYN-REQ-2026-00020",
+    "observation_status": "confirmed_available",
+    "last_checked_at": "2026-09-18T22:59:10.410136+00:00",
+    "verifier_agent_id": "verifier-simulator-v1",
+    "verified_removed_at": null,
+    "reupload_detected_at": null,
+    "notes": "Contradictory observation: HTTP 200 payload still accessible."
   },
   {
     "request_id": "SYN-REQ-2026-00023",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-06T06:04:35.004943+00:00",
+    "last_checked_at": "2026-09-05T12:37:16.251380+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-05T07:20:01.282653+00:00",
     "reupload_detected_at": null,
@@ -119,7 +137,7 @@
   {
     "request_id": "SYN-REQ-2026-00024",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-10T14:31:47.569043+00:00",
+    "last_checked_at": "2026-09-08T16:03:17.481604+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-08T09:51:01.744073+00:00",
     "reupload_detected_at": null,
@@ -128,7 +146,7 @@
   {
     "request_id": "SYN-REQ-2026-00025",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-28T17:09:06.953794+00:00",
+    "last_checked_at": "2026-09-30T14:10:22.045008+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-28T15:09:06.953794+00:00",
     "reupload_detected_at": null,
@@ -136,17 +154,17 @@
   },
   {
     "request_id": "SYN-REQ-2026-00026",
-    "observation_status": "confirmed_removed",
+    "observation_status": "confirmed_available",
     "last_checked_at": "2026-09-25T21:42:56.948895+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-25T19:42:56.948895+00:00",
+    "verified_removed_at": null,
     "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
+    "notes": "Contradictory observation: HTTP 200 payload still accessible."
   },
   {
     "request_id": "SYN-REQ-2026-00027",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-16T13:06:55.840950+00:00",
+    "last_checked_at": "2026-09-16T16:48:31.468760+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-14T20:05:49.567860+00:00",
     "reupload_detected_at": null,
@@ -155,7 +173,7 @@
   {
     "request_id": "SYN-REQ-2026-00030",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-17T15:13:07.360430+00:00",
+    "last_checked_at": "2026-09-16T20:53:39.759480+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-16T03:03:34.556593+00:00",
     "reupload_detected_at": null,
@@ -164,7 +182,7 @@
   {
     "request_id": "SYN-REQ-2026-00031",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-16T22:48:00.699724+00:00",
+    "last_checked_at": "2026-09-18T07:30:08.425842+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-16T19:43:43.777341+00:00",
     "reupload_detected_at": null,
@@ -172,17 +190,17 @@
   },
   {
     "request_id": "SYN-REQ-2026-00032",
-    "observation_status": "confirmed_available",
-    "last_checked_at": "2026-09-18T22:16:08.174185+00:00",
+    "observation_status": "confirmed_removed",
+    "last_checked_at": "2026-09-17T23:00:55.234221+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": null,
+    "verified_removed_at": "2026-09-17T08:44:30.173035+00:00",
     "reupload_detected_at": null,
-    "notes": "Contradictory observation: HTTP 200 payload still accessible."
+    "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
     "request_id": "SYN-REQ-2026-00033",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-23T20:28:33.727038+00:00",
+    "last_checked_at": "2026-09-24T16:33:48.046813+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-23T18:28:33.727038+00:00",
     "reupload_detected_at": null,
@@ -191,16 +209,16 @@
   {
     "request_id": "SYN-REQ-2026-00035",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-28T06:00:54.575028+00:00",
+    "last_checked_at": "2026-09-27T06:36:27.917033+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-26T12:42:47.106057+00:00",
+    "verified_removed_at": "2026-09-25T15:47:59.115909+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
     "request_id": "SYN-REQ-2026-00037",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-06T23:14:38.280462+00:00",
+    "last_checked_at": "2026-09-06T15:25:40.123980+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-04T23:51:57.939018+00:00",
     "reupload_detected_at": null,
@@ -209,178 +227,142 @@
   {
     "request_id": "SYN-REQ-2026-00038",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-17T04:19:07.826986+00:00",
+    "last_checked_at": "2026-09-17T07:04:00.261874+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-16T04:50:53.885971+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00040",
-    "observation_status": "confirmed_available",
-    "last_checked_at": "2026-09-06T16:56:37.063611+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": null,
-    "reupload_detected_at": null,
-    "notes": "Contradictory observation: HTTP 200 payload still accessible."
-  },
-  {
     "request_id": "SYN-REQ-2026-00041",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-22T13:46:54.039017+00:00",
+    "last_checked_at": "2026-09-02T23:27:33.101934+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-22T11:46:54.039017+00:00",
+    "verified_removed_at": "2026-09-01T23:52:41.411044+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
     "request_id": "SYN-REQ-2026-00042",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-15T07:04:36.453699+00:00",
+    "last_checked_at": "2026-09-13T00:43:54.155722+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-12T16:25:30.163637+00:00",
+    "verified_removed_at": "2026-09-12T22:43:54.155722+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
     "request_id": "SYN-REQ-2026-00043",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-03T12:12:57.489184+00:00",
+    "observation_status": "confirmed_available",
+    "last_checked_at": "2026-09-21T04:50:55.171098+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-02T17:06:58.972316+00:00",
+    "verified_removed_at": null,
     "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
+    "notes": "Contradictory observation: HTTP 200 payload still accessible."
   },
   {
-    "request_id": "SYN-REQ-2026-00044",
+    "request_id": "SYN-REQ-2026-00045",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-08T10:25:49.468726+00:00",
+    "last_checked_at": "2026-09-28T07:07:58.829403+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-07T05:54:24.640071+00:00",
+    "verified_removed_at": "2026-09-27T10:46:39.329796+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
     "request_id": "SYN-REQ-2026-00046",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-06T00:22:09.063246+00:00",
+    "last_checked_at": "2026-09-24T10:57:00.240474+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-05T22:22:09.063246+00:00",
+    "verified_removed_at": "2026-09-23T10:46:06.503331+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
     "request_id": "SYN-REQ-2026-00047",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-17T06:00:43.338892+00:00",
+    "last_checked_at": "2026-09-11T22:46:14.648189+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-17T04:00:43.338892+00:00",
+    "verified_removed_at": "2026-09-11T20:46:14.648189+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
     "request_id": "SYN-REQ-2026-00048",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-17T16:35:06.109702+00:00",
+    "last_checked_at": "2026-09-15T05:58:58.405936+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-15T23:37:05.549195+00:00",
+    "verified_removed_at": "2026-09-13T03:36:37.078755+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
     "request_id": "SYN-REQ-2026-00049",
-    "observation_status": "confirmed_available",
-    "last_checked_at": "2026-09-09T10:01:21.701852+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": null,
-    "reupload_detected_at": null,
-    "notes": "Content verified active."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00050",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-29T10:50:32.415689+00:00",
+    "last_checked_at": "2026-09-11T08:04:03.114681+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-26T22:46:12.684314+00:00",
+    "verified_removed_at": "2026-09-10T10:16:39.635773+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
     "request_id": "SYN-REQ-2026-00051",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-29T12:44:09.274234+00:00",
+    "last_checked_at": "2026-09-22T17:49:05.093387+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-28T01:34:38.884494+00:00",
-    "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00052",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-04T09:54:47.920793+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-04T05:19:38.362528+00:00",
+    "verified_removed_at": "2026-09-22T15:49:05.093387+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
     "request_id": "SYN-REQ-2026-00053",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-10-02T03:03:17.614175+00:00",
+    "last_checked_at": "2026-10-01T12:15:33.544256+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-30T00:22:20.778569+00:00",
-    "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00054",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-12T10:33:43.528294+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-12T08:33:43.528294+00:00",
+    "verified_removed_at": "2026-10-01T11:49:06.978699+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
     "request_id": "SYN-REQ-2026-00055",
-    "observation_status": "confirmed_available",
-    "last_checked_at": "2026-09-16T16:55:44.893866+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": null,
-    "reupload_detected_at": null,
-    "notes": "Content verified active."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00056",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-09T18:42:10.232641+00:00",
+    "last_checked_at": "2026-09-09T11:18:41.477467+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-08T22:26:36.750280+00:00",
+    "verified_removed_at": "2026-09-08T06:24:10.372559+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
+    "request_id": "SYN-REQ-2026-00056",
+    "observation_status": "uncertain",
+    "last_checked_at": "2026-09-15T23:35:03.858337+00:00",
+    "verifier_agent_id": "verifier-simulator-v1",
+    "verified_removed_at": null,
+    "reupload_detected_at": null,
+    "notes": "Transient CDN gateway timeout; check unverified."
+  },
+  {
     "request_id": "SYN-REQ-2026-00057",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-25T22:52:33.085557+00:00",
+    "last_checked_at": "2026-09-16T12:56:24.357589+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-25T04:40:08.352583+00:00",
+    "verified_removed_at": "2026-09-14T20:10:13.344002+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
     "request_id": "SYN-REQ-2026-00058",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-11T08:52:20.125174+00:00",
+    "last_checked_at": "2026-09-22T23:24:33.190321+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-09T15:41:11.199915+00:00",
+    "verified_removed_at": "2026-09-22T02:15:43.524258+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
     "request_id": "SYN-REQ-2026-00059",
     "observation_status": "confirmed_available",
-    "last_checked_at": "2026-09-10T13:51:01.834835+00:00",
+    "last_checked_at": "2026-09-22T13:13:05.953573+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": null,
     "reupload_detected_at": null,
@@ -388,420 +370,447 @@
   },
   {
     "request_id": "SYN-REQ-2026-00060",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-21T17:46:37.522159+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-21T04:25:24.606065+00:00",
-    "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00062",
     "observation_status": "confirmed_available",
-    "last_checked_at": "2026-09-02T10:24:36.365412+00:00",
+    "last_checked_at": "2026-09-25T06:48:08.729202+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": null,
     "reupload_detected_at": null,
     "notes": "Content verified active."
   },
   {
-    "request_id": "SYN-REQ-2026-00063",
+    "request_id": "SYN-REQ-2026-00061",
+    "observation_status": "confirmed_available",
+    "last_checked_at": "2026-09-02T14:14:43.798178+00:00",
+    "verifier_agent_id": "verifier-simulator-v1",
+    "verified_removed_at": null,
+    "reupload_detected_at": null,
+    "notes": "Content verified active."
+  },
+  {
+    "request_id": "SYN-REQ-2026-00062",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-27T22:24:20.024794+00:00",
+    "last_checked_at": "2026-09-27T16:34:09.313403+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-26T22:28:38.568203+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00064",
+    "request_id": "SYN-REQ-2026-00063",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-23T16:05:26.131024+00:00",
+    "last_checked_at": "2026-09-18T09:50:31.203911+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-22T17:42:01.406555+00:00",
+    "verified_removed_at": "2026-09-17T15:59:30.863726+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00065",
+    "request_id": "SYN-REQ-2026-00064",
     "observation_status": "confirmed_available",
-    "last_checked_at": "2026-09-30T00:04:16.846594+00:00",
+    "last_checked_at": "2026-09-29T14:44:48.868685+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": null,
     "reupload_detected_at": null,
     "notes": "Content verified active."
   },
   {
-    "request_id": "SYN-REQ-2026-00069",
+    "request_id": "SYN-REQ-2026-00068",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-13T03:54:25.120296+00:00",
+    "last_checked_at": "2026-09-14T21:16:19.615978+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-13T01:54:25.120296+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00070",
+    "request_id": "SYN-REQ-2026-00069",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-08T15:04:49.853125+00:00",
+    "last_checked_at": "2026-09-10T01:03:56.495096+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-08T08:57:51.282227+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00072",
+    "request_id": "SYN-REQ-2026-00071",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-15T16:09:09.289608+00:00",
+    "last_checked_at": "2026-09-13T20:14:29.617729+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-13T04:19:14.769894+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00075",
+    "request_id": "SYN-REQ-2026-00074",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-05T19:57:10.426524+00:00",
+    "last_checked_at": "2026-09-06T15:51:58.788428+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-05T11:33:10.297933+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00076",
+    "request_id": "SYN-REQ-2026-00075",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-18T06:19:16.776692+00:00",
+    "last_checked_at": "2026-09-18T14:01:16.029048+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-17T17:51:28.935636+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00079",
+    "request_id": "SYN-REQ-2026-00078",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-07T03:14:28.208130+00:00",
+    "last_checked_at": "2026-09-07T03:09:49.216565+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-07T01:14:28.208130+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00085",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-04T09:55:37.452838+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-04T07:55:37.452838+00:00",
-    "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00086",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-06T18:27:41.013667+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-06T16:27:41.013667+00:00",
-    "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00087",
+    "request_id": "SYN-REQ-2026-00084",
     "observation_status": "confirmed_available",
-    "last_checked_at": "2026-09-08T12:53:55.194383+00:00",
+    "last_checked_at": "2026-09-28T01:44:12.030519+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": null,
     "reupload_detected_at": null,
     "notes": "Content verified active."
   },
   {
-    "request_id": "SYN-REQ-2026-00088",
-    "observation_status": "uncertain",
-    "last_checked_at": "2026-09-22T00:08:25.759193+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": null,
-    "reupload_detected_at": null,
-    "notes": "Transient CDN gateway timeout; check unverified."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00090",
+    "request_id": "SYN-REQ-2026-00085",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-16T09:37:54.769820+00:00",
+    "last_checked_at": "2026-09-06T08:39:18.350823+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-15T13:53:11.641456+00:00",
+    "verified_removed_at": "2026-09-05T14:57:12.445129+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00095",
+    "request_id": "SYN-REQ-2026-00087",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-10-01T10:23:57.770018+00:00",
+    "last_checked_at": "2026-09-18T00:00:14.370291+00:00",
+    "verifier_agent_id": "verifier-simulator-v1",
+    "verified_removed_at": "2026-09-17T22:00:14.370291+00:00",
+    "reupload_detected_at": null,
+    "notes": "HTTP 404/410 content disabled confirmed."
+  },
+  {
+    "request_id": "SYN-REQ-2026-00088",
+    "observation_status": "confirmed_removed",
+    "last_checked_at": "2026-09-23T03:22:31.721783+00:00",
+    "verifier_agent_id": "verifier-simulator-v1",
+    "verified_removed_at": "2026-09-21T18:31:36.923152+00:00",
+    "reupload_detected_at": null,
+    "notes": "HTTP 404/410 content disabled confirmed."
+  },
+  {
+    "request_id": "SYN-REQ-2026-00089",
+    "observation_status": "confirmed_removed",
+    "last_checked_at": "2026-09-30T14:55:35.041808+00:00",
+    "verifier_agent_id": "verifier-simulator-v1",
+    "verified_removed_at": "2026-09-28T19:27:51.508560+00:00",
+    "reupload_detected_at": null,
+    "notes": "HTTP 404/410 content disabled confirmed."
+  },
+  {
+    "request_id": "SYN-REQ-2026-00093",
+    "observation_status": "confirmed_removed",
+    "last_checked_at": "2026-10-02T18:30:29.111198+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-10-01T08:23:57.770018+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00096",
+    "request_id": "SYN-REQ-2026-00094",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-27T11:19:05.222014+00:00",
+    "last_checked_at": "2026-09-28T02:35:11.172801+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-25T11:30:39.497912+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00097",
+    "request_id": "SYN-REQ-2026-00095",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-05T16:22:38.385351+00:00",
+    "last_checked_at": "2026-09-07T17:46:06.549804+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-05T15:50:24.039333+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00098",
+    "request_id": "SYN-REQ-2026-00096",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-06T19:55:04.305499+00:00",
+    "last_checked_at": "2026-09-07T20:54:30.891917+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-05T17:10:02.314590+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00099",
+    "request_id": "SYN-REQ-2026-00097",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-19T11:42:19.954127+00:00",
+    "last_checked_at": "2026-09-18T12:51:30.402200+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-18T10:51:30.402200+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00100",
+    "request_id": "SYN-REQ-2026-00098",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-10-01T16:20:09.158331+00:00",
+    "last_checked_at": "2026-10-02T02:10:50.279262+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-30T20:15:34.261783+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00101",
+    "request_id": "SYN-REQ-2026-00099",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-16T04:36:51.595609+00:00",
+    "last_checked_at": "2026-09-14T18:48:01.270976+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-14T16:48:01.270976+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00102",
+    "request_id": "SYN-REQ-2026-00100",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-25T00:36:06.335540+00:00",
+    "last_checked_at": "2026-09-24T11:20:04.540786+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-24T09:20:04.540786+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00103",
-    "observation_status": "confirmed_available",
-    "last_checked_at": "2026-09-18T17:49:31.391732+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": null,
-    "reupload_detected_at": null,
-    "notes": "Contradictory observation: HTTP 200 payload still accessible."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00105",
-    "observation_status": "confirmed_available",
-    "last_checked_at": "2026-09-22T00:28:56.041257+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": null,
-    "reupload_detected_at": null,
-    "notes": "Contradictory observation: HTTP 200 payload still accessible."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00106",
+    "request_id": "SYN-REQ-2026-00101",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-18T05:06:19.103138+00:00",
+    "last_checked_at": "2026-09-19T10:02:58.890862+00:00",
+    "verifier_agent_id": "verifier-simulator-v1",
+    "verified_removed_at": "2026-09-18T15:49:31.391732+00:00",
+    "reupload_detected_at": null,
+    "notes": "HTTP 404/410 content disabled confirmed."
+  },
+  {
+    "request_id": "SYN-REQ-2026-00103",
+    "observation_status": "confirmed_removed",
+    "last_checked_at": "2026-09-22T09:24:49.907496+00:00",
+    "verifier_agent_id": "verifier-simulator-v1",
+    "verified_removed_at": "2026-09-21T05:05:58.791513+00:00",
+    "reupload_detected_at": null,
+    "notes": "HTTP 404/410 content disabled confirmed."
+  },
+  {
+    "request_id": "SYN-REQ-2026-00104",
+    "observation_status": "confirmed_removed",
+    "last_checked_at": "2026-09-16T13:23:58.550202+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-16T11:23:58.550202+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00108",
+    "request_id": "SYN-REQ-2026-00106",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-19T18:54:50.139729+00:00",
+    "last_checked_at": "2026-09-19T23:55:39.125201+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-19T17:53:31.203900+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00109",
+    "request_id": "SYN-REQ-2026-00107",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-30T04:12:33.333124+00:00",
+    "last_checked_at": "2026-09-30T03:28:55.510530+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-29T20:43:49.939916+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00110",
+    "request_id": "SYN-REQ-2026-00108",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-29T01:18:59.633400+00:00",
+    "last_checked_at": "2026-09-29T12:59:06.833286+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-28T04:26:24.905334+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00111",
+    "request_id": "SYN-REQ-2026-00109",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-02T22:45:13.453498+00:00",
+    "last_checked_at": "2026-09-05T03:31:39.538117+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-02T09:04:32.496320+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00112",
+    "request_id": "SYN-REQ-2026-00110",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-16T00:53:14.848781+00:00",
+    "last_checked_at": "2026-09-17T04:58:29.281827+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-15T06:50:12.407762+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00113",
+    "request_id": "SYN-REQ-2026-00111",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-28T00:10:40.865768+00:00",
+    "last_checked_at": "2026-09-26T22:35:28.461224+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-26T20:35:28.461224+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00114",
+    "request_id": "SYN-REQ-2026-00112",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-28T23:04:40.748295+00:00",
+    "last_checked_at": "2026-09-28T05:32:30.988377+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-26T15:01:54.925252+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00117",
+    "request_id": "SYN-REQ-2026-00115",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-06T04:28:56.986228+00:00",
+    "last_checked_at": "2026-09-06T16:46:59.400572+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-04T03:20:23.931153+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00118",
+    "request_id": "SYN-REQ-2026-00116",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-20T19:48:35.812985+00:00",
+    "last_checked_at": "2026-09-06T05:24:19.436414+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-20T17:59:11.351842+00:00",
+    "verified_removed_at": "2026-09-06T03:24:19.436414+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00119",
+    "request_id": "SYN-REQ-2026-00117",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-25T23:21:07.587335+00:00",
+    "last_checked_at": "2026-09-05T22:59:00.017539+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-25T12:59:35.464595+00:00",
+    "verified_removed_at": "2026-09-05T07:06:21.840838+00:00",
+    "reupload_detected_at": null,
+    "notes": "HTTP 404/410 content disabled confirmed."
+  },
+  {
+    "request_id": "SYN-REQ-2026-00118",
+    "observation_status": "confirmed_available",
+    "last_checked_at": "2026-09-09T10:09:00.058518+00:00",
+    "verifier_agent_id": "verifier-simulator-v1",
+    "verified_removed_at": null,
+    "reupload_detected_at": null,
+    "notes": "Contradictory observation: HTTP 200 payload still accessible."
+  },
+  {
+    "request_id": "SYN-REQ-2026-00120",
+    "observation_status": "confirmed_removed",
+    "last_checked_at": "2026-09-30T06:02:16.765339+00:00",
+    "verifier_agent_id": "verifier-simulator-v1",
+    "verified_removed_at": "2026-09-28T22:29:52.788754+00:00",
+    "reupload_detected_at": null,
+    "notes": "HTTP 404/410 content disabled confirmed."
+  },
+  {
+    "request_id": "SYN-REQ-2026-00121",
+    "observation_status": "confirmed_removed",
+    "last_checked_at": "2026-10-02T07:06:02.469722+00:00",
+    "verifier_agent_id": "verifier-simulator-v1",
+    "verified_removed_at": "2026-10-01T17:12:35.872944+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
     "request_id": "SYN-REQ-2026-00123",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-18T19:07:52.450545+00:00",
+    "last_checked_at": "2026-09-15T11:32:36.106593+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-18T17:07:52.450545+00:00",
+    "verified_removed_at": "2026-09-13T19:56:43.690582+00:00",
+    "reupload_detected_at": null,
+    "notes": "HTTP 404/410 content disabled confirmed."
+  },
+  {
+    "request_id": "SYN-REQ-2026-00124",
+    "observation_status": "confirmed_removed",
+    "last_checked_at": "2026-09-28T18:44:16.542826+00:00",
+    "verifier_agent_id": "verifier-simulator-v1",
+    "verified_removed_at": "2026-09-27T05:49:54.663522+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
     "request_id": "SYN-REQ-2026-00125",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-10T13:45:59.856455+00:00",
+    "last_checked_at": "2026-09-28T03:16:05.166771+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-09T20:25:48.893149+00:00",
+    "verified_removed_at": "2026-09-26T00:46:41.407908+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00127",
+    "request_id": "SYN-REQ-2026-00126",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-27T22:11:48.893698+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-25T14:44:40.955642+00:00",
-    "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00128",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-28T21:29:45.636435+00:00",
+    "last_checked_at": "2026-09-27T23:51:52.366297+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-27T21:51:52.366297+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00129",
+    "request_id": "SYN-REQ-2026-00127",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-03T22:43:11.627522+00:00",
+    "last_checked_at": "2026-09-05T07:59:02.206460+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-02T18:49:41.135144+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00130",
+    "request_id": "SYN-REQ-2026-00128",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-15T11:54:41.084230+00:00",
+    "last_checked_at": "2026-09-13T07:52:15.125409+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-13T05:52:15.125409+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00131",
+    "request_id": "SYN-REQ-2026-00129",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-19T05:36:56.338931+00:00",
+    "last_checked_at": "2026-09-18T15:20:41.169922+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-18T13:20:41.169922+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00133",
+    "request_id": "SYN-REQ-2026-00131",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-26T17:43:38.533231+00:00",
+    "last_checked_at": "2026-09-27T14:20:16.700830+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-26T03:18:41.262159+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00134",
+    "request_id": "SYN-REQ-2026-00132",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-24T12:21:28.623430+00:00",
+    "last_checked_at": "2026-09-25T18:44:10.069396+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-24T10:21:28.623430+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00135",
+    "request_id": "SYN-REQ-2026-00133",
     "observation_status": "confirmed_removed",
     "last_checked_at": "2026-10-01T18:07:55.263705+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
@@ -810,7 +819,7 @@
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00136",
+    "request_id": "SYN-REQ-2026-00134",
     "observation_status": "confirmed_removed",
     "last_checked_at": "2026-09-18T08:30:32.499022+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
@@ -819,16 +828,16 @@
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00137",
+    "request_id": "SYN-REQ-2026-00135",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-28T04:32:09.572281+00:00",
+    "last_checked_at": "2026-09-28T12:58:19.274446+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-26T06:38:43.027792+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00138",
+    "request_id": "SYN-REQ-2026-00136",
     "observation_status": "confirmed_removed",
     "last_checked_at": "2026-09-05T05:53:53.084151+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
@@ -837,466 +846,448 @@
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00139",
+    "request_id": "SYN-REQ-2026-00137",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-11T10:47:56.346408+00:00",
+    "last_checked_at": "2026-09-09T20:10:28.110514+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-09T18:10:28.110514+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00140",
+    "request_id": "SYN-REQ-2026-00138",
     "observation_status": "confirmed_available",
-    "last_checked_at": "2026-09-12T08:32:48.022679+00:00",
+    "last_checked_at": "2026-09-13T00:23:00.515717+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": null,
     "reupload_detected_at": null,
     "notes": "Content verified active."
   },
   {
-    "request_id": "SYN-REQ-2026-00141",
+    "request_id": "SYN-REQ-2026-00139",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-19T19:28:51.544021+00:00",
+    "last_checked_at": "2026-09-21T08:43:12.151297+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-19T11:39:23.663046+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00142",
+    "request_id": "SYN-REQ-2026-00140",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-16T07:40:19.485935+00:00",
+    "last_checked_at": "2026-09-16T17:37:39.744263+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-16T05:40:19.485935+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00143",
+    "request_id": "SYN-REQ-2026-00141",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-19T11:49:42.152302+00:00",
+    "last_checked_at": "2026-09-19T08:03:10.040258+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-18T23:45:06.268074+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00146",
-    "observation_status": "confirmed_available",
-    "last_checked_at": "2026-09-07T05:55:35.532601+00:00",
+    "request_id": "SYN-REQ-2026-00144",
+    "observation_status": "confirmed_removed",
+    "last_checked_at": "2026-09-16T23:17:03.654090+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": null,
+    "verified_removed_at": "2026-09-16T05:51:44.303314+00:00",
     "reupload_detected_at": null,
-    "notes": "Content verified active."
+    "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00147",
+    "request_id": "SYN-REQ-2026-00145",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-22T00:09:47.032883+00:00",
+    "last_checked_at": "2026-09-22T23:20:02.764031+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-20T13:09:48.247356+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00148",
+    "request_id": "SYN-REQ-2026-00146",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-28T04:19:38.165522+00:00",
+    "last_checked_at": "2026-09-29T05:50:50.597312+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-27T09:42:39.702845+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00149",
+    "request_id": "SYN-REQ-2026-00147",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-20T05:47:55.718805+00:00",
+    "last_checked_at": "2026-09-19T17:28:54.672913+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-18T08:59:38.207131+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00151",
+    "request_id": "SYN-REQ-2026-00149",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-17T19:19:53.361917+00:00",
+    "last_checked_at": "2026-09-17T22:33:16.862472+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-16T10:02:43.860298+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00152",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-13T18:33:20.289753+00:00",
+    "request_id": "SYN-REQ-2026-00150",
+    "observation_status": "uncertain",
+    "last_checked_at": "2026-09-14T02:30:15.098522+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-12T13:56:36.083590+00:00",
+    "verified_removed_at": null,
     "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
+    "notes": "Transient CDN gateway timeout; check unverified."
   },
   {
-    "request_id": "SYN-REQ-2026-00154",
+    "request_id": "SYN-REQ-2026-00152",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-26T19:06:08.002509+00:00",
+    "last_checked_at": "2026-09-27T00:23:21.821422+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-26T10:28:00.591377+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00156",
+    "request_id": "SYN-REQ-2026-00154",
     "observation_status": "confirmed_available",
-    "last_checked_at": "2026-09-28T13:13:25.379230+00:00",
+    "last_checked_at": "2026-09-27T16:43:00.491810+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": null,
     "reupload_detected_at": null,
     "notes": "Content verified active."
   },
   {
-    "request_id": "SYN-REQ-2026-00157",
+    "request_id": "SYN-REQ-2026-00155",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-18T02:11:47.493182+00:00",
+    "last_checked_at": "2026-09-18T05:15:12.153979+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-16T01:41:32.109645+00:00",
+    "verified_removed_at": "2026-09-15T17:14:51.843858+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00159",
+    "request_id": "SYN-REQ-2026-00157",
     "observation_status": "confirmed_available",
-    "last_checked_at": "2026-09-14T01:05:33.929694+00:00",
+    "last_checked_at": "2026-09-13T00:15:50.703773+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": null,
     "reupload_detected_at": null,
     "notes": "Content verified active."
   },
   {
-    "request_id": "SYN-REQ-2026-00161",
+    "request_id": "SYN-REQ-2026-00159",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-21T21:29:41.867559+00:00",
+    "last_checked_at": "2026-09-19T23:36:38.049882+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-19T21:36:38.049882+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00162",
+    "request_id": "SYN-REQ-2026-00160",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-24T01:22:37.589218+00:00",
+    "last_checked_at": "2026-09-23T20:18:14.142489+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-23T17:31:58.310171+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00164",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-12T02:33:17.490548+00:00",
+    "request_id": "SYN-REQ-2026-00162",
+    "observation_status": "confirmed_available",
+    "last_checked_at": "2026-09-12T18:51:18.989776+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-11T14:47:08.902656+00:00",
+    "verified_removed_at": null,
     "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
+    "notes": "Contradictory observation: HTTP 200 payload still accessible."
   },
   {
-    "request_id": "SYN-REQ-2026-00166",
+    "request_id": "SYN-REQ-2026-00164",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-12T15:35:34.335282+00:00",
+    "last_checked_at": "2026-09-13T01:02:04.089103+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-11T02:46:13.543832+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00167",
+    "request_id": "SYN-REQ-2026-00165",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-14T07:01:15.574814+00:00",
+    "last_checked_at": "2026-09-14T21:02:38.483925+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-14T05:01:15.574814+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00169",
+    "request_id": "SYN-REQ-2026-00167",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-10-01T13:39:49.289147+00:00",
+    "last_checked_at": "2026-10-03T20:41:04.567567+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-10-01T12:52:43.552923+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
+    "request_id": "SYN-REQ-2026-00168",
+    "observation_status": "confirmed_removed",
+    "last_checked_at": "2026-09-06T19:18:06.341101+00:00",
+    "verifier_agent_id": "verifier-simulator-v1",
+    "verified_removed_at": "2026-09-06T17:18:06.341101+00:00",
+    "reupload_detected_at": null,
+    "notes": "HTTP 404/410 content disabled confirmed."
+  },
+  {
+    "request_id": "SYN-REQ-2026-00169",
+    "observation_status": "confirmed_available",
+    "last_checked_at": "2026-09-14T14:12:23.298806+00:00",
+    "verifier_agent_id": "verifier-simulator-v1",
+    "verified_removed_at": null,
+    "reupload_detected_at": null,
+    "notes": "Content verified active."
+  },
+  {
     "request_id": "SYN-REQ-2026-00170",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-23T10:27:48.294864+00:00",
+    "last_checked_at": "2026-09-02T13:35:06.868132+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-21T23:26:03.445948+00:00",
+    "verified_removed_at": "2026-09-01T23:46:07.935148+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
     "request_id": "SYN-REQ-2026-00171",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-21T04:40:29.841091+00:00",
+    "last_checked_at": "2026-09-30T01:49:24.997794+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-20T19:54:21.986694+00:00",
+    "verified_removed_at": "2026-09-29T23:49:24.997794+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
     "request_id": "SYN-REQ-2026-00172",
     "observation_status": "confirmed_available",
-    "last_checked_at": "2026-09-23T12:19:40.163811+00:00",
+    "last_checked_at": "2026-09-29T19:14:21.452213+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": null,
     "reupload_detected_at": null,
     "notes": "Content verified active."
   },
   {
-    "request_id": "SYN-REQ-2026-00174",
+    "request_id": "SYN-REQ-2026-00176",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-21T20:47:04.945600+00:00",
+    "last_checked_at": "2026-10-01T12:11:50.242385+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-20T23:56:28.315029+00:00",
-    "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00175",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-06T06:36:49.783015+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-05T05:23:40.048752+00:00",
+    "verified_removed_at": "2026-10-01T10:11:50.242385+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
     "request_id": "SYN-REQ-2026-00177",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-06T19:25:40.120751+00:00",
+    "last_checked_at": "2026-09-16T00:15:50.968851+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-05T17:27:41.550767+00:00",
-    "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00178",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-10T03:03:59.264348+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-07T12:26:56.295432+00:00",
+    "verified_removed_at": "2026-09-14T13:35:29.359129+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
     "request_id": "SYN-REQ-2026-00179",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-30T03:00:09.631493+00:00",
+    "last_checked_at": "2026-09-30T22:19:01.430976+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-28T15:26:48.502915+00:00",
+    "verified_removed_at": "2026-09-30T20:19:01.430976+00:00",
+    "reupload_detected_at": null,
+    "notes": "HTTP 404/410 content disabled confirmed."
+  },
+  {
+    "request_id": "SYN-REQ-2026-00180",
+    "observation_status": "confirmed_removed",
+    "last_checked_at": "2026-09-07T16:08:42.222377+00:00",
+    "verifier_agent_id": "verifier-simulator-v1",
+    "verified_removed_at": "2026-09-06T16:10:43.982594+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
     "request_id": "SYN-REQ-2026-00181",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-18T06:21:27.476284+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-17T20:29:56.562180+00:00",
-    "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00182",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-21T22:35:58.102241+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-21T08:47:39.746288+00:00",
-    "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00183",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-13T02:44:49.930100+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-12T04:19:31.827841+00:00",
-    "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00184",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-22T00:45:08.048428+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-21T00:11:21.035170+00:00",
-    "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00185",
     "observation_status": "confirmed_available",
-    "last_checked_at": "2026-09-23T12:59:40.317207+00:00",
+    "last_checked_at": "2026-09-08T20:40:18.459175+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": null,
     "reupload_detected_at": null,
     "notes": "Content verified active."
   },
   {
-    "request_id": "SYN-REQ-2026-00188",
+    "request_id": "SYN-REQ-2026-00182",
+    "observation_status": "confirmed_available",
+    "last_checked_at": "2026-09-19T20:17:46.288318+00:00",
+    "verifier_agent_id": "verifier-simulator-v1",
+    "verified_removed_at": null,
+    "reupload_detected_at": null,
+    "notes": "Content verified active."
+  },
+  {
+    "request_id": "SYN-REQ-2026-00185",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-07T06:29:39.463367+00:00",
+    "last_checked_at": "2026-09-07T06:00:40.061402+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-05T17:22:04.185842+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00189",
+    "request_id": "SYN-REQ-2026-00186",
     "observation_status": "confirmed_available",
-    "last_checked_at": "2026-09-04T16:46:09.521798+00:00",
+    "last_checked_at": "2026-09-05T13:12:25.698375+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": null,
     "reupload_detected_at": null,
     "notes": "Content verified active."
   },
   {
-    "request_id": "SYN-REQ-2026-00190",
+    "request_id": "SYN-REQ-2026-00187",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-17T19:08:21.294843+00:00",
+    "last_checked_at": "2026-09-17T14:28:19.643186+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-17T03:13:39.157320+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00191",
+    "request_id": "SYN-REQ-2026-00188",
     "observation_status": "confirmed_available",
-    "last_checked_at": "2026-09-02T02:17:46.960343+00:00",
+    "last_checked_at": "2026-09-03T09:45:34.680250+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": null,
     "reupload_detected_at": null,
     "notes": "Content verified active."
   },
   {
-    "request_id": "SYN-REQ-2026-00192",
+    "request_id": "SYN-REQ-2026-00189",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-07T18:46:51.097718+00:00",
+    "last_checked_at": "2026-09-09T01:42:56.821003+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-06T18:58:20.218875+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00193",
+    "request_id": "SYN-REQ-2026-00190",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-17T13:53:52.442790+00:00",
+    "last_checked_at": "2026-09-18T04:14:43.560181+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-16T01:57:58.211795+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00194",
+    "request_id": "SYN-REQ-2026-00191",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-23T06:54:46.514467+00:00",
+    "last_checked_at": "2026-09-23T06:16:14.940981+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-22T12:28:56.091024+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00195",
+    "request_id": "SYN-REQ-2026-00192",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-11T12:49:16.851171+00:00",
+    "last_checked_at": "2026-09-12T07:44:42.199259+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-11T10:49:16.851171+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00196",
+    "request_id": "SYN-REQ-2026-00193",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-13T18:46:00.177920+00:00",
+    "last_checked_at": "2026-09-13T13:20:30.211967+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-12T15:14:17.714084+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00197",
+    "request_id": "SYN-REQ-2026-00194",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-19T22:08:45.158266+00:00",
+    "last_checked_at": "2026-09-21T10:54:04.283006+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-19T10:27:01.877746+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00198",
+    "request_id": "SYN-REQ-2026-00195",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-07T04:36:15.808929+00:00",
+    "last_checked_at": "2026-09-07T21:39:27.572060+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-05T06:41:58.374008+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00200",
+    "request_id": "SYN-REQ-2026-00197",
     "observation_status": "confirmed_available",
-    "last_checked_at": "2026-09-28T13:02:24.102354+00:00",
+    "last_checked_at": "2026-09-27T10:59:36.181799+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": null,
     "reupload_detected_at": null,
     "notes": "Content verified active."
   },
   {
-    "request_id": "SYN-REQ-2026-00201",
+    "request_id": "SYN-REQ-2026-00198",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-09T05:20:47.630538+00:00",
+    "last_checked_at": "2026-09-09T10:40:28.822195+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-08T06:26:40.118773+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00203",
+    "request_id": "SYN-REQ-2026-00200",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-06T18:51:25.117260+00:00",
+    "last_checked_at": "2026-09-08T03:10:09.728687+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-05T20:02:17.506816+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00204",
+    "request_id": "SYN-REQ-2026-00201",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-18T20:46:05.758691+00:00",
+    "last_checked_at": "2026-09-19T15:18:37.246430+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-17T10:35:44.307997+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00208",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-22T16:04:31.342670+00:00",
+    "request_id": "SYN-REQ-2026-00205",
+    "observation_status": "confirmed_available",
+    "last_checked_at": "2026-09-21T16:34:46.545379+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-21T05:18:07.347763+00:00",
+    "verified_removed_at": null,
     "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
+    "notes": "Contradictory observation: HTTP 200 payload still accessible."
   },
   {
-    "request_id": "SYN-REQ-2026-00209",
+    "request_id": "SYN-REQ-2026-00206",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-06T00:55:44.528954+00:00",
+    "last_checked_at": "2026-09-07T17:08:59.494883+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-05T03:39:30.362844+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00210",
+    "request_id": "SYN-REQ-2026-00207",
     "observation_status": "confirmed_removed",
     "last_checked_at": "2026-09-16T03:24:10.641298+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
@@ -1305,498 +1296,228 @@
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00211",
+    "request_id": "SYN-REQ-2026-00208",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-26T10:28:35.724674+00:00",
+    "last_checked_at": "2026-09-25T04:30:13.925057+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-24T21:21:54.393841+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00213",
+    "request_id": "SYN-REQ-2026-00210",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-06T01:33:36.308262+00:00",
+    "last_checked_at": "2026-09-05T06:40:56.225523+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-04T23:09:40.163530+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00214",
+    "request_id": "SYN-REQ-2026-00211",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-28T05:15:33.004651+00:00",
+    "last_checked_at": "2026-09-28T01:08:51.978138+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-26T07:03:29.234056+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00215",
+    "request_id": "SYN-REQ-2026-00212",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-29T20:33:17.016942+00:00",
+    "last_checked_at": "2026-10-01T11:31:29.506839+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-29T18:33:17.016942+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00217",
+    "request_id": "SYN-REQ-2026-00214",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-22T09:37:46.713517+00:00",
+    "last_checked_at": "2026-09-23T05:07:02.821285+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": "2026-09-21T13:51:09.496505+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00222",
+    "request_id": "SYN-REQ-2026-00215",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-21T04:28:31.873670+00:00",
+    "last_checked_at": "2026-09-26T09:12:51.335059+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-19T22:11:11.850156+00:00",
+    "verified_removed_at": "2026-09-24T01:03:23.320130+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00225",
-    "observation_status": "confirmed_available",
-    "last_checked_at": "2026-09-07T11:26:59.592779+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": null,
-    "reupload_detected_at": null,
-    "notes": "Contradictory observation: HTTP 200 payload still accessible."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00226",
+    "request_id": "SYN-REQ-2026-00216",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-04T05:55:09.600751+00:00",
+    "last_checked_at": "2026-09-26T09:07:34.252206+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-04T03:55:09.600751+00:00",
+    "verified_removed_at": "2026-09-25T10:57:47.578793+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00231",
+    "request_id": "SYN-REQ-2026-00217",
     "observation_status": "confirmed_available",
-    "last_checked_at": "2026-09-18T01:59:33.120093+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": null,
-    "reupload_detected_at": null,
-    "notes": "Contradictory observation: HTTP 200 payload still accessible."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00232",
-    "observation_status": "confirmed_available",
-    "last_checked_at": "2026-09-05T01:02:59.472272+00:00",
+    "last_checked_at": "2026-09-01T23:55:20.230012+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": null,
     "reupload_detected_at": null,
     "notes": "Content verified active."
   },
   {
-    "request_id": "SYN-REQ-2026-00234",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-26T00:24:14.424074+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-25T22:24:14.424074+00:00",
-    "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00235",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-16T09:43:28.441277+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-16T07:43:28.441277+00:00",
-    "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00236",
+    "request_id": "SYN-REQ-2026-00218",
     "observation_status": "confirmed_available",
-    "last_checked_at": "2026-09-23T03:47:52.934521+00:00",
+    "last_checked_at": "2026-09-08T21:38:31.003250+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": null,
     "reupload_detected_at": null,
     "notes": "Content verified active."
   },
   {
-    "request_id": "SYN-REQ-2026-00237",
+    "request_id": "SYN-REQ-2026-00219",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-10-02T09:00:51.016847+00:00",
+    "last_checked_at": "2026-09-30T01:23:44.962494+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-10-01T06:58:37.905570+00:00",
+    "verified_removed_at": "2026-09-29T10:51:14.293275+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00239",
-    "observation_status": "confirmed_available",
-    "last_checked_at": "2026-09-19T15:29:00.987311+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": null,
-    "reupload_detected_at": null,
-    "notes": "Contradictory observation: HTTP 200 payload still accessible."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00241",
+    "request_id": "SYN-REQ-2026-00220",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-26T17:52:53.464520+00:00",
+    "last_checked_at": "2026-09-18T12:11:44.667623+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-24T19:06:35.484425+00:00",
+    "verified_removed_at": "2026-09-18T04:07:57.180884+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00243",
+    "request_id": "SYN-REQ-2026-00221",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-10T23:52:27.607324+00:00",
+    "last_checked_at": "2026-09-20T20:26:57.604942+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-10T03:39:45.929664+00:00",
+    "verified_removed_at": "2026-09-18T19:29:27.184268+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00244",
+    "request_id": "SYN-REQ-2026-00224",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-20T23:04:14.264393+00:00",
+    "last_checked_at": "2026-09-06T10:27:00.676823+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-20T14:35:04.213287+00:00",
+    "verified_removed_at": "2026-09-05T18:33:45.254159+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00248",
+    "request_id": "SYN-REQ-2026-00227",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-17T07:45:12.011735+00:00",
+    "last_checked_at": "2026-09-02T14:06:37.184891+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-15T15:19:25.851140+00:00",
+    "verified_removed_at": "2026-09-02T12:06:37.184891+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00251",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-07T04:54:46.123908+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-07T02:54:46.123908+00:00",
-    "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00252",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-10T07:18:04.595040+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-10T05:18:04.595040+00:00",
-    "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00253",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-17T04:59:51.901804+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-17T02:59:51.901804+00:00",
-    "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00256",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-25T19:32:59.430754+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-25T12:14:04.394018+00:00",
-    "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00258",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-11T04:24:18.090228+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-09T16:43:09.050329+00:00",
-    "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00259",
-    "observation_status": "confirmed_available",
-    "last_checked_at": "2026-09-22T12:02:16.168061+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": null,
-    "reupload_detected_at": null,
-    "notes": "Content verified active."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00260",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-05T11:22:52.654821+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-05T09:22:52.654821+00:00",
-    "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00261",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-04T17:34:14.883506+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-02T10:39:11.546325+00:00",
-    "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00262",
-    "observation_status": "confirmed_available",
-    "last_checked_at": "2026-09-25T03:59:11.145452+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": null,
-    "reupload_detected_at": null,
-    "notes": "Contradictory observation: HTTP 200 payload still accessible."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00263",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-06T04:40:25.406127+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-05T20:06:11.865904+00:00",
-    "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00264",
-    "observation_status": "confirmed_available",
-    "last_checked_at": "2026-09-29T22:43:29.639353+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": null,
-    "reupload_detected_at": null,
-    "notes": "Contradictory observation: HTTP 200 payload still accessible."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00266",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-13T06:43:02.841602+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-13T04:43:02.841602+00:00",
-    "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00268",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-20T21:35:05.148852+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-20T19:35:05.148852+00:00",
-    "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00269",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-18T16:41:48.854067+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-18T16:40:31.344452+00:00",
-    "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00270",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-29T19:14:51.152899+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-27T01:21:55.297261+00:00",
-    "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00272",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-28T00:50:02.909754+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-25T05:36:43.625980+00:00",
-    "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00273",
-    "observation_status": "confirmed_available",
-    "last_checked_at": "2026-09-26T18:44:50.462559+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": null,
-    "reupload_detected_at": null,
-    "notes": "Content verified active."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00274",
-    "observation_status": "confirmed_available",
-    "last_checked_at": "2026-09-08T00:17:58.439792+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": null,
-    "reupload_detected_at": null,
-    "notes": "Content verified active."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00275",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-21T11:52:54.769263+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-21T09:52:54.769263+00:00",
-    "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00276",
-    "observation_status": "confirmed_available",
-    "last_checked_at": "2026-09-07T19:04:36.171658+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": null,
-    "reupload_detected_at": null,
-    "notes": "Contradictory observation: HTTP 200 payload still accessible."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00278",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-08T23:22:59.179622+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-08T21:22:59.179622+00:00",
-    "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00279",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-07T09:37:46.857784+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-05T18:59:36.412651+00:00",
-    "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00280",
-    "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-25T10:56:40.177848+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-25T08:52:33.589413+00:00",
-    "reupload_detected_at": null,
-    "notes": "HTTP 404/410 content disabled confirmed."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00281",
+    "request_id": "SYN-REQ-2026-00229",
     "observation_status": "uncertain",
-    "last_checked_at": "2026-09-27T02:43:59.955456+00:00",
+    "last_checked_at": "2026-09-10T09:49:46.326409+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": null,
     "reupload_detected_at": null,
     "notes": "Transient CDN gateway timeout; check unverified."
   },
   {
-    "request_id": "SYN-REQ-2026-00282",
+    "request_id": "SYN-REQ-2026-00230",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-17T19:56:34.956682+00:00",
+    "last_checked_at": "2026-09-14T12:56:16.079366+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-16T01:17:26.346347+00:00",
+    "verified_removed_at": "2026-09-13T19:34:08.811767+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00283",
+    "request_id": "SYN-REQ-2026-00234",
+    "observation_status": "confirmed_removed",
+    "last_checked_at": "2026-09-13T09:20:50.650646+00:00",
+    "verifier_agent_id": "verifier-simulator-v1",
+    "verified_removed_at": "2026-09-12T03:29:05.364071+00:00",
+    "reupload_detected_at": null,
+    "notes": "HTTP 404/410 content disabled confirmed."
+  },
+  {
+    "request_id": "SYN-REQ-2026-00235",
     "observation_status": "confirmed_available",
-    "last_checked_at": "2026-09-23T22:39:18.765394+00:00",
+    "last_checked_at": "2026-09-19T16:23:34.807690+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
     "verified_removed_at": null,
     "reupload_detected_at": null,
     "notes": "Contradictory observation: HTTP 200 payload still accessible."
   },
   {
-    "request_id": "SYN-REQ-2026-00286",
+    "request_id": "SYN-REQ-2026-00236",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-30T23:23:12.477918+00:00",
+    "last_checked_at": "2026-09-26T20:44:49.744091+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-30T07:18:47.522333+00:00",
+    "verified_removed_at": "2026-09-25T12:52:11.870343+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00287",
-    "observation_status": "confirmed_available",
-    "last_checked_at": "2026-10-03T01:36:48.452682+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": null,
-    "reupload_detected_at": null,
-    "notes": "Content verified active."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00288",
+    "request_id": "SYN-REQ-2026-00237",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-26T04:28:12.210349+00:00",
+    "last_checked_at": "2026-09-07T18:56:20.205427+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-25T23:56:33.536314+00:00",
+    "verified_removed_at": "2026-09-07T09:21:16.292878+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00289",
+    "request_id": "SYN-REQ-2026-00238",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-12T02:27:46.690634+00:00",
+    "last_checked_at": "2026-09-10T09:37:34.745175+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-09T17:17:55.753499+00:00",
+    "verified_removed_at": "2026-09-10T03:39:45.929664+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00290",
+    "request_id": "SYN-REQ-2026-00243",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-04T10:00:27.878902+00:00",
+    "last_checked_at": "2026-09-29T11:30:59.489202+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-01T16:57:29.533603+00:00",
+    "verified_removed_at": "2026-09-27T14:40:45.500928+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00291",
+    "request_id": "SYN-REQ-2026-00246",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-16T09:57:53.293941+00:00",
+    "last_checked_at": "2026-09-08T09:41:33.537563+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-15T17:06:49.071228+00:00",
+    "verified_removed_at": "2026-09-07T02:54:46.123908+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00294",
-    "observation_status": "confirmed_available",
-    "last_checked_at": "2026-09-05T10:52:00.769999+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": null,
-    "reupload_detected_at": null,
-    "notes": "Contradictory observation: HTTP 200 payload still accessible."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00297",
+    "request_id": "SYN-REQ-2026-00247",
     "observation_status": "confirmed_removed",
-    "last_checked_at": "2026-09-28T19:34:35.228059+00:00",
+    "last_checked_at": "2026-09-11T16:06:49.631805+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": "2026-09-26T21:37:28.925635+00:00",
+    "verified_removed_at": "2026-09-10T05:18:04.595040+00:00",
     "reupload_detected_at": null,
     "notes": "HTTP 404/410 content disabled confirmed."
   },
   {
-    "request_id": "SYN-REQ-2026-00298",
-    "observation_status": "confirmed_available",
-    "last_checked_at": "2026-09-08T00:31:09.231397+00:00",
+    "request_id": "SYN-REQ-2026-00248",
+    "observation_status": "confirmed_removed",
+    "last_checked_at": "2026-09-18T06:09:52.802214+00:00",
     "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": null,
+    "verified_removed_at": "2026-09-17T02:59:51.901804+00:00",
     "reupload_detected_at": null,
-    "notes": "Content verified active."
-  },
-  {
-    "request_id": "SYN-REQ-2026-00299",
-    "observation_status": "confirmed_available",
-    "last_checked_at": "2026-09-12T13:30:30.669076+00:00",
-    "verifier_agent_id": "verifier-simulator-v1",
-    "verified_removed_at": null,
-    "reupload_detected_at": null,
-    "notes": "Content verified active."
+    "notes": "HTTP 404/410 content disabled confirmed."
   }
 ]

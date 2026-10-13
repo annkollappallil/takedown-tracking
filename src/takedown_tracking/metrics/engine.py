@@ -142,7 +142,8 @@ class MetricsEngine:
 
         # Apply measurement cutoff and maturity rule:
         # A request enters the mature cohort if:
-        # - It was completed before cutoff, OR
+        # - It was verified removed before cutoff, OR
+        # - It was claimed removed before cutoff, OR
         # - It was rejected before cutoff, OR
         # - Its applicable deadline has elapsed by cutoff.
         mature_takedowns: List[RequestRecord] = []
@@ -150,11 +151,19 @@ class MetricsEngine:
             deadline_h = self.deadline_config.get_deadline_hours(r)
             deadline_dt = r.sent_at + timedelta(hours=deadline_h)
 
-            is_early_completed = (
+            obs = obs_map.get(r.request_id)
+            is_verified_early = (
+                obs is not None
+                and obs.observation_status == ObservationStatus.CONFIRMED_REMOVED
+                and obs.verified_removed_at is not None
+                and obs.verified_removed_at <= cutoff
+            )
+            is_claimed_early = (
                 r.status == RequestStatus.CLAIMED_REMOVED
                 and r.claimed_removal_at is not None
                 and r.claimed_removal_at <= cutoff
             )
+            is_early_completed = is_verified_early or is_claimed_early
             is_rejected = r.status == RequestStatus.REJECTED and r.sent_at <= cutoff
             is_deadline_passed = deadline_dt <= cutoff
 
@@ -184,6 +193,12 @@ class MetricsEngine:
                 rejections_count += 1
                 continue
 
+            is_verified_removed = (
+                obs is not None
+                and obs.observation_status == ObservationStatus.CONFIRMED_REMOVED
+                and obs.verified_removed_at is not None
+                and obs.verified_removed_at <= cutoff
+            )
             is_claimed_removed = (
                 r.status == RequestStatus.CLAIMED_REMOVED and r.claimed_removal_at is not None
             )
@@ -195,9 +210,9 @@ class MetricsEngine:
                 still_available_takedowns_count += 1
                 continue
 
-            if is_claimed_removed:
-                # Use verified removal timestamp if available, else platform claim
-                if obs and obs.observation_status == ObservationStatus.CONFIRMED_REMOVED and obs.verified_removed_at:
+            if is_verified_removed or is_claimed_removed:
+                # Independent verification takes precedence over platform status
+                if is_verified_removed:
                     verified_takedowns_count += 1
                     dur_dt = obs.verified_removed_at
                 else:
@@ -256,13 +271,39 @@ class MetricsEngine:
                 (verified_checks / len(mature_takedowns)) * 100.0, 2
             )
 
-        # 3. Data Requests Performance
+        # 3. Data Requests Performance with as_of Cohort Maturity
         eligible_data_requests = [d for d in data_requests if d.is_complete_request]
+        mature_data_requests: List[RequestRecord] = []
+        for d in eligible_data_requests:
+            deadline_h = self.deadline_config.get_deadline_hours(d)
+            deadline_dt = d.sent_at + timedelta(hours=deadline_h)
+
+            is_early_provided = (
+                d.status == RequestStatus.DATA_PROVIDED
+                and d.data_provided_at is not None
+                and d.data_provided_at <= cutoff
+            )
+            is_rejected = d.status == RequestStatus.REJECTED and d.sent_at <= cutoff
+            is_deadline_passed = deadline_dt <= cutoff
+
+            if is_early_provided or is_rejected or is_deadline_passed:
+                mature_data_requests.append(d)
+
+        num_mature_data = len(mature_data_requests)
         data_response_durations_hours: List[float] = []
         data_on_time_count = 0
+        data_rejections_count = 0
 
-        for d in eligible_data_requests:
-            if d.status == RequestStatus.DATA_PROVIDED and d.data_provided_at is not None:
+        for d in mature_data_requests:
+            if d.status == RequestStatus.REJECTED:
+                data_rejections_count += 1
+                continue
+
+            if (
+                d.status == RequestStatus.DATA_PROVIDED
+                and d.data_provided_at is not None
+                and d.data_provided_at <= cutoff
+            ):
                 dur_hours = max(0.0, (d.data_provided_at - d.sent_at).total_seconds() / 3600.0)
                 data_response_durations_hours.append(dur_hours)
                 deadline = self.deadline_config.get_deadline_hours(d)
@@ -280,10 +321,11 @@ class MetricsEngine:
             else None
         )
 
+        data_actionable_mature = num_mature_data - data_rejections_count
         data_deadline_compliance_pct: Optional[float] = None
-        if eligible_data_requests:
+        if data_actionable_mature > 0:
             data_deadline_compliance_pct = round(
-                (data_on_time_count / len(eligible_data_requests)) * 100.0, 2
+                (data_on_time_count / data_actionable_mature) * 100.0, 2
             )
 
         return PerformanceMetrics(
@@ -303,6 +345,7 @@ class MetricsEngine:
             deadline_compliance_rate_pct=deadline_compliance_pct,
             still_available_rate_pct=still_available_pct,
             total_data_requests=len(data_requests),
+            mature_data_requests=num_mature_data,
             completed_data_requests=len(data_response_durations_hours),
             median_data_response_hours=median_data_hours,
             p90_data_response_hours=p90_data_hours,

@@ -27,7 +27,7 @@
 | **Pull Request** | **Open — PR [#1](https://github.com/iamnih4l/takedown-tracking/pull/1)** |
 | **Current Phase** | **Review Feedback Addressed — Tested & Documented** |
 | **Overall Progress** | Milestone 6 of 6 (All review findings resolved with tested regression suites) |
-| **Most Recent Milestone** | Full regression test suite passed (81/81 tests in 0.81s) |
+| **Most Recent Milestone** | Full regression test suite passed (86/86 tests in 0.80s) |
 | **Next Immediate Task** | Pair with teammate on Half 2 verifier integration and measurement cutoff calibration |
 | **Active Blockers** | **None** |
 
@@ -36,11 +36,11 @@
 | Component | Status | Test Status | Review Item Addressed |
 | :--- | :--- | :--- | :--- |
 | **Fictional Platform Identities** (`Platform A` .. `Platform J`) | `IMPLEMENTED` | `TESTED` | Item 2 (Zero real platforms in synthetic data) |
-| **2026 IT Rules Statutory Deadlines** (`config/deadlines.json`) | `IMPLEMENTED` | `TESTED` | Items 3, 9 (Rule 3(1)(d)=3h, Rule 3(2)(b)=2h, strictest resolution) |
+| **2026 IT Rules Statutory Deadlines** (`config/deadlines.json`) | `IMPLEMENTED` | `TESTED` | Items 3, 9, 12 (Rule 3(1)(d)=3h, Rule 3(2)(b)=2h, strictest resolution) |
 | **Right-Censored Survival Percentiles** (`metrics/engine.py`) | `IMPLEMENTED` | `TESTED` | Item 4 (Eliminated survivorship bias; Platform A vs B verified) |
-| **Measurement Cutoff & Cohort Maturity** (`as_of`) | `IMPLEMENTED` | `TESTED` | Item 5 (Immature requests excluded; deterministic evaluation) |
-| **Strengthened Privacy Filter** (`privacy/filter.py`) | `IMPLEMENTED` | `TESTED` | Items 6, 12 (Generic reasons, per-metric k-check, small-count redaction) |
-| **Shared Observations Contract** (`schemas/observation.schema.json`) | `IMPLEMENTED` | `TESTED` | Item 7 (Half 1 / Half 2 shared verification model) |
+| **Measurement Cutoff & Cohort Maturity** (`as_of`) | `IMPLEMENTED` | `TESTED` | Items 5, 10 (Immature takedowns & 72h data requests excluded) |
+| **Strengthened Privacy Filter** (`privacy/filter.py`) | `IMPLEMENTED` | `TESTED` | Items 6, 12, 13, 14 (Scope filtering, per-metric k-check, small-count redaction) |
+| **Shared Observations Contract** (`schemas/observation.schema.json`) | `IMPLEMENTED` | `TESTED` | Items 7, 11 (Verifier priority over platform status; false claim detection) |
 | **HMAC-SHA-256 URL Identifiers** (`models/request.py`) | `IMPLEMENTED` | `TESTED` | Item 8 (Keyed HMAC, fail-closed production safety) |
 | **Separate Platform Rejections Metric** (`metrics/engine.py`) | `IMPLEMENTED` | `TESTED` | Item 13 (Rejections isolated from still-available) |
 | **Narrowed Gitleaks Allowlist** (`.gitleaks.toml`) | `IMPLEMENTED` | `TESTED` | Item 14 (Removed `tests/.*` broad exemption) |
@@ -110,6 +110,35 @@
   - Linked `SECURITY.md` directly to GitHub Private Vulnerability Reporting (`https://github.com/iamnih4l/takedown-tracking/security/advisories/new`).
 * **Affected Files**: `.gitleaks.toml`, `README.md`, `SECURITY.md`.
 
+### 10. Data Requests Cutoff (`as_of`) and Cohort Maturity
+* **Problem**: A data assistance request submitted 30 minutes before cutoff (with a 72-hour statutory deadline) was counted in the compliance denominator, unfairly penalizing platforms (e.g. dropping compliance from 100% to 95%).
+* **Resolution**: Implemented cohort maturity for data requests in `MetricsEngine`. Data requests only enter the mature compliance cohort if completed/rejected before `as_of` or if their 72h deadline has elapsed by `as_of`. Immature pending requests are excluded from denominators. Added `mature_data_requests` metric.
+* **Affected Files**: `src/takedown_tracking/metrics/engine.py`, `src/takedown_tracking/models/metrics.py`, `src/takedown_tracking/models/scoreboard.py`, `schemas/scoreboard.schema.json`.
+
+### 11. Verifier Precedence over Platform Status
+* **Problem**: If an independent verifier observation confirmed content was removed (`confirmed_removed`) with `verified_removed_at`, but the platform status was still `pending` or `acknowledged`, the engine previously marked the content as still available.
+* **Resolution**: Independent verification strictly takes precedence over platform self-reporting. An observation with `confirmed_removed` and `verified_removed_at <= cutoff` marks the request as completed and mature, increments `verified_takedowns_count`, and calculates duration using `verified_removed_at`.
+* **Affected Files**: `src/takedown_tracking/metrics/engine.py`, `tests/test_observations_contract.py`.
+
+### 12. Statutory Police Intimations & 2026 Gazette Citations
+* **Problem**: Pre-amendment Oct 2025 MeitY URL, and unclear statutory basis for `routine_police_inquiry: 36h`.
+* **Resolution**:
+  - Updated `config/deadlines.json` source URL to official Gazette Notification 269993 (effective 20 February 2026).
+  - Clarified in `METHODOLOGY.md` that statutory police notices under Section 79(3)(b) fall under Rule 3(1)(d) (3.0 hours), while 36.0h represents an operational assumption for informal communications. Documented fallback resolution when `legal_route` is missing.
+* **Affected Files**: `config/deadlines.json`, `METHODOLOGY.md`.
+
+### 13. Reporting Scope Filtering in PrivacyFilter
+* **Problem**: `published_categories` hid breakdown rows, but out-of-scope categories (e.g., Defamation, HateSpeech) still leaked into platform totals and overall summary counts.
+* **Resolution**: `PrivacyFilter` now filters input records to `published_categories` upfront before computing overall metrics, platform breakdowns, and category rows. Synthetic data generator categories were also aligned with the public reporting scope.
+* **Affected Files**: `src/takedown_tracking/privacy/filter.py`, `src/takedown_tracking/generator/synthetic_generator.py`.
+
+### 14. Refined Per-Metric $k$-Check Denominators
+* **Problem**: Removal speed $k$-check evaluated mature takedowns including rejections, and data turnaround $k$-check evaluated total data requests rather than completed responses.
+* **Resolution**:
+  - Speed $k$-check strictly evaluates the speed cohort size ($N - \text{rejections} = \text{completed} + \text{still\_available}$).
+  - Median data response time $k$-check strictly evaluates completed data responses ($\text{completed\_data\_requests} \ge k$).
+* **Affected Files**: `src/takedown_tracking/privacy/filter.py`, `tests/test_privacy.py`.
+
 ---
 
 ## D. Testing and Verification Results
@@ -118,20 +147,20 @@
   ```powershell
   $env:PYTHONPATH="src"; python -m pytest -v tests
   ```
-  - **Total Tests**: **81**
-  - **Passed**: **81** (100% pass rate)
+  - **Total Tests**: **86**
+  - **Passed**: **86** (100% pass rate)
   - **Failed**: **0**
-  - **Execution Time**: **0.81 seconds**
+  - **Execution Time**: **0.80 seconds**
 * **Test Suite Breakdown**:
   - `tests/test_deadlines_2026.py` (9 tests): Rule 3(1)(d)=3h, Rule 3(2)(b)=2h, qualifying categories, priority override prevention, 3-way conflict resolution.
   - `tests/test_censored_percentiles.py` (7 tests): Platform A vs Platform B survivorship bias avoidance, right-censoring boundary ranks, zero `Infinity`/`NaN`.
-  - `tests/test_measurement_cutoff.py` (4 tests): Immature request exclusions, overdue transitions, early completed inclusions, determinism.
+  - `tests/test_measurement_cutoff.py` (6 tests): Immature takedowns, immature data requests (30m before cutoff), overdue transitions, early completed inclusions, determinism.
   - `tests/test_hmac_urls.py` (6 tests): HMAC determinism, key variations, fail-closed production safety, zero secret leakage.
-  - `tests/test_observations_contract.py` (5 tests): ObservationRecord validation, verified removal override, false removal claim detection, per-platform integrity.
+  - `tests/test_observations_contract.py` (6 tests): ObservationRecord validation, verifier precedence over platform status, verified removal override, false removal claim detection, per-platform integrity.
   - `tests/test_rejections.py` (3 tests): Rejection isolation from still-available, exclusion from removal speeds, small-count privacy redaction.
   - `tests/test_secret_scanning.py` (3 tests): Secret scanning of all source and test files, `.gitleaks.toml` restriction validation.
   - `tests/test_generator.py` (8 tests): Fictional platform guarantee (`Platform A` .. `Platform J`), seed determinism, observation generation.
-  - `tests/test_privacy.py` (6 tests): Generic reason validation, per-metric denominators, small count redactions, custom $k$.
+  - `tests/test_privacy.py` (9 tests): Generic reason validation, scope filtering without leakage, speed $k$-check without rejections, completed data $k$-check, small count redactions.
   - `tests/test_importer.py` (8 tests): Validation, temporal order, quarantine logging.
   - `tests/test_metrics.py` (11 tests): Percentile interpolation, compliance math, data request turnaround.
   - `tests/test_web.py` (6 tests): Server endpoints, scoreboard API, static assets.
@@ -141,26 +170,21 @@
 
 ## E. Handover Notes for Teammate (Half 2 Collaboration)
 
-### 1. How to Produce Observations for Half 1
-When your Verifier Simulator checks targeted URLs, emit records conforming to `schemas/observation.schema.json`:
-```json
-{
-  "request_id": "SYN-REQ-2026-00001",
-  "observation_status": "confirmed_removed",
-  "last_checked_at": "2026-09-02T14:00:00Z",
-  "verifier_agent_id": "verifier-agent-01",
-  "verified_removed_at": "2026-09-02T12:30:00Z"
-}
-```
-If content remains accessible after a platform claimed removal, set:
-```json
-{
-  "observation_status": "confirmed_available",
-  "notes": "HTTP 200 payload still live"
-}
-```
-Half 1's engine will automatically classify this as a **False Removal Claim**, increment the platform's false removal count, and penalize compliance.
+### 1. Workstream Boundary Alignment
+As agreed in review feedback:
+* **Teammate (Half 2) Ownership**:
+  - Writing and extending the observation contract (`schemas/observation.schema.json` and `ObservationRecord`).
+  - Adding `last_seen_up_at` and `first_checked_at` (to detect 1h claims when content remained live at 20h).
+  - Replacing unstructured notes with a typed error-code enum.
+  - Owning integrity metrics calculation: false removal claims, re-upload window and rate, and verification coverage.
+* **Half 1 (Our Workstream) Ownership**:
+  - Request ingestion, validation, and HMAC-SHA-256 URL pseudonymization.
+  - Statutory 2026 IT Rules SLA deadline resolution ($\min(\text{route}, \text{priority}, \text{category})$).
+  - Cohort maturity under explicit `as_of` measurement cutoff (for both takedowns and data requests).
+  - Right-censored survival percentiles for removal duration.
+  - $k$-Anonymity privacy filtering with small-count redaction and reporting scope restriction.
+  - Public scoreboard schemas and web presentation.
 
-### 2. Areas for Collaborative Pairing
-1. **Measurement Cutoff Calibration**: Agreeing on standard rolling observation windows (e.g. 30 days vs 60 days) and how verifier polling schedules align with `as_of`.
-2. **Dispute Review Workflow Binding**: Wiring intermediary dispute appeals into the scoreboard's `disputes_active` / `disputes_resolved` slots.
+### 2. How to Feed Observations into Half 1
+When the Verifier Simulator runs, emit observations adhering to `schemas/observation.schema.json`. Half 1 binds them via the `--observations` CLI option or `filter_and_publish(records, observations=obs_map)`.
+If content is verified removed, `verified_removed_at` will automatically override platform status and compute empirical turnaround times.

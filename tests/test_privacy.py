@@ -242,3 +242,134 @@ class TestPrivacyFilter:
         # Total is 15 >= 10, but incomplete count is 2 (< 10)
         # Exact small count of 2 MUST be redacted to None to prevent microdata leak
         assert entry.incomplete_requests_count is None
+
+    def test_scope_filtering_excludes_out_of_scope_categories_from_all_metrics(self, base_time: datetime) -> None:
+        """Categories outside published_categories must not count in platform or overall scores."""
+        records = []
+        # 12 CSAM records (in-scope)
+        for i in range(12):
+            records.append(
+                RequestRecord(
+                    request_id=f"SYN-CSAM-{i}",
+                    is_synthetic=True,
+                    request_type=RequestType.TAKEDOWN,
+                    platform=Platform.PLATFORM_A,
+                    category=Category.CSAM,
+                    priority=Priority.ROUTINE,
+                    sent_at=base_time,
+                    claimed_removal_at=base_time,
+                    police_unit_id="U1",
+                    is_complete_request=True,
+                    status=RequestStatus.CLAIMED_REMOVED,
+                )
+            )
+
+        # 25 HateSpeech records (out-of-scope by default)
+        for i in range(25):
+            records.append(
+                RequestRecord(
+                    request_id=f"SYN-HATE-{i}",
+                    is_synthetic=True,
+                    request_type=RequestType.TAKEDOWN,
+                    platform=Platform.PLATFORM_A,
+                    category=Category.HATE_SPEECH,
+                    priority=Priority.ROUTINE,
+                    sent_at=base_time,
+                    claimed_removal_at=base_time,
+                    police_unit_id="U1",
+                    is_complete_request=True,
+                    status=RequestStatus.CLAIMED_REMOVED,
+                )
+            )
+
+        pfilter = PrivacyFilter(k_threshold=10)
+        scoreboard = pfilter.filter_and_publish(records)
+        entry = next(p for p in scoreboard.platform_breakdown if p.platform == "Platform A")
+
+        # Crucial: Platform sample_size must be 12 (in-scope), NOT 37!
+        assert entry.sample_size == 12
+        assert scoreboard.overall_performance.total_requests == 12
+
+    def test_speed_k_check_excludes_rejections_and_data_k_check_requires_completed(self, base_time: datetime) -> None:
+        """Speed k-check must not count rejections, and data k-check must count completed data requests."""
+        records = []
+        # Platform A: 6 completed removals, 6 rejections -> total 12 mature takedowns
+        # But speed cohort is only 6 (< 10), so removal speed must be suppressed!
+        for i in range(6):
+            records.append(
+                RequestRecord(
+                    request_id=f"SYN-CR-{i}",
+                    is_synthetic=True,
+                    request_type=RequestType.TAKEDOWN,
+                    platform=Platform.PLATFORM_A,
+                    category=Category.CSAM,
+                    priority=Priority.ROUTINE,
+                    sent_at=base_time,
+                    claimed_removal_at=base_time,
+                    police_unit_id="U1",
+                    is_complete_request=True,
+                    status=RequestStatus.CLAIMED_REMOVED,
+                )
+            )
+        for i in range(6):
+            records.append(
+                RequestRecord(
+                    request_id=f"SYN-REJ-{i}",
+                    is_synthetic=True,
+                    request_type=RequestType.TAKEDOWN,
+                    platform=Platform.PLATFORM_A,
+                    category=Category.CSAM,
+                    priority=Priority.ROUTINE,
+                    sent_at=base_time,
+                    police_unit_id="U1",
+                    is_complete_request=True,
+                    status=RequestStatus.REJECTED,
+                )
+            )
+
+        # Platform A: 12 total data requests, but only 2 completed
+        for i in range(2):
+            records.append(
+                RequestRecord(
+                    request_id=f"SYN-DATA-C-{i}",
+                    is_synthetic=True,
+                    request_type=RequestType.DATA_REQUEST,
+                    platform=Platform.PLATFORM_A,
+                    category=Category.FINANCIAL_FRAUD,
+                    priority=Priority.ROUTINE,
+                    sent_at=base_time,
+                    data_provided_at=base_time,
+                    police_unit_id="U1",
+                    is_complete_request=True,
+                    status=RequestStatus.DATA_PROVIDED,
+                )
+            )
+        for i in range(10):
+            records.append(
+                RequestRecord(
+                    request_id=f"SYN-DATA-P-{i}",
+                    is_synthetic=True,
+                    request_type=RequestType.DATA_REQUEST,
+                    platform=Platform.PLATFORM_A,
+                    category=Category.FINANCIAL_FRAUD,
+                    priority=Priority.ROUTINE,
+                    sent_at=base_time,
+                    police_unit_id="U1",
+                    is_complete_request=True,
+                    status=RequestStatus.PENDING,
+                )
+            )
+
+        pfilter = PrivacyFilter(k_threshold=10)
+        scoreboard = pfilter.filter_and_publish(records)
+        entry = next(p for p in scoreboard.platform_breakdown if p.platform == "Platform A")
+
+        # Total requests for Platform A = 24 >= 10 -> not suppressed overall
+        assert entry.is_suppressed is False
+        # Mature takedowns = 12 >= 10, so compliance is published
+        assert entry.deadline_compliance_rate_pct is not None
+        # But speed cohort size is 6 (< 10) -> removal speed MUST be suppressed!
+        assert entry.median_removal_hours is None
+        assert entry.median_removal_display == "[Suppressed < k]"
+        # Total data requests = 12 >= 10, but completed = 2 (< 10) -> median data turnaround MUST be suppressed!
+        assert entry.median_data_response_hours is None

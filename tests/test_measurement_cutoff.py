@@ -130,3 +130,70 @@ class TestMeasurementCutoff:
         m2 = engine.compute_performance_metrics(recs, as_of=base_time).to_dict()
 
         assert m1 == m2
+
+    def test_data_request_sent_before_cutoff_is_immature_and_not_penalized(self, base_time: datetime) -> None:
+        """Data request sent 30 min before cutoff is immature (72h deadline) and does not penalize compliance."""
+        cutoff = base_time
+
+        # Data request 1: Sent 80h ago, provided at 20h (completed on-time)
+        mature_req = RequestRecord(
+            request_id="DATA-01-MATURE",
+            is_synthetic=True,
+            request_type=RequestType.DATA_REQUEST,
+            platform=Platform.PLATFORM_A,
+            category=Category.FINANCIAL_FRAUD,
+            priority=Priority.ROUTINE,
+            sent_at=cutoff - timedelta(hours=80.0),
+            data_provided_at=cutoff - timedelta(hours=60.0),
+            police_unit_id="U1",
+            is_complete_request=True,
+            status=RequestStatus.DATA_PROVIDED,
+        )
+
+        # Data request 2: Sent 30 min ago, pending (71.5 hours remaining)
+        immature_req = RequestRecord(
+            request_id="DATA-02-IMMATURE",
+            is_synthetic=True,
+            request_type=RequestType.DATA_REQUEST,
+            platform=Platform.PLATFORM_A,
+            category=Category.FINANCIAL_FRAUD,
+            priority=Priority.ROUTINE,
+            sent_at=cutoff - timedelta(minutes=30),
+            police_unit_id="U1",
+            is_complete_request=True,
+            status=RequestStatus.PENDING,
+        )
+
+        engine = MetricsEngine()
+        metrics = engine.compute_performance_metrics([mature_req, immature_req], as_of=cutoff)
+
+        assert metrics.total_data_requests == 2
+        assert metrics.mature_data_requests == 1
+        assert metrics.completed_data_requests == 1
+        # Crucial: Compliance is 100%, NOT 50%!
+        assert metrics.data_deadline_compliance_rate_pct == 100.0
+
+    def test_data_request_whose_deadline_elapsed_matures_and_fails_compliance(self, base_time: datetime) -> None:
+        """Data request sent 75h ago without response has elapsed its 72h deadline and counts as non-compliant."""
+        cutoff = base_time
+
+        overdue_req = RequestRecord(
+            request_id="DATA-OVERDUE",
+            is_synthetic=True,
+            request_type=RequestType.DATA_REQUEST,
+            platform=Platform.PLATFORM_A,
+            category=Category.FINANCIAL_FRAUD,
+            priority=Priority.ROUTINE,
+            sent_at=cutoff - timedelta(hours=75.0),
+            police_unit_id="U1",
+            is_complete_request=True,
+            status=RequestStatus.PENDING,
+        )
+
+        engine = MetricsEngine()
+        metrics = engine.compute_performance_metrics([overdue_req], as_of=cutoff)
+
+        assert metrics.total_data_requests == 1
+        assert metrics.mature_data_requests == 1
+        assert metrics.completed_data_requests == 0
+        assert metrics.data_deadline_compliance_rate_pct == 0.0

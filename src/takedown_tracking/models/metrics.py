@@ -60,12 +60,13 @@ class PerformanceMetrics:
     deadline_compliance_rate_pct: Optional[float]
     still_available_rate_pct: float
     total_data_requests: int
-    completed_data_requests: int
-    median_data_response_hours: Optional[float]
-    p90_data_response_hours: Optional[float]
-    data_deadline_compliance_rate_pct: Optional[float]
-    incomplete_police_requests_count: int
-    invalid_records_count: int
+    mature_data_requests: int = 0
+    completed_data_requests: int = 0
+    median_data_response_hours: Optional[float] = None
+    p90_data_response_hours: Optional[float] = None
+    data_deadline_compliance_rate_pct: Optional[float] = None
+    incomplete_police_requests_count: int = 0
+    invalid_records_count: int = 0
     # Integrity metrics (Half 1 / Half 2 shared contract)
     false_removal_claims_count: int = 0
     false_removal_claim_rate_pct: Optional[float] = None
@@ -91,6 +92,7 @@ class PerformanceMetrics:
             "deadline_compliance_rate_pct": self.deadline_compliance_rate_pct,
             "still_available_rate_pct": self.still_available_rate_pct,
             "total_data_requests": self.total_data_requests,
+            "mature_data_requests": self.mature_data_requests,
             "completed_data_requests": self.completed_data_requests,
             "median_data_response_hours": self.median_data_response_hours,
             "p90_data_response_hours": self.p90_data_response_hours,

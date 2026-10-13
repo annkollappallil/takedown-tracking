@@ -98,9 +98,16 @@ class PrivacyFilter:
         is_demo = self.is_demonstration_mode or any(r.is_synthetic for r in records)
         disclaimer = self.DEMO_DISCLAIMER if is_demo else self.PRODUCTION_DISCLAIMER
 
+        # Scope filtering: filter records to published categories before computing metrics
+        # so that overall, platform, and category totals are strictly consistent and don't leak out-of-scope counts.
+        if self.published_categories is not None:
+            scoped_records = [r for r in records if r.category in self.published_categories]
+        else:
+            scoped_records = records
+
         # 1. Compute overall metrics (global aggregate is permitted as long as total >= k)
         overall_metrics = self.metrics_engine.compute_performance_metrics(
-            records,
+            scoped_records,
             invalid_records_count=invalid_records_count,
             as_of=cutoff,
             observations=observations,
@@ -108,7 +115,7 @@ class PrivacyFilter:
 
         # 2. Platform Breakdown with Per-Metric Small-Group Suppression
         platform_metrics = self.metrics_engine.compute_by_platform(
-            records, as_of=cutoff, observations=observations
+            scoped_records, as_of=cutoff, observations=observations
         )
         platform_entries: List[PlatformScoreboardEntry] = []
 
@@ -170,14 +177,18 @@ class PrivacyFilter:
                 )
             else:
                 # Platform has >= k total requests. Now apply independent per-metric k checks!
-                # Takedown metric denominator check:
+                # Takedown speed denominator check (speed cohort: completed + still available, excluding rejections):
+                speed_cohort_size = metrics.completed_takedowns + metrics.still_available_takedowns
+                speed_k = speed_cohort_size >= self.k_threshold
+                # Takedown compliance / availability rates denominator check:
                 takedowns_k = metrics.mature_takedowns >= self.k_threshold
-                med_hours = metrics.median_removal_hours if takedowns_k else None
-                med_censored = metrics.median_removal_censored if takedowns_k else False
-                med_disp = metrics.median_removal_display if takedowns_k else "[Suppressed < k]"
-                p90_hours = metrics.p90_removal_hours if takedowns_k else None
-                p90_censored = metrics.p90_removal_censored if takedowns_k else False
-                p90_disp = metrics.p90_removal_display if takedowns_k else "[Suppressed < k]"
+
+                med_hours = metrics.median_removal_hours if speed_k else None
+                med_censored = metrics.median_removal_censored if speed_k else False
+                med_disp = metrics.median_removal_display if speed_k else "[Suppressed < k]"
+                p90_hours = metrics.p90_removal_hours if speed_k else None
+                p90_censored = metrics.p90_removal_censored if speed_k else False
+                p90_disp = metrics.p90_removal_display if speed_k else "[Suppressed < k]"
                 comp_pct = metrics.deadline_compliance_rate_pct if takedowns_k else None
                 avail_pct = metrics.still_available_rate_pct if takedowns_k else None
 
@@ -189,7 +200,8 @@ class PrivacyFilter:
                     rejection_pct = None
 
                 # Data metric denominator check:
-                data_k = metrics.total_data_requests >= self.k_threshold
+                # Median data turnaround is built strictly from completed data requests!
+                data_k = metrics.completed_data_requests >= self.k_threshold
                 data_hours = metrics.median_data_response_hours if data_k else None
 
                 # Small count suppression for incomplete police requests:
@@ -229,7 +241,7 @@ class PrivacyFilter:
 
         # 3. Category Breakdown (filtered to published categories)
         category_metrics = self.metrics_engine.compute_by_category(
-            records, as_of=cutoff, observations=observations
+            scoped_records, as_of=cutoff, observations=observations
         )
         category_entries: List[CategoryScoreboardEntry] = []
 
@@ -252,17 +264,19 @@ class PrivacyFilter:
                     suppression_reason=self.GENERIC_SUPPRESSION_REASON,
                 )
             else:
+                speed_cohort_size = metrics.completed_takedowns + metrics.still_available_takedowns
+                speed_k = speed_cohort_size >= self.k_threshold
                 takedowns_k = metrics.mature_takedowns >= self.k_threshold
                 entry = CategoryScoreboardEntry(
                     category=cat.value,
                     is_suppressed=False,
                     sample_size=sample_size,
-                    median_removal_hours=metrics.median_removal_hours if takedowns_k else None,
-                    median_removal_censored=metrics.median_removal_censored if takedowns_k else False,
-                    median_removal_display=metrics.median_removal_display if takedowns_k else "[Suppressed < k]",
-                    p90_removal_hours=metrics.p90_removal_hours if takedowns_k else None,
-                    p90_removal_censored=metrics.p90_removal_censored if takedowns_k else False,
-                    p90_removal_display=metrics.p90_removal_display if takedowns_k else "[Suppressed < k]",
+                    median_removal_hours=metrics.median_removal_hours if speed_k else None,
+                    median_removal_censored=metrics.median_removal_censored if speed_k else False,
+                    median_removal_display=metrics.median_removal_display if speed_k else "[Suppressed < k]",
+                    p90_removal_hours=metrics.p90_removal_hours if speed_k else None,
+                    p90_removal_censored=metrics.p90_removal_censored if speed_k else False,
+                    p90_removal_display=metrics.p90_removal_display if speed_k else "[Suppressed < k]",
                     deadline_compliance_rate_pct=metrics.deadline_compliance_rate_pct if takedowns_k else None,
                     suppression_reason=None,
                 )

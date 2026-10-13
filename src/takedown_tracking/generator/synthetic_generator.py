@@ -120,8 +120,13 @@ class SyntheticDataGenerator:
         # Exclusively use fictional platforms Platform A .. Platform J
         fictional_platforms = list(self.PLATFORM_PROFILES.keys())
 
-        # Public harm categories
-        categories = list(Category)
+        # Public harm categories aligned strictly with the public reporting scope
+        categories = [
+            Category.CSAM,
+            Category.NON_CONSENSUAL_IMAGERY,
+            Category.IMPERSONATION,
+            Category.FINANCIAL_FRAUD,
+        ]
         priorities = [Priority.ROUTINE, Priority.URGENT, Priority.EMERGENCY_LIFE_THREAT]
         priority_weights = [0.65, 0.25, 0.10]
         units = [f"SYN-UNIT-KL-CYBER-{i:02d}" for i in range(1, 9)]

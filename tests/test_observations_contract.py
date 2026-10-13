@@ -174,3 +174,39 @@ class TestObservationsContract:
         # 12 >= 10, so integrity metrics are published
         assert entry.verified_takedowns_count == 12
         assert entry.false_removal_claims_count == 0
+
+    def test_verifier_wins_over_pending_or_acknowledged_platform_status(self, base_time: datetime) -> None:
+        """When an observation is CONFIRMED_REMOVED, it overrides pending/acknowledged status and counts as verified removal."""
+        # Platform status is ACKNOWLEDGED (platform has not marked claimed_removed)
+        req = RequestRecord(
+            request_id="REQ-VERIFIER-WINS",
+            is_synthetic=True,
+            request_type=RequestType.TAKEDOWN,
+            platform=Platform.PLATFORM_A,
+            category=Category.CSAM,  # 24h deadline
+            priority=Priority.ROUTINE,
+            sent_at=base_time,
+            police_unit_id="U1",
+            is_complete_request=True,
+            status=RequestStatus.ACKNOWLEDGED,
+        )
+
+        # But external verifier confirmed content was taken down in 3 hours
+        obs = ObservationRecord(
+            request_id="REQ-VERIFIER-WINS",
+            observation_status=ObservationStatus.CONFIRMED_REMOVED,
+            last_checked_at=base_time + timedelta(hours=4.0),
+            verifier_agent_id="verifier-unit-01",
+            verified_removed_at=base_time + timedelta(hours=3.0),
+        )
+
+        engine = MetricsEngine()
+        cutoff = base_time + timedelta(hours=5.0)
+        metrics = engine.compute_performance_metrics([req], as_of=cutoff, observations={"REQ-VERIFIER-WINS": obs})
+
+        assert metrics.mature_takedowns == 1
+        assert metrics.completed_takedowns == 1
+        assert metrics.verified_takedowns_count == 1
+        assert metrics.still_available_takedowns == 0
+        assert metrics.median_removal_hours == 3.0
+        assert metrics.deadline_compliance_rate_pct == 100.0
