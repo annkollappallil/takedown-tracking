@@ -45,3 +45,17 @@ jobs:
           python -m takedown_tracking.cli import --input synthetic_test.json
           python -m takedown_tracking.cli metrics --input synthetic_test.json
           python -m takedown_tracking.cli export-scoreboard --input synthetic_test.json --output scoreboard_test.json --k-threshold 10
+
+  secret-scan:
+    name: Preventive Secret Scanning (Gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository with Full History
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Gitleaks Secret Scanner
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

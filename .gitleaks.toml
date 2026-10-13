@@ -1,0 +1,13 @@
+# Gitleaks configuration for Takedown Accountability Platform
+title = "Takedown Tracking Gitleaks Configuration"
+
+[extend]
+# Inherit base gitleaks rules (detects GitHub PAT, OAuth tokens, AWS keys, private keys, etc.)
+
+[allowlist]
+description = "Allowlist harmless synthetic demonstration fixtures and hashes"
+paths = [
+    '''^data/demo_synthetic_requests\.json$''',
+    '''^data/demo_public_scoreboard\.json$''',
+    '''^tests/.*''',
+]

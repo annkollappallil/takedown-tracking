@@ -127,6 +127,15 @@ Tests validate:
 
 ---
 
-## 7. License
+## 7. Security & Credential Protection
+
+* **Zero Committed Credentials**: Never hardcode GitHub tokens, API credentials, private keys, or passwords.
+* **Authorized Authentication**: Use official credential helpers or environment-injected secrets; never print secrets in terminal sessions or temporary scripts.
+* **Immediate Revocation**: Any accidentally exposed token must be revoked immediately via GitHub security settings.
+* **Reporting**: Refer to [SECURITY.md](SECURITY.md) for vulnerability disclosure guidelines.
+
+---
+
+## 8. License
 
 Licensed under the [Apache License, Version 2.0](LICENSE).

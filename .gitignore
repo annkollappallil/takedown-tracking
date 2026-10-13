@@ -63,11 +63,21 @@ Thumbs.db
 # Environment variables & secrets (CRITICAL PRIVACY)
 .env
 .env.*
+!.env.example
 *.pem
 *.key
 *.cert
+*.p12
+*.pfx
 credentials.json
 secrets/
+
+# Local logs
+*.log
+
+# Security scan reports
+secret-scan-report.*
+gitleaks-report.*
 
 # Local data files and exports (Never commit real police data or exports)
 data/local/

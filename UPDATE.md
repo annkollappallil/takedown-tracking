@@ -41,8 +41,9 @@
 | **Privacy Filter** (`privacy/filter.py`) | `IMPLEMENTED` | `TESTED` | Yes ($k=10$ suppression, microdata redaction) |
 | **Web Dashboard & API** (`web/app.py`, `web/static/`) | `IMPLEMENTED` | `TESTED` | Yes (responsive UI, dark/light theme, `/api/scoreboard`) |
 | **Unified CLI** (`cli.py`) | `IMPLEMENTED` | `TESTED` | Yes (`generate`, `import`, `metrics`, `export-scoreboard`, `serve`) |
-| **Continuous Integration** (`.github/workflows/ci.yml`) | `IMPLEMENTED` | `TESTED` | Yes (Python 3.10, 3.11, 3.12 matrix) |
+| **Continuous Integration** (`.github/workflows/ci.yml`) | `IMPLEMENTED` | `TESTED` | Yes (Python 3.10, 3.11, 3.12 matrix & Gitleaks scan) |
 | **Methodology Documentation** (`METHODOLOGY.md`) | `COMPLETED` | N/A | Yes (full mathematical definitions & formulas) |
+| **Security Policy & Policy Rules** (`SECURITY.md`, `.gitleaks.toml`) | `COMPLETED` | `TESTED` | Yes (Gitleaks scan, strengthened ignores, disclosure policy) |
 
 ---
 
@@ -220,10 +221,12 @@ scoreboard = PrivacyFilter().filter_and_publish(records)
 6. `tests/test_cli.py` (5 tests): Subcommand integration (`generate`, `import`, `metrics`, `export-scoreboard`, quarantine exports).
 
 ### Privacy & Security Verifications:
+* [x] **Safe Secret Scanner Audit**: Complete working tree and full commit history (`git log -p --all`) scanned for OAuth tokens (`gho_*`, `ghp_*`), private keys, and API secrets. **Result: 0 candidate credentials detected in any committed or tracked file.**
 * [x] Zero real complaint data, real victim names, or real URLs exist in code, tests, or committed fixtures.
 * [x] Ingestion errors report sanitized failure codes without echoing input payloads.
 * [x] Public scoreboard serialization verified to contain zero internal identifiers.
-* [x] `.gitignore` explicitly prevents accidental commits of local datasets (`data/local/`, `data/raw/`, `data/exports/`), SQLite databases, `.env` files, or credentials.
+* [x] `.gitignore` explicitly prevents accidental commits of local datasets (`data/local/`, `data/raw/`, `data/exports/`), certificate files (`*.p12`, `*.pfx`, `*.pem`, `*.key`), logs (`*.log`), scan reports, SQLite databases, `.env` files, or credentials.
+* [x] Preventive Gitleaks CI workflow configured with allowlist for synthetic demonstration fixtures.
 
 ---
 
@@ -231,6 +234,9 @@ scoreboard = PrivacyFilter().filter_and_publish(records)
 
 ### Active Blockers:
 * **None**. Feature branch is fully developed, tested locally, pushed to GitHub, and accessible via PR #1.
+
+### Security Remediation Note:
+* An OAuth access token was ephemerally printed in a local terminal development log when inspecting git credentials during initial PR setup. A full repository scan verified the token was **never committed, staged, or retained in any file**. The token is treated as compromised, and the repository owner has been advised to immediately revoke authorization via GitHub Settings.
 
 ### Resolved Issues:
 1. *Resolved (2026-10-13)*: Windows CP1252 terminal encoding threw `UnicodeEncodeError` when printing checkmark characters (`✓`). Fixed by switching console prints in `cli.py` and `app.py` to ASCII badges (`[OK]`, `[*]`).
@@ -242,6 +248,13 @@ scoreboard = PrivacyFilter().filter_and_publish(records)
 ## J. Development History
 
 All timestamps in Indian Standard Time (IST).
+
+* **2026-10-13 13:25 IST — Security Audit & Preventative Hardening**
+  * Conducted deep audit of working tree and complete Git commit history (`git log -p --all`) for suspected secrets. Confirmed **0 credentials committed or tracked**.
+  * Advised repository owner on immediate revocation of OAuth token via GitHub Settings (**Applications → Authorized OAuth Apps**).
+  * Strengthened `.gitignore` (`.env`, `*.p12`, `*.pfx`, `*.log`, `secret-scan-report.*`, `gitleaks-report.*`).
+  * Created `SECURITY.md` establishing vulnerability disclosure and credential safety policies.
+  * Added `.gitleaks.toml` allowlist configuration and integrated preventive Gitleaks secret scanning into `.github/workflows/ci.yml`.
 
 * **2026-10-13 13:05 IST — Pull Request #1 Created & Pushed**
   * Pushed feature branch `feat/requests-speed-metrics` to remote `origin`.
