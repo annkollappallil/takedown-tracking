@@ -29,6 +29,10 @@ dev = [
     "pytest>=7.0.0",
     "pytest-cov>=4.0.0"
 ]
+# Only for reading/writing image files and JPEG round-trips; PDQ itself is pure Python.
+images = [
+    "Pillow>=10.0"
+]
 
 [project.scripts]
 takedown-tracking = "takedown_tracking.cli:main"

@@ -107,7 +107,17 @@ Platforms report their own removal times. The verifier checks independently whet
 * **Integrity metrics** ([`src/takedown_tracking/integrity/`](src/takedown_tracking/integrity/)): verification coverage, unverifiable share, false removal claim rate, silent removals and re-upload rate, overall and per platform, published in the scoreboard's `integrity_summary`.
 * **Effect on speed metrics**: verified removal times replace platform claims; claims contradicted by the verifier count as not removed.
 
-Planned next: PDQ-based re-upload detection on harmless test images, the platform dispute flow, and the victim status page.
+* **Re-upload detection (PDQ)** ([`src/takedown_tracking/hashing/`](src/takedown_tracking/hashing/), [`verifier/pdq_detector.py`](src/takedown_tracking/verifier/pdq_detector.py)): pure-Python PDQ perceptual hashing, tested bit-for-bit against Meta's official implementation. Copies match within 31 of 256 bits, including mirrored copies. The demo uses abstract generated images only; hashes never leave the detector.
+
+```bash
+# Verify with PDQ hash matching instead of reading re-uploads from ground truth
+python -m takedown_tracking.cli verify --input data/demo_synthetic_requests.json --output data/demo_observations.json --as-of "2026-10-01T00:00:00Z" --reupload-detector pdq
+
+# Compare two harmless test images (needs Pillow: pip install "takedown-tracking[images]")
+python -m takedown_tracking.cli pdq image_a.png image_b.png
+```
+
+Planned next: the platform dispute flow and the victim status page.
 
 ---
 
@@ -128,6 +138,7 @@ Tests validate:
 * HMAC-SHA-256 URL hashing with fail-closed production safety.
 * Verifier scheduling, removal confirmation and simulator accuracy against hidden ground truth.
 * Integrity metrics (false claims, silent removals, re-upload window) and their publication rule.
+* PDQ hashes identical to the official implementation, robustness to common edits, and re-upload detection against ground truth.
 * Web server static delivery and API endpoints.
 
 ---

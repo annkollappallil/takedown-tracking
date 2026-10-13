@@ -18,7 +18,7 @@ from takedown_tracking.integrity.metrics import build_integrity_summary
 from takedown_tracking.models.observation import ObservationRecord, ObservationValidationError
 from takedown_tracking.models.request import parse_iso_datetime
 from takedown_tracking.privacy.filter import PrivacyFilter
-from takedown_tracking.verifier import RunnerConfig, simulate_observations
+from takedown_tracking.verifier import REUPLOAD_DETECTORS, RunnerConfig, simulate_observations
 from takedown_tracking.web.app import run_server
 
 
@@ -80,7 +80,9 @@ def cmd_verify(args: argparse.Namespace) -> int:
         check_interval_minutes=args.check_interval,
         reupload_window_days=args.reupload_window_days,
     )
-    observations = simulate_observations(records, as_of, seed=args.seed, config=config)
+    observations = simulate_observations(
+        records, as_of, seed=args.seed, config=config, reupload_detector=args.reupload_detector
+    )
 
     out_path = Path(args.output)
     out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -91,6 +93,29 @@ def cmd_verify(args: argparse.Namespace) -> int:
     print(f"[OK] Verified {len(observations)} takedown requests (as of {as_of.isoformat()}) -> {out_path}")
     for status, count in sorted(by_status.items()):
         print(f"  - {status}: {count}")
+    reuploads = sum(1 for o in observations if o.reupload_detected_at is not None)
+    print(f"  re-uploads found ({args.reupload_detector} detector): {reuploads}")
+    return 0
+
+
+def cmd_pdq(args: argparse.Namespace) -> int:
+    """Compare harmless test images with PDQ. Prints quality and distance, never the hashes."""
+    from takedown_tracking.hashing.images import load_image
+    from takedown_tracking.hashing.pdq import pdq_dihedral_from_rgb
+
+    try:
+        images = [load_image(p) for p in args.images]
+    except RuntimeError as exc:
+        print(f"[!] {exc}")
+        return 2
+    hashes = [pdq_dihedral_from_rgb(im.width, im.height, im.pixels) for im in images]
+    for path, im, hs in zip(args.images, images, hashes):
+        note = "" if hs[0].is_useful else "  (too featureless to match reliably)"
+        print(f"{path}: {im.width}x{im.height}, PDQ quality {hs[0].quality}{note}")
+    if len(hashes) == 2:
+        distance = min(hashes[0][0].distance(h) for h in hashes[1])
+        verdict = "MATCH" if distance <= args.threshold else "NO MATCH"
+        print(f"Distance {distance} of 256 bits (threshold {args.threshold}): {verdict}")
     return 0
 
 
@@ -310,7 +335,22 @@ def build_parser() -> argparse.ArgumentParser:
     ver_parser.add_argument(
         "--reupload-window-days", type=float, default=7.0, help="Days after removal to scan for re-uploads"
     )
+    ver_parser.add_argument(
+        "--reupload-detector",
+        choices=REUPLOAD_DETECTORS,
+        default="simulated",
+        help="simulated: read re-uploads from ground truth (fast). "
+        "pdq: find them by PDQ hash matching on generated test images (slower, realistic).",
+    )
     ver_parser.set_defaults(func=cmd_verify)
+
+    # pdq
+    pdq_parser = subparsers.add_parser(
+        "pdq", help="Compare test images with PDQ perceptual hashing (needs Pillow; harmless images only)"
+    )
+    pdq_parser.add_argument("images", nargs="+", help="One image to check quality, or two to compare")
+    pdq_parser.add_argument("--threshold", type=int, default=31, help="Match threshold in bits (default 31)")
+    pdq_parser.set_defaults(func=cmd_pdq)
 
     # export-scoreboard
     sb_parser = subparsers.add_parser(

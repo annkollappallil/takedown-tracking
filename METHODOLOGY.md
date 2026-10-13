@@ -227,7 +227,13 @@ The people involved:
 
 **Example.** A week after removal, a copy of the same image is posted again.
 
-**What happens.** After a confirmed removal, the system keeps watching for copies for 7 days. A copy found in that window counts as a re-upload.
+**What happens.**
+1. When police send the takedown, they register a **fingerprint** of the image inside police systems. The fingerprint is PDQ, the open image-matching method Meta publishes for exactly this purpose.
+2. After a confirmed removal, posts that turn up on the platform over the next 7 days are fingerprinted the same way and compared.
+3. A copy still matches if it was resized, recompressed, recoloured or mirrored. Heavily cropped or edited copies can be missed.
+4. Fingerprints never leave the system. The report only records when a copy was found.
+
+Our PDQ code gives exactly the same fingerprints as Meta's official version, which the tests check. The demo uses abstract generated pictures, never real images.
 
 **What the public sees.** Each platform's re-upload rate. It only includes removals whose 7-day watch has finished, so recent removals don't make the rate look better than it is.
 
@@ -252,7 +258,7 @@ The people involved:
 * Removal times are accurate to about 15 minutes, because that is how often the checks run.
 * The demo runs entirely on made-up data for fictional platforms (Platform A to J). Its numbers say nothing about real companies.
 * Content removed and later restored at the same address is not tracked after the confirmed removal.
-* A re-upload is only counted if the system can see it, so the re-upload rate is a minimum, not an exact figure.
+* A re-upload is only counted if the system can see it, and heavily cropped or edited copies can be missed, so the re-upload rate is a minimum, not an exact figure.
 
 <details>
 <summary>Technical reference: the record the checker hands over</summary>
@@ -269,6 +275,8 @@ One record per watched request (`schemas/observation.schema.json`):
 | `check_error` | Reason code when checks were inconclusive (no free text) |
 
 Rules, in `src/takedown_tracking/integrity/rules.py`: a confirmed removal time replaces the platform's claim; a claim is false if the post was seen online more than 15 minutes after it; with no usable check, the platform's claim is used. Checks go through the `AvailabilityChecker` and `ReuploadDetector` interfaces, so a real deployment can plug in its own checker inside the police network.
+
+Re-upload matching (`src/takedown_tracking/hashing/pdq.py`, `verifier/pdq_detector.py`): a copy matches when its PDQ fingerprint differs from the registered one in at most 31 of 256 bits, in any of the 8 rotations or mirror images, and both fingerprints have a quality score of at least 50.
 </details>
 
 ---
